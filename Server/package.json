@@ -1,0 +1,23 @@
+{
+  "name": "fypback",
+  "version": "1.0.0",
+  "description": "backend server for application",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js", 
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/johnyeid2000/fyp_ouvatek.git"
+  },
+  "author": "Johny & Elionore",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/johnyeid2000/fyp_ouvatek/issues"
+  },
+  "homepage": "https://github.com/johnyeid2000/fyp_ouvatek#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
