@@ -19,6 +19,7 @@ const styles = StyleSheet.create({
     container_Secondary:{
         borderColor:'#651B70',
         borderWidth:2,
+        padding:15,
     },
 
     container_Teritiary:{
