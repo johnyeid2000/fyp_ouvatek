@@ -10,10 +10,6 @@ const styles = StyleSheet.create({
         width:'100%',
         marginBottom: 30,
     },
-    signup:{
-        marginTop:'20%'
-        //marginVertical:60
-    }
 });
 
 export default styles;

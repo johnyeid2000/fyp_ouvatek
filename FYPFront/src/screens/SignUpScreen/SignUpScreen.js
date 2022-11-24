@@ -61,13 +61,11 @@ const SignUpScreen =() =>{
             <Text style={styles.text}>By registering, you confirm that you accept 
             our Terms of Use and Privacy Policy</Text>
 
-            <View style={styles.signin}>
             <CustomButton
                 text="Have an account? Sign In"
                 onPress={onSignInPressed}
                 type='Teritiary'
             />
-            </View>
         </View>
     );
 };

@@ -16,9 +16,6 @@ const styles = StyleSheet.create({
         color:'gray',
         marginVertical:10
     },
-    signin:{
-        marginTop:'25%'
-    }
 });
 
 export default styles;
