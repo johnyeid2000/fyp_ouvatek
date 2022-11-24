@@ -28,26 +28,34 @@ const SignUpScreen =() =>{
             <Text style={styles.title}>Create an account</Text>
 
             <CustomInput
-                placeholder="Username"
+                label="Username"
+                IconName="account-outline"
+                placeholder="Enter Your Username"
                 value={username}
                 setValue={setUsername}
             />
 
             <CustomInput
-                placeholder="Email"
+                label="Email"
+                IconName="email-outline"
+                placeholder="Enter Your Email"
                 value={email}
                 setValue={setEmail}
             />
 
             <CustomInput
-                placeholder="Password"
+                label="Password"
+                IconName="lock-outline"
+                placeholder="Enter Your Password"
                 value={password}
                 setValue={setPassword}
                 secureTextEntry
             />
 
             <CustomInput
-                placeholder="Repeat Password"
+                label="Confirm Password"
+                IconName="lock-outline"
+                placeholder="Confirm Your Password"
                 value={passwordRepeat}
                 setValue={setPasswordRepeat}
                 secureTextEntry

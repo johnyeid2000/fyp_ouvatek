@@ -36,13 +36,17 @@ const SignInScreen =() =>{
             />
 
             <CustomInput
-                placeholder="Username"
+                label="Username"
+                IconName="account-outline"
+                placeholder="Enter Your Username"
                 value={username}
                 setValue={setUsername}
             />
 
             <CustomInput
-                placeholder="Password"
+                label="Password"
+                IconName="lock-outline"
+                placeholder="Enter Your Password"
                 value={password}
                 setValue={setPassword}
                 secureTextEntry

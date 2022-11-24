@@ -24,10 +24,17 @@ const NewPasswordScreen = () => {
     <View style={styles.root}>
       <Text style={styles.title}>Reset your password</Text>
 
-      <CustomInput placeholder="Code" value={code} setValue={setCode} />
+      <CustomInput
+      label='Code' 
+      placeholder="Enter Your Code" 
+      IconName='key-outline'
+      value={code} 
+      setValue={setCode} />
 
       <CustomInput
+        label='Password' 
         placeholder="Enter New Password"
+        IconName='lock-outline'
         value={newPassword}
         setValue={setNewPassword}
         secureTextEntry

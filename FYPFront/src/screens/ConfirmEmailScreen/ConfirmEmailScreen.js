@@ -28,6 +28,8 @@ const ConfirmEmailScreen =() =>{
             <Text style={styles.title}>Confirm your account</Text>
 
             <CustomInput
+                label="Confirmation Code"
+                IconName="key-outline"
                 placeholder="Enter Confirmation Code"
                 value={code}
                 setValue={setCode}

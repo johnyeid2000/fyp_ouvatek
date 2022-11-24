@@ -2,6 +2,9 @@ import {StyleSheet} from 'react-native';
 
 
 const styles =StyleSheet.create({
+    root:{
+        width:'100%',
+    },
     container:{
         backgroundColor:'white',
         width:'100%',
@@ -10,10 +13,21 @@ const styles =StyleSheet.create({
         borderWidth:1,
         borderRadius:5,
 
-        paddingHorizontal:10,
+        paddingLeft:10,
         marginVertical:5,
+
+        flexDirection: 'row',
+        alignItems:'center'
     },
     input:{},
+    label:{
+        marginVertical:2,
+        fontWeight:'800',
+    },
+    icon:{
+        fontSize: 22, 
+        marginRight: 10,
+    }
 });
 
 export default styles;
