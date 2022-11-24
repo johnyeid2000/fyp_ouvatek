@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text } from 'react-native';
 
 
-const index =()=>{
+const Index =()=>{
     return(
         <View>
             <Text style={{fontSize:24, alignSelf:'center'}}>Home Page</Text>
@@ -10,4 +10,4 @@ const index =()=>{
     )
 }
 
-export default index
+export default Index

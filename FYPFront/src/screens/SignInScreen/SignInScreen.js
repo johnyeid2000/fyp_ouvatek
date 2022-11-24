@@ -59,13 +59,11 @@ const SignInScreen =() =>{
                 type='Teritiary'
             />
 
-            <View style={styles.signup}>
             <CustomButton
                 text="Don't have an account? Create one"
                 onPress={onSignUpPressed}
                 type='Teritiary'
             />
-            </View>
         </View>
     );
 };
