@@ -1,5 +1,4 @@
 import React from 'react';
-import { View, Text } from 'react-native';
 
 import SplashScreen from '../screens/SplashScreen';
 import SignInScreen from '../screens/SignInScreen';
@@ -7,16 +6,16 @@ import SignUpScreen from '../screens/SignUpScreen';
 import ConfirmEmailScreen from '../screens/ConfirmEmailScreen';
 import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
 import NewPasswordScreen from '../screens/NewPasswordScreen';
-import HomeScreen from '../screens/HomeScreen';
+
+import PatientNavigator from './PatientNavigator';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 const Stack = createNativeStackNavigator();
 
-const Navigation =()=>{
+const SignNavigator=()=>{
     return(
-        <NavigationContainer>
             <Stack.Navigator screenOptions={{headerShown:false}}>
                 <Stack.Screen
                     name='Splash'
@@ -49,12 +48,11 @@ const Navigation =()=>{
                 />
 
                 <Stack.Screen
-                    name='Home'
-                    component={HomeScreen}
+                    name='Patient'
+                    component={PatientNavigator}
                 />
             </Stack.Navigator>
-        </NavigationContainer>
     )
 }
 
-export default Navigation
+export default SignNavigator

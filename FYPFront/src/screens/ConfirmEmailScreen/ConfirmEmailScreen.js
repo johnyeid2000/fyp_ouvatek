@@ -12,7 +12,9 @@ const ConfirmEmailScreen =() =>{
     const navigation = useNavigation();
 
     const onConfirmPressed = () => {
-        navigation.navigate("Home");
+        navigation.navigate("SignIn");
+        //navigation.navigate("Patient");
+        //navigation.navigate("Doctor");
     };
 
     const onSignInPressed = () => {
