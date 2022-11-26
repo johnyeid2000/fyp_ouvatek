@@ -13,7 +13,9 @@ const NewPasswordScreen = () => {
   const navigation = useNavigation();
 
   const onSubmitPressed = () => {
-    navigation.navigate('Home');
+    navigation.navigate("SignIn");
+    //navigation.navigate('Patient');
+    //navigation.navigate("Doctor");
   };
 
   const onSignInPressed = () => {
