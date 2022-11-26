@@ -16,7 +16,8 @@ const SignInScreen =() =>{
     const navigation = useNavigation();
 
     const onSignInPressed = () => {
-        navigation.navigate('Home');
+        navigation.navigate('Patient');
+        //navigation.navigate("Doctor");
     };
 
     const onForgotPasswordPressed = () => {
@@ -36,13 +37,17 @@ const SignInScreen =() =>{
             />
 
             <CustomInput
-                placeholder="Username"
+                label="Username"
+                IconName="account-outline"
+                placeholder="Enter Your Username"
                 value={username}
                 setValue={setUsername}
             />
 
             <CustomInput
-                placeholder="Password"
+                label="Password"
+                IconName="lock-outline"
+                placeholder="Enter Your Password"
                 value={password}
                 setValue={setPassword}
                 secureTextEntry
@@ -59,13 +64,11 @@ const SignInScreen =() =>{
                 type='Teritiary'
             />
 
-            <View style={styles.signup}>
             <CustomButton
                 text="Don't have an account? Create one"
                 onPress={onSignUpPressed}
                 type='Teritiary'
             />
-            </View>
         </View>
     );
 };

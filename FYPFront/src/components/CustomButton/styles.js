@@ -4,9 +4,6 @@ const styles = StyleSheet.create({
     container:{
         width:'100%',
 
-        padding:15,
-        marginVertical:5,
-
         alignItems:'center',
         borderRadius:5,
 
@@ -14,15 +11,20 @@ const styles = StyleSheet.create({
 
     container_Primary:{
         backgroundColor:'#651B70',
+         padding:15,
+        marginVertical:5,
 
     },
 
     container_Secondary:{
         borderColor:'#651B70',
         borderWidth:2,
+        padding:15,
     },
 
     container_Teritiary:{
+        padding:7,
+        marginVertical:2,
     },
 
     text:{
