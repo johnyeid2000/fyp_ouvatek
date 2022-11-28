@@ -61,17 +61,6 @@ const PatientNavigator = (props) => {
                 }}
             />
 
-
-            {/* <Tab.Screen
-                 name='Edit Patient'
-                component={EditPatientScreen}
-                options={{
-                    tabBarIcon: ({color}) => (
-                    <Icon name="file-edit-outline" size={25} color={color} />
-                    )
-                }}
-            /> */}
-
             <Tab.Screen
                 name='Profile'
                 component={PatientProfileScreen}

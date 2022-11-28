@@ -9,6 +9,8 @@ import NewPasswordScreen from '../screens/NewPasswordScreen';
 
 import PatientNavigator from './PatientNavigator';
 
+import EditPatientScreen from '../screens/EditPatientScreen';
+import EditDoctorScreen from '../screens/EditDoctorScreen';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
@@ -51,6 +53,7 @@ const SignNavigator=()=>{
                     name='Patient'
                     component={PatientNavigator}
                 />
+
             </Stack.Navigator>
     )
 }

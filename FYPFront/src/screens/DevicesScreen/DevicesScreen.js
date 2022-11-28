@@ -1,11 +1,27 @@
 import React from 'react';
 import { View, Text } from 'react-native';
-
+import CustomButton from "../../components/CustomButton/CustomButton";
+import styles from './styles';
 
 const DevicesScreen =()=>{
+
+    const onSearchDevicePressed = () => {
+        console.warn('Search device pressed');
+    };
+
     return(
         <View>
-            <Text style={{fontSize:24, alignSelf:'center'}}>Devices Page</Text>
+            <View style={styles.btnView}>
+                <CustomButton
+                    text="Search a device"
+                    onPress={onSearchDevicePressed}
+                    type='Primary'
+                />
+            </View>
+
+            <View style={styles.txtView}>
+                <Text style={styles.txt}>No Device available</Text>
+            </View>
         </View>
     )
 }
