@@ -17,7 +17,7 @@ const PatientProfileScreen = () => {
     const navigation = useNavigation();
 
     const onEditAccountPressed = () =>{
-      console.warn('edit profile pressed');
+      navigation.navigate('EditPatient');
     }
 
     const onLogoutPressed = () =>{

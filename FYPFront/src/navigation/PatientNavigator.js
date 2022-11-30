@@ -3,10 +3,11 @@ import React from 'react';
 import MeasurementScreen from '../screens/MeasurementScreen';
 import PatientContactScreen from '../screens/PatientContactScreen';
 //import EditPatientScreen from '../screens/EditPatientScreen';
-import PatientProfileScreen from '../screens/PatientProfileScreen';
+//import PatientProfileScreen from '../screens/PatientProfileScreen';
 import DevicesScreen from '../screens/DevicesScreen';
 import EventsScreen from '../screens/EventsScreen';
 
+import PatientProfileNavigator from '../navigation/PatientProfileNavigator';
 
 import  Icon  from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -63,7 +64,7 @@ const PatientNavigator = (props) => {
 
             <Tab.Screen
                 name='Profile'
-                component={PatientProfileScreen}
+                component={PatientProfileNavigator}
                 options={{
                     tabBarIcon: ({color}) => (
                     <Icon name="account-outline" size={25} color={color} />
