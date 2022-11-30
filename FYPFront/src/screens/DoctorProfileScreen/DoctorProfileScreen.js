@@ -49,11 +49,11 @@ const DoctorProfileScreen = () => {
           <View style={styles.userInfoSection}>
           <View style={styles.row}>
               <Icon name="hospital-building" color="#777777" size={20}/>
-              <Text style={styles.txtRow}>CHU-NDS</Text>
+              <Text style={styles.txtRow}>Hospital Name</Text>
             </View>
             <View style={styles.row}>
               <Icon name="map-marker-radius" color="#777777" size={20}/>
-              <Text style={styles.txtRow}>Beirut, Lebanon</Text>
+              <Text style={styles.txtRow}>Location</Text>
             </View>
             <View style={styles.row}>
               <Icon name="phone" color="#777777" size={20}/>
@@ -61,15 +61,15 @@ const DoctorProfileScreen = () => {
             </View>
             <View style={styles.row}>
               <Icon name="certificate-outline" color="#777777" size={20}/>
-              <Text style={styles.txtRow}>Dr in </Text>
+              <Text style={styles.txtRow}>Speciality </Text>
             </View>
             <View style={styles.row}>
               <Icon name="gender-male-female" color="#777777" size={20}/>
-              <Text style={styles.txtRow}>Male</Text>
+              <Text style={styles.txtRow}>Gender</Text>
             </View>
             <View style={styles.row}>
               <Icon name="timelapse" color="#777777" size={20}/>
-              <Text style={styles.txtRow}>3 years of experience</Text>
+              <Text style={styles.txtRow}>Years of experience</Text>
             </View>
           </View>
 

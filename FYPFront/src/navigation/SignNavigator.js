@@ -8,6 +8,7 @@ import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
 import NewPasswordScreen from '../screens/NewPasswordScreen';
 
 import PatientNavigator from './PatientNavigator';
+import DoctorNavigator from './DoctorNavigator';
 
 import EditPatientScreen from '../screens/EditPatientScreen';
 import EditDoctorScreen from '../screens/EditDoctorScreen';
@@ -54,6 +55,10 @@ const SignNavigator=()=>{
                     component={PatientNavigator}
                 />
 
+                {/* <Stack.Screen
+                    name='Doctor'
+                    component={DoctorNavigator}
+                /> */}
             </Stack.Navigator>
     )
 }

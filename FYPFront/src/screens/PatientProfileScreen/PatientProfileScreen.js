@@ -39,8 +39,8 @@ const PatientProfileScreen = () => {
                   marginTop:15,
                   marginBottom: 5,
                 }]}>Patient Name</Title>
-                <Caption style={styles.caption}>Age: nb</Caption>
-                <Caption style={styles.caption}>Date Of Birth: dd/mm/yyyy</Caption>
+                <Caption style={styles.caption}>Age: </Caption>
+                <Caption style={styles.caption}>Date Of Birth: </Caption>
               </View>
             </View>
           </View>
@@ -55,7 +55,7 @@ const PatientProfileScreen = () => {
           <View style={styles.userInfoSection}>
             <View style={styles.row}>
               <Icon name="map-marker-radius" color="#777777" size={20}/>
-              <Text style={styles.txtRow}>Beirut, Lebanon</Text>
+              <Text style={styles.txtRow}>Location</Text>
             </View>
             <View style={styles.row}>
               <Icon name="phone" color="#777777" size={20}/>
@@ -63,19 +63,19 @@ const PatientProfileScreen = () => {
             </View>
             <View style={styles.row}>
               <Icon name="calendar" color="#777777" size={20}/>
-              <Text style={styles.txtRow}>Week 20</Text>
+              <Text style={styles.txtRow}>Week in pregnancy</Text>
             </View>
             <View style={styles.row}>
               <Icon name="human-pregnant" color="#777777" size={20}/>
-              <Text style={styles.txtRow}>2nd trimester</Text>
+              <Text style={styles.txtRow}>Trimester</Text>
             </View>
             <View style={styles.row}>
               <Icon name="diabetes" color="#777777" size={20}/>
-              <Text style={styles.txtRow}>Not diabetic</Text>
+              <Text style={styles.txtRow}>Diabetic/ Not Diabetic</Text>
             </View>
             <View style={styles.row}>
               <Icon name="water" color="#777777" size={20}/>
-              <Text style={styles.txtRow}>Hypertensive</Text>
+              <Text style={styles.txtRow}>Hypertensive/ Not Hypertensive</Text>
             </View>
           </View>
 
