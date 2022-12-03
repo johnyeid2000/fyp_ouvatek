@@ -1,9 +1,6 @@
 import React from 'react';
 
-import MeasurementScreen from '../screens/MeasurementScreen';
 import PatientContactScreen from '../screens/PatientContactScreen';
-//import EditPatientScreen from '../screens/EditPatientScreen';
-//import PatientProfileScreen from '../screens/PatientProfileScreen';
 import DevicesScreen from '../screens/DevicesScreen';
 import EventsScreen from '../screens/EventsScreen';
 

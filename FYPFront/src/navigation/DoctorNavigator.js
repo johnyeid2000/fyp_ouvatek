@@ -1,10 +1,11 @@
 import React from 'react';
 
-import CheckMeasurementScreen from '../screens/CheckMeasurementScreen';
+//import CheckMeasurementScreen from '../screens/CheckMeasurementScreen';
 import DoctorContactScreen from '../screens/DoctorContactScreen';
 import EventsScreen from '../screens/EventsScreen';
 
-import DoctorProfileNavigator from '../navigation/DoctorProfileNavigator';
+import DoctorProfileNavigator from './DoctorProfileNavigator';
+import CheckMeasurementNavigator from './CheckMeasurementNavigator';
 
 import  Icon  from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -20,7 +21,7 @@ const DoctorNavigator = (props) => {
         <Tab.Navigator screenOptions={{headerShown:false, tabBarActiveTintColor:'#651B70'}}>
             <Tab.Screen
                 name='Check Patient'
-                component={CheckMeasurementScreen}
+                component={CheckMeasurementNavigator}
                 options={{
                     tabBarIcon: ({color}) => (
                     <Icon name="ruler" size={25} color={color} />
