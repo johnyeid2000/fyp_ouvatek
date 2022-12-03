@@ -2,9 +2,16 @@ import React from 'react';
 import {View, Text} from 'react-native';
 import MeasurementButton from '../../components/MeasurementButton/MeasurementButton';
 
+import {useNavigation} from '@react-navigation/native';
+
+
 const MeasurementScreen = () => {
+
+  const navigation = useNavigation();
+
   const HeartRatePressed = () => {
-    console.warn('Heart Rate and blood pressure Pressed');
+    navigation.navigate('HeartRate');
+    //console.warn('Heart Rate and blood pressure Pressed');
   };
   const TemperaturePressed = () => {
     console.warn('Temperature Pressed');
