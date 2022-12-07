@@ -16,15 +16,15 @@ const PatientMeasurementScreen = () => {
           <View style={styles.userInfoSection}>
             <View style={{flexDirection: 'row', marginTop: 15}}>
               <Avatar.Image 
-                source={require('../../assets/images/pregnantUser.jpg')}
+                source={require('../../assets/images/1.jpg')}
                 size={80}
               />
               <View style={{marginLeft: 20}}>
                 <Title style={[styles.title, {
                   marginTop:15,
                   marginBottom: 5,
-                }]}>Patient Name</Title>
-                <Caption style={styles.caption}>Trimester</Caption>
+                }]}>Jane Doe</Title>
+                <Caption style={styles.caption}>First Trimester</Caption>
               </View>
             </View>
           </View>

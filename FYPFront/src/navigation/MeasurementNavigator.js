@@ -13,7 +13,7 @@ const MeasurementNavigator=()=>{
             <Stack.Navigator screenOptions={{headerShown:false}}>
 
                 <Stack.Screen
-                    name='MeasurementS'
+                    name='Measurement'
                     component={MeasurementScreen}
                 />
 

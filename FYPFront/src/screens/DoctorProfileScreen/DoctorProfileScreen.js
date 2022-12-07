@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, SafeAreaView} from 'react-native';
+import {View, SafeAreaView, Pressable} from 'react-native';
 import { Avatar, Title, Caption, Text } from 'react-native-paper';
 import styles from './styles';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -22,9 +22,17 @@ const DoctorProfileScreen = () => {
 
     return (
         <SafeAreaView style={styles.container}>
-    
+        <View style={styles.editLogoutContainer}>
+          <Pressable onPress={onEditAccountPressed}>
+          <Icon name='account-edit-outline' color="#651B70" size={25} style={{marginLeft:'5%'}}/>
+          </Pressable>
+
+          <Pressable onPress={onLogoutPressed}> 
+          <Icon name='logout' color="#777777" size={25} style={{marginRight:'5%'}}/>
+          </Pressable>
+        </View>
           <View style={styles.userInfoSection}>
-            <View style={{flexDirection: 'row', marginTop: 15}}>
+            <View style={{flexDirection: 'row'}}>
               <Avatar.Image 
                 source={require('../../assets/images/2.jpeg')}
                 size={80}
@@ -33,54 +41,54 @@ const DoctorProfileScreen = () => {
                 <Title style={[styles.title, {
                   marginTop:15,
                   marginBottom: 5,
-                }]}>Doctor Name</Title>
-                <Caption style={styles.caption}>Dr. </Caption>
+                }]}>Dr. Jack Ross</Title>
+                <Caption style={styles.caption}>Dr. Ross </Caption>
               </View>
             </View>
           </View>
 
-          <View style={styles.btn}>
+          {/* <View style={styles.btn}>
             <CustomButton
                 text="Edit Account"
                 onPress={onEditAccountPressed}
             />
-          </View>
+          </View> */}
     
           <View style={styles.userInfoSection}>
           <View style={styles.row}>
-              <Icon name="hospital-building" color="#777777" size={20}/>
-              <Text style={styles.txtRow}>Hospital Name</Text>
+              <Icon name="hospital-building" color="#651B70" size={20}/>
+              <Text style={styles.txtRow}>CHU-NDS</Text>
             </View>
             <View style={styles.row}>
-              <Icon name="map-marker-radius" color="#777777" size={20}/>
-              <Text style={styles.txtRow}>Location</Text>
+              <Icon name="map-marker-radius" color="#651B70" size={20}/>
+              <Text style={styles.txtRow}>Jbeil, Lebanon</Text>
             </View>
             <View style={styles.row}>
-              <Icon name="phone" color="#777777" size={20}/>
+              <Icon name="phone" color="#651B70" size={20}/>
               <Text style={styles.txtRow}>+961-** *** ***</Text>
             </View>
             <View style={styles.row}>
-              <Icon name="certificate-outline" color="#777777" size={20}/>
-              <Text style={styles.txtRow}>Speciality </Text>
+              <Icon name="certificate-outline" color="#651B70" size={20}/>
+              <Text style={styles.txtRow}>Endocrinologist</Text>
             </View>
             <View style={styles.row}>
-              <Icon name="gender-male-female" color="#777777" size={20}/>
-              <Text style={styles.txtRow}>Gender</Text>
+              <Icon name="gender-male-female" color="#651B70" size={20}/>
+              <Text style={styles.txtRow}>Male</Text>
             </View>
             <View style={styles.row}>
-              <Icon name="timelapse" color="#777777" size={20}/>
-              <Text style={styles.txtRow}>Years of experience</Text>
+              <Icon name="timelapse" color="#651B70" size={20}/>
+              <Text style={styles.txtRow}>5 of experience</Text>
             </View>
           </View>
 
-        <View style={[styles.btn, {marginTop:'10%'}]}>
+        {/* <View style={[styles.btn, {marginTop:'10%'}]}>
             <CustomButton
                 text="Logout"
                 onPress={onLogoutPressed}
                 type='Secondary'
 
             />
-        </View>
+        </View> */}
         
 
 

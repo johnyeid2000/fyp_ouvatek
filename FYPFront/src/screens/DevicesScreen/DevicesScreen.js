@@ -13,14 +13,14 @@ const DevicesScreen =()=>{
         <View>
             <View style={styles.btnView}>
                 <CustomButton
-                    text="Search a device"
+                    text="Add a device"
                     onPress={onSearchDevicePressed}
                     type='Primary'
                 />
             </View>
 
             <View style={styles.txtView}>
-                <Text style={styles.txt}>No Device available</Text>
+                <Text style={styles.txt}>No Device connected</Text>
             </View>
         </View>
     )

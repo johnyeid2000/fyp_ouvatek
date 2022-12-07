@@ -21,7 +21,7 @@ const PatientNavigator = (props) => {
     return (
         <Tab.Navigator screenOptions={{headerShown:false, tabBarActiveTintColor:'#651B70'}}>
             <Tab.Screen
-                name='Measurement'
+                name='Measurements'
                 component={MeasurementNavigator}
                 options={{
                     tabBarIcon: ({color}) => (
@@ -32,7 +32,7 @@ const PatientNavigator = (props) => {
 
             
             <Tab.Screen
-                name='Contact Doctor'
+                name='Chats'
                 component={PatientContactScreen}
                 options={{
                     tabBarIcon: ({color}) => (

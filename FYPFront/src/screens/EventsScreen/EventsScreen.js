@@ -1,14 +1,42 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, FlatList } from 'react-native';
 import Calendar from 'react-native-calendars/src/calendar'; 
 
 const EventsScreen =()=>{
 
     return(
-        <View style={{flex:1, justifyContent:'center'}}>
+        <View style={{flex:1}}>
         <Calendar
             style={{borderRadius:10, elevation:4, margin:20}}
-            theme={{ arrowColor: '#651B70', selectedDayBackgroundColor:'#651B70',     todayTextColor: '#651B70'}}
+            theme={{ 
+                arrowColor: '#651B70', 
+                selectedDayBackgroundColor:'#651B70',
+                }}
+                markedDates={{
+                    '2022-12-08': {marked: true, dotColor: '#fff'},
+                    '2022-12-09': {marked: true, dotColor: '#651B70'},
+                    '2022-12-16': {marked: true, dotColor: '#651B70'},
+                    '2022-12-20': {marked: true, dotColor: '#651B70'}
+                }}
+        />
+        <FlatList
+          data={[
+            // { key: '8-12-2022: Add your measurements' },
+            // { key: '11-12-2022: Appointment with Dr. Jack at 11:00' },
+            // { key: '13-12-2022: Appointment with Dr. Bob at 13:00 ' },
+            // { key: '16-12-2022: Add your measurements' },
+            { key: 'Event 1' },
+            { key: 'Event 2' },
+            { key: 'Event 3' },
+            { key: 'Event 4' },
+          ]}
+          renderItem={({ item }) => {
+            return (
+              <View style={{ marginLeft:20}}>
+                <Text style={{fontSize:16, marginBottom:5}}>{`\u2022 ${item.key}`}</Text>
+              </View>
+            );
+          }}
         />
         </View>
     )

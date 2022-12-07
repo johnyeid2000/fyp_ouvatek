@@ -8,21 +8,21 @@ import styles from './styles';
 const Messages = [
     {
         id: 1,
-        userName: 'Dr. 1',
+        userName: 'Dr. Jack Ross',
         userImg: require('../../assets/images/2.jpeg'),
         messageTime:'4 mins ago',
         messageText:'Hey there I am your doctor',
         },
         {
         id: 2,
-        userName: 'Dr. 2',
+        userName: 'Dr. Grace Smith',
         userImg: require('../../assets/images/3.jpg'),
         messageTime:'10 mins ago',
         messageText:'Hey there I am your doctor',
         },
         {
         id: 3,
-        userName: 'Dr. 3',
+        userName: 'Dr. Taylor Clark',
         userImg: require('../../assets/images/4.jpg'),
         messageTime:'1 day ago',
         messageText:'Hey there I am your doctor',

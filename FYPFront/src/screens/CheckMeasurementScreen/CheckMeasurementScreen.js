@@ -10,27 +10,27 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 const patients = [
     {
         id: 1,
-        userName: 'Patient 1',
+        userName: 'Jane Doe',
         userImg: require('../../assets/images/1.jpg'),
         },
         {
         id: 2,
-        userName: 'Patient 2',
+        userName: 'Linda Johnson',
         userImg: require('../../assets/images/p1.jpeg'),
         },
         {
         id: 3,
-        userName: 'Patient 3',
+        userName: 'Jennifer Williams',
         userImg: require('../../assets/images/p2.jpeg'),
         },
         {
         id: 4,
-        userName: 'Patient 4',
+        userName: 'Maria Miller',
         userImg: require('../../assets/images/p3.webp'),
         },
         {
         id: 5,
-        userName: 'Patient 5',
+        userName: 'Carol White',
         userImg: require('../../assets/images/p4.webp'),
         },
 ]
