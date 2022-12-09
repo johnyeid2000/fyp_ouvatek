@@ -26,7 +26,7 @@ const NewRequestScreen =()=>{
         <View style={styles.container}>
             <View style={styles.newReq}>
             <Pressable  style={{width:'70%'}} onPress={patientPressed}>
-            <Text style={{color:'black'}}><Text style={{fontWeight:'bold'}}>Elionore Amine</Text> has requested to follow up with you </Text>
+            <Text style={{color:'black'}}><Text style={{fontWeight:'bold'}}>Alice Jane</Text> has requested to follow up with you </Text>
             </Pressable>
                 <Pressable onPress={acceptPressed}>
                 <Icon
@@ -45,7 +45,7 @@ const NewRequestScreen =()=>{
 
             <View style={styles.newReq}>
             <Pressable  style={{width:'70%'}} onPress={patientPressed}>
-                <Text style={{color:'black'}}><Text style={{fontWeight:'bold'}}>Cheryl Salameh</Text> has requested to follow up with you </Text>
+                <Text style={{color:'black'}}><Text style={{fontWeight:'bold'}}>Betty Carter</Text> has requested to follow up with you </Text>
                 </Pressable>
                 <Pressable onPress={acceptPressed}>
                 <Icon
@@ -64,7 +64,7 @@ const NewRequestScreen =()=>{
 
             <View style={styles.newReq}>
             <Pressable  style={{width:'70%'}} onPress={patientPressed}>
-                <Text style={{color:'black'}}><Text style={{fontWeight:'bold'}}>Maria Assaf</Text> has requested to follow up with you </Text>
+                <Text style={{color:'black'}}><Text style={{fontWeight:'bold'}}>Kate Griffin</Text> has requested to follow up with you </Text>
                 </Pressable>
                 <Pressable onPress={acceptPressed}>
                 <Icon
