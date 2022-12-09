@@ -42,7 +42,7 @@ const DoctorProfileScreen = () => {
                   marginTop:15,
                   marginBottom: 5,
                 }]}>Dr. Jack Ross</Title>
-                <Caption style={styles.caption}>Dr. Ross </Caption>
+                <Caption style={styles.caption}>jack.Ross@hotmail.com</Caption>
               </View>
             </View>
           </View>

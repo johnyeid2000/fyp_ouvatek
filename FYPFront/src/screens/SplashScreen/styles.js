@@ -8,8 +8,8 @@ const styles = StyleSheet.create({
         alignItems:'center',
     },
     image:{
-        width:'60%',
-        height:'30%',
+        width:'70%',
+        height:'40%',
     },
     text:{
         fontSize:30,

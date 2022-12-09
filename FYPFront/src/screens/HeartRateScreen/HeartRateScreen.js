@@ -1,5 +1,7 @@
 import React , {useState} from 'react';
-import {View, Text, TextInput} from 'react-native';
+import {View, Text, TextInput, Alert} from 'react-native';
+import { Checkbox } from 'react-native-paper';
+
 
 import CustomButton from "../../components/CustomButton/CustomButton";
 
@@ -25,6 +27,7 @@ const HeartRateScreen = () => {
   const [systolic, setSystolic] = useState('');
   const [diastolic, setDiastolic] = useState('');
 
+  const [checked, setChecked] = useState(false);
 
   return (
     <View style={styles.container}>
@@ -41,7 +44,7 @@ const HeartRateScreen = () => {
           style={styles.helpIcon}
         />
       </View>
-      <View style={styles.inputContainer}>
+      <View style={[styles.inputContainer,{marginBottom:20}]}>
         <TextInput
           onChangeText={setPulse}
           value={pulse}
@@ -79,6 +82,29 @@ const HeartRateScreen = () => {
           style={styles.input}
         />
         <Text style={styles.txt}>mmHg</Text>
+      </View>
+
+      <View style={{flexDirection:'row', alignItems:'center', justifyContent:'center', marginTop:10}}>
+      <Checkbox
+      status={checked ? 'checked' : 'unchecked'}
+      onPress={() => {
+        setChecked(!checked);
+        if(!pulse.trim()){
+          Alert.alert('You need to enter the pulse value');
+          setChecked(false);
+        }
+        else if(!systolic.trim()){
+          Alert.alert('You need to enter systolic');
+          setChecked(false);
+        }
+        else if(!diastolic.trim()){
+          Alert.alert('You need to enter diastolic');
+          setChecked(false);
+        }
+      }}
+      color='#651B70'
+    />
+    <Text > Check Values</Text>
       </View>
 
       <View style={styles.btnContainer}>

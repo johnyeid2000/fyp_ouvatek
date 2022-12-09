@@ -1,5 +1,7 @@
 import React, {useState} from "react";
 import { Text, View } from "react-native";
+import { RadioButton } from 'react-native-paper';
+
 import CustomInput from '../../components/CustomInput';
 import CustomButton from "../../components/CustomButton/CustomButton";
 import styles from './styles';
@@ -12,6 +14,8 @@ const SignUpScreen =() =>{
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [passwordRepeat, setPasswordRepeat] = useState('');
+
+    const [checked, setChecked] = useState('');
 
     const navigation = useNavigation();
 
@@ -60,6 +64,23 @@ const SignUpScreen =() =>{
                 setValue={setPasswordRepeat}
                 secureTextEntry
             />
+
+            <View style={{flexDirection:'row'}}>
+                <RadioButton.Item 
+                    label="Doctor" 
+                    value="doctor" 
+                    status={ checked === 'doctor' ? 'checked' : 'unchecked' }
+                    onPress={() => setChecked('doctor')}
+                    color='#651B70'
+                    />
+                <RadioButton.Item 
+                    label="Patient" 
+                    value="patient"
+                    status={ checked === 'patient' ? 'checked' : 'unchecked' }
+                    onPress={() => setChecked('patient')} 
+                    color='#651B70'
+                    />
+            </View>
 
             <CustomButton
                 text="Register"

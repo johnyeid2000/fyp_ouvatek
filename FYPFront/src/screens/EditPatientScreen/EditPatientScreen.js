@@ -10,6 +10,7 @@ const EditPatientScreen = () => {
     const [username, setUsername] = useState('');
     const [location, setLocation] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
+    const [email, setEmail] = useState('');
 
     const onSubmitPressed = () => {
         console.warn('submit');
@@ -27,6 +28,14 @@ const EditPatientScreen = () => {
                 placeholder="Enter Your Username"
                 value={username}
                 setValue={setUsername}
+            />
+
+            <CustomInput
+                label="Email"
+                IconName="email-outline"
+                placeholder="Enter Your Email"
+                value={email}
+                setValue={setEmail}
             />
 
             <CustomInput
