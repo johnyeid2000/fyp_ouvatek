@@ -14,9 +14,21 @@ const SignInScreen =() =>{
     const {height} = useWindowDimensions();
 
     const navigation = useNavigation();
+    
+    const postDataUsingAsyncAwait = async () => {
+        try {
+          const response = await axios.post(
+            '127.0.0.1:3000/login', JSON.stringify({'username': username, 'password': password})
+          );
+        } catch (error) {
+          // handle error
+          alert(error.message);
+        }
+      };
 
     const onSignInPressed = () => {
-        navigation.navigate('Patient');
+        postDataUsingAsyncAwait()
+        //navigation.navigate('Patient');
         //navigation.navigate("Doctor");
     };
 
