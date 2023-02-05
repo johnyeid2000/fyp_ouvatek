@@ -8,7 +8,7 @@ import styles from './styles';
 import {useNavigation} from '@react-navigation/native';
 
 const SignInScreen =() =>{
-    const [username, setUsername] = useState('');
+    const [username, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
     const {height} = useWindowDimensions();
@@ -18,7 +18,7 @@ const SignInScreen =() =>{
     const postDataUsingAsyncAwait = async () => {
         try {
           await axios.post(
-            '127.0.0.1:3000/login', JSON.stringify({'username': username, 'password': password})
+            '127.0.0.1:3000/login', JSON.stringify({'email': email, 'password': password})
           )
           .then(function (response){
             console.log(response.status);                        
@@ -54,9 +54,9 @@ const SignInScreen =() =>{
             <CustomInput
                 label="Username"
                 IconName="account-outline"
-                placeholder="Enter Your Username"
-                value={username}
-                setValue={setUsername}
+                placeholder="Enter Your Email"
+                value={email}
+                setValue={setEmail}
             />
 
             <CustomInput

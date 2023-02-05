@@ -41,17 +41,17 @@ app.post('/login', (req,res) => { //needs verification if the values are given a
 	const password = req.body.password.trim();
 
 	if (!email || !password) {
-		return res.status(400).send({ error: 'Email and password are required' });
+		return res.status(400).send({ message: 'Email and password are required' });
 	}
 
 	// validate the email format
 	if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
-		return res.status(400).send({ error: 'Invalid Email Format' });
+		return res.status(400).send({ message: 'Invalid Email Format' });
 	}
 	let sql = "SELECT `pat_id`, `email`, `password` FROM `patient` WHERE email=(?)"
 	con.connection.query(sql, [email,password], function(error,rows,fields){
 		if(error){
-			return res.status(404).send({ error: 'User Not Found' });
+			return res.status(404).send({ message: 'User Not Found' });
 		}else{
 			if(rows.length == 1){
 				console.log("hi");
@@ -65,7 +65,7 @@ app.post('/login', (req,res) => { //needs verification if the values are given a
 				// 	return res.status(401).send({ error: 'Email or password is incorrect' });
 				// }
 			}else{
-				return res.status(403).send({ error: 'User Not Found' });
+				return res.status(403).send({ message: 'User Not Found' });
 			}
 
 		};
