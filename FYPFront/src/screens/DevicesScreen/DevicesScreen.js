@@ -12,7 +12,7 @@ const DevicesScreen =()=>{
     const getDataUsingAsyncAwaitGetCall = async () => {
         try {
           const response = await axios.get(
-            'https://jsonplaceholder.typicode.com/posts/1',
+            'localhost:3000/api/users/2222',
           );
           alert(JSON.stringify(response.data));
         } catch (error) {

@@ -17,9 +17,12 @@ const SignInScreen =() =>{
     
     const postDataUsingAsyncAwait = async () => {
         try {
-          const response = await axios.post(
+          await axios.post(
             '127.0.0.1:3000/login', JSON.stringify({'username': username, 'password': password})
-          );
+          )
+          .then(function (response){
+            console.log(response.status);                        
+          })
         } catch (error) {
           // handle error
           alert(error.message);
