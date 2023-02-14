@@ -24,60 +24,39 @@ app.get('/patient', function(req,res){ //when going to profile page /users/3939 
 	});
 })
 
-app.post('/login', (req,res) => { //needs verification if the values are given at least
-	//query 
-	//check if user is in table
-	//if yes comparePassword() 
-		// if true ==> go to mainpage.
-		// if false ==> wrong password. 
-	//if no -- user not found
-	// connection.query(`select * from patient where first_name="${data.username}"`, function(error,rows,fields){
-	// 	if(error) console.log(error); //obv check if values are in the table
-	// 	else{ console.log(rows); res.send(rows)};
-	// });
-	// console.log(data.username)
-	// hash the password before checking if it is the same.
+app.post('/login', (req,res) => {
 	const email = req.body.email.toLowerCase().trim(); 
 	const password = req.body.password.trim();
 
 	if (!email || !password) {
-		return res.status(400).send({ message: 'Email and password are required' });
+		return res.status(400).send({ message: 'Email And Password Are Required' });
 	}
 
 	// validate the email format
 	if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
 		return res.status(400).send({ message: 'Invalid Email Format' });
 	}
+
 	let sql = "SELECT `pat_id`, `email`, `password` FROM `patient` WHERE email=(?)"
-	con.connection.query(sql, [email,password], function(error,rows,fields){
+	con.connection.query(sql, email, function(error,rows,fields){
 		if(error){
 			return res.status(404).send({ message: 'User Not Found' });
 		}else{
 			if(rows.length == 1){
-				console.log("hi");
-				let result = bcrypt.comparePassword(password, rows[0].password);
-				if(result == 1){
-					return res.status(200).send({ message: 'Sign in successful' });
-				}
-				// if(bcrypt.comparePassword(password, rows[0].password)){
-				// 	res.send({ message: 'Sign in successful' });
-				// }else{
-				// 	return res.status(401).send({ error: 'Email or password is incorrect' });
-				// }
+				(async () => {
+					let result = await bcrypt.comparePassword(password, rows[0].password);
+					if(result == true){
+						return res.status(200).send({ message: 'Sign In Successful' });
+					}
+					else{
+						return res.status(401).send({ message: 'Incorrect Username Or Password.' })
+					}
+				})();			
 			}else{
-				return res.status(403).send({ message: 'User Not Found' });
+				return res.status(403).send({ message: 'Something Went Wrong.' });
 			}
-
 		};
 	});
-
-
-	// check if the email and password match your database
-	// ...
-
-	// sign in the user
-	// ...
-
 });
 //handle db
 //handle routes
