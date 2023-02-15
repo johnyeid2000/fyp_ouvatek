@@ -1,5 +1,7 @@
 import React, {useState} from "react";
 import { Text, View , Image, useWindowDimensions} from "react-native";
+import { Checkbox } from 'react-native-paper';
+
 import Logo from '../../assets/images/OuvatekLogo.png';
 import CustomInput from '../../components/CustomInput';
 import CustomButton from "../../components/CustomButton/CustomButton";
@@ -8,8 +10,10 @@ import styles from './styles';
 import {useNavigation} from '@react-navigation/native';
 
 const SignInScreen =() =>{
-    const [username, setEmail] = useState('');
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+
+    const [checked, setChecked] = useState(false);
 
     const {height} = useWindowDimensions();
 
@@ -68,6 +72,15 @@ const SignInScreen =() =>{
                 secureTextEntry
             />
 
+            <View style={{flexDirection:'row', alignItems:'center', marginTop:5, marginLeft:"-50%"}}>
+        <Checkbox
+            status={checked ? 'checked' : 'unchecked'}
+            onPress={() => { setChecked(!checked); }}
+            color='#651B70'
+        />
+    <Text> Sign in as a doctor </Text>
+      </View>
+
             <CustomButton
                 text="Sign In"
                 onPress={onSignInPressed}
@@ -91,4 +104,6 @@ const SignInScreen =() =>{
 
 
 export default SignInScreen 
+
+
 

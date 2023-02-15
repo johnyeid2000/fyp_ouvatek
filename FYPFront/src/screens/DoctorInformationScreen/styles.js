@@ -11,10 +11,7 @@ const styles = StyleSheet.create({
         color:'#651B70',
         marginVertical:20,
     },
-    text:{
-        color:'gray',
-        marginVertical:5
-    },
+    
 });
 
 export default styles;

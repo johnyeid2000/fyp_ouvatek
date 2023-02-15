@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import { Text, View } from "react-native";
+import { Text, View, ScrollView } from "react-native";
 import { RadioButton } from 'react-native-paper';
 
 import CustomInput from '../../components/CustomInput';
@@ -10,8 +10,10 @@ import {useNavigation} from '@react-navigation/native';
 
 
 const SignUpScreen =() =>{
-    const [username, setUsername] = useState('');
+    const [fname, setFname] = useState('');
+    const [lname, setLname] = useState('');
     const [email, setEmail] = useState('');
+    const [phoneNb, setPhoneNb] = useState('');
     const [password, setPassword] = useState('');
     const [passwordRepeat, setPasswordRepeat] = useState('');
 
@@ -28,15 +30,23 @@ const SignUpScreen =() =>{
     };
 
     return(
+        <ScrollView>
         <View style={styles.root}>
             <Text style={styles.title}>Create an account</Text>
 
             <CustomInput
-                label="Username"
+                label="First name"
                 IconName="account-outline"
-                placeholder="Enter Your Username"
-                value={username}
-                setValue={setUsername}
+                placeholder="Enter Your First name"
+                value={fname}
+                setValue={setFname}
+            />
+            <CustomInput
+                label="Last name"
+                IconName="account"
+                placeholder="Enter Your Last name"
+                value={lname}
+                setValue={setLname}
             />
 
             <CustomInput
@@ -45,6 +55,14 @@ const SignUpScreen =() =>{
                 placeholder="Enter Your Email"
                 value={email}
                 setValue={setEmail}
+            />
+
+            <CustomInput
+                label="Phone Number"
+                IconName="phone-outline"
+                placeholder="Enter Your phone number"
+                value={phoneNb}
+                setValue={setPhoneNb}
             />
 
             <CustomInput
@@ -96,6 +114,7 @@ const SignUpScreen =() =>{
                 type='Teritiary'
             />
         </View>
+        </ScrollView>
     );
 };
 

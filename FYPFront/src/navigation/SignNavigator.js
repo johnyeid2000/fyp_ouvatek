@@ -9,6 +9,7 @@ import NewPasswordScreen from '../screens/NewPasswordScreen';
 
 import PatientNavigator from './PatientNavigator';
 import DoctorNavigator from './DoctorNavigator';
+import DoctorInformationScreen from '../screens/DoctorInformationScreen';
 
 import EditPatientScreen from '../screens/EditPatientScreen';
 import EditDoctorScreen from '../screens/EditDoctorScreen';
@@ -50,15 +51,20 @@ const SignNavigator=()=>{
                     component={NewPasswordScreen}
                 />
 
-                <Stack.Screen
+                {/* <Stack.Screen
                     name='Patient'
                     component={PatientNavigator}
-                />
+                /> */}
 
-                {/* <Stack.Screen
+                <Stack.Screen
                     name='Doctor'
                     component={DoctorNavigator}
-                /> */}
+                />
+
+                <Stack.Screen
+                    name='DoctorInfo'
+                    component={DoctorInformationScreen}
+                />
             </Stack.Navigator>
     )
 }
