@@ -13,6 +13,7 @@ const ConfirmEmailScreen =() =>{
 
     const onConfirmPressed = () => {
         navigation.navigate("DoctorInfo");
+        //navigation.navigate("PatientInfo");
         //navigation.navigate("Patient");
         //navigation.navigate("Doctor");
     };

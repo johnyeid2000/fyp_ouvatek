@@ -8,7 +8,18 @@ const styles = StyleSheet.create({
     },
     logo:{
         width:'100%',
-        marginBottom: 30,
+        marginBottom: 20,
+    },
+    checkbox:{
+        flexDirection:'row', 
+        alignItems:'center', 
+        marginTop:1,
+        marginBottom:1, 
+        marginLeft:"-50%"
+    },
+    error:{
+        fontSize:16,
+        color:'red',
     },
 });
 
