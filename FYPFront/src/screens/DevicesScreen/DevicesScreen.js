@@ -12,7 +12,7 @@ const DevicesScreen =()=>{
     const getDataUsingAsyncAwaitGetCall = async () => {
         try {
           const response = await axios.get(
-            'localhost:3000/api/users/2222',
+            'localhost:3000/countries',
           );
           alert(JSON.stringify(response.data));
         } catch (error) {
