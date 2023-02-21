@@ -15,6 +15,8 @@ const SignInScreen =() =>{
 
     const [checked, setChecked] = useState(false);
 
+    const [loginStatus, setLoginStatus] = useState("");
+
     const {height} = useWindowDimensions();
 
     const navigation = useNavigation();
@@ -22,10 +24,16 @@ const SignInScreen =() =>{
     const postDataUsingAsyncAwait = async () => {
         try {
           await axios.post(
-            '127.0.0.1:3000/login', JSON.stringify({'email': email, 'password': password})
+            '127.0.0.1:3000/login', JSON.stringify({'email': email, 'password': password, 'checked':checked})
           )
           .then(function (response){
-            console.log(response.status);                        
+
+            if(response.data.message){
+                setLoginStatus(response.data.message);
+            }
+            else{
+                navigation.navigate("Doctor");
+            }
           })
         } catch (error) {
           // handle error
@@ -55,8 +63,10 @@ const SignInScreen =() =>{
             resizeMode='contain'
             />
 
+            <Text style={styles.error}>{loginStatus}</Text>
+
             <CustomInput
-                label="Username"
+                label="Email"
                 IconName="account-outline"
                 placeholder="Enter Your Email"
                 value={email}
@@ -72,7 +82,7 @@ const SignInScreen =() =>{
                 secureTextEntry
             />
 
-            <View style={{flexDirection:'row', alignItems:'center', marginTop:5, marginLeft:"-50%"}}>
+            <View style={styles.checkbox}>
         <Checkbox
             status={checked ? 'checked' : 'unchecked'}
             onPress={() => { setChecked(!checked); }}
