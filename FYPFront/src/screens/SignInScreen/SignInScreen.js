@@ -2,6 +2,8 @@ import React, {useState} from "react";
 import { Text, View , Image, useWindowDimensions} from "react-native";
 import { Checkbox } from 'react-native-paper';
 
+import axios from 'axios';
+
 import Logo from '../../assets/images/OuvatekLogo.png';
 import CustomInput from '../../components/CustomInput';
 import CustomButton from "../../components/CustomButton/CustomButton";
@@ -32,12 +34,13 @@ const SignInScreen =() =>{
                 setLoginStatus(response.data.message);
             }
             else{
-                navigation.navigate("Doctor");
+                navigation.navigate("Patient");
             }
           })
         } catch (error) {
           // handle error
-          alert(error.message);
+          //alert(error.message);
+          alert("test test");
         }
       };
 
