@@ -3,7 +3,7 @@ const countries = require('./countries.js');
 const con = require('./connectdb.js');
 const express = require('express');
 const app = express();
-const port = 3000;
+const port = process.env.PORT; //or 3000
 var bodyParser = require('body-parser');
 
 app.use(bodyParser.json({type: 'application/json'}));
@@ -72,6 +72,17 @@ app.post('/countries', (req, res) => {
 		};
 	});
 });
+
+app.post('/medication', (req, res) => {
+	sql = "SELECT * FROM `medication`";
+	con.connection.query(sql, function(error,rows,fields){
+		if(error){
+			return res.status(404).send({ message: 'Medications Not Found' });
+		}else{
+			return res.status(200).send({medication});
+		};
+	});
+});
 app.post('/signup', (req, res) => {
 	const firstName = req.body.firstName.trim();
 	const lastName = req.body.lastName.trim();
@@ -127,7 +138,6 @@ app.post('/signup', (req, res) => {
 });
 
 app.get('/measurements', (req, res) => {
-
 });
 
 
