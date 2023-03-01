@@ -1,6 +1,7 @@
 import React, {useState} from "react";
 import { Text, View } from "react-native";
 
+import CustomPicker from '../../components/CustomPicker/CustomPicker';
 import CustomInput from '../../components/CustomInput';
 import CustomButton from "../../components/CustomButton/CustomButton";
 import styles from './styles';
@@ -9,13 +10,43 @@ import {useNavigation} from '@react-navigation/native';
 
 const DoctorInformationScreen =() =>{
     const [hospital, setHospital] = useState('');
-    const [country, setCountry] = useState('');
     const [speciality, setSpeciality] = useState('');
-    const [gender, setGender] = useState('');
+    const [gender, setGender] = useState('Select your gender');
+    const [oop, setOop] = useState('');
+
+    const [doctorInfoStatus, setDoctorInfoStatus] = useState("");
+
+    const optionsGender = [
+        { label: 'Select your gender', value:''},
+        { label: 'Male', value: 'male' },
+        { label: 'Female', value: 'female' }
+    ];
 
     const navigation = useNavigation();
 
+    // const postDataUsingAsyncAwait = async () => {
+    //     try {
+    //       await axios.post(
+    //         '127.0.0.1:3000/login', JSON.stringify({'email': email, 'password': password, 'checked':checked})
+    //       )
+    //       .then(function (response){
+
+    //         if(response.data.message){
+    //             setDoctorInfoStatus(response.data.message);
+    //         }
+    //         else{
+    //             navigation.navigate("SignIn");
+    //         }
+    //       })
+    //     } catch (error) {
+    //       // handle error
+    //       //alert(error.message);
+    //       alert("test test");
+    //     }
+    //   };
+
     const onSubmitPressed = () => {
+        //postDataUsingAsyncAwait()
         navigation.navigate("SignIn");
     };
 
@@ -26,13 +57,7 @@ const DoctorInformationScreen =() =>{
     return(
         <View style={styles.root}>
             <Text style={styles.title}>Please fill all the information to complete your file</Text>
-            <CustomInput
-                label="Country"
-                IconName="map-marker-radius"
-                placeholder="Enter Your City-Country"
-                value={country}
-                setValue={setCountry}
-            />
+            <Text style={styles.error}>{doctorInfoStatus}</Text>
 
             <CustomInput
                 label="Hospital"
@@ -51,11 +76,20 @@ const DoctorInformationScreen =() =>{
             />
 
             <CustomInput
+                label="OOP number"
+                IconName="doctor"
+                placeholder="Enter Your OOP number"
+                value={oop}
+                setValue={setOop}
+                keyType="phone-pad"
+            />
+
+            <CustomPicker
                 label="Gender"
                 IconName="gender-male-female"
-                placeholder="Enter Your Gender"
-                value={gender}
-                setValue={setGender}
+                selOption={gender}
+                setSelOption={setGender}
+                opt={optionsGender}
             />
 
             <CustomButton

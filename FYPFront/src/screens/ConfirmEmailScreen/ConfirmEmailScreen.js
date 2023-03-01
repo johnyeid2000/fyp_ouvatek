@@ -1,7 +1,9 @@
 import React, {useState} from "react";
 import { Text, View } from "react-native";
+
 import CustomInput from '../../components/CustomInput';
 import CustomButton from "../../components/CustomButton/CustomButton";
+
 import styles from './styles';
 
 import {useNavigation} from '@react-navigation/native';
@@ -12,8 +14,8 @@ const ConfirmEmailScreen =() =>{
     const navigation = useNavigation();
 
     const onConfirmPressed = () => {
-        navigation.navigate("DoctorInfo");
-        //navigation.navigate("PatientInfo");
+        //navigation.navigate("DoctorInfo");
+        navigation.navigate("PatientInfo");
         //navigation.navigate("Patient");
         //navigation.navigate("Doctor");
     };

@@ -23,30 +23,30 @@ const SignInScreen =() =>{
 
     const navigation = useNavigation();
     
-    const postDataUsingAsyncAwait = async () => {
-        try {
-          await axios.post(
-            '127.0.0.1:3000/login', JSON.stringify({'email': email, 'password': password, 'checked':checked})
-          )
-          .then(function (response){
+    // const postDataUsingAsyncAwait = async () => {
+    //     try {
+    //       await axios.post(
+    //         '127.0.0.1:3000/login', JSON.stringify({'email': email, 'password': password, 'checked':checked})
+    //       )
+    //       .then(function (response){
 
-            if(response.data.message){
-                setLoginStatus(response.data.message);
-            }
-            else{
-                navigation.navigate("Patient");
-            }
-          })
-        } catch (error) {
-          // handle error
-          //alert(error.message);
-          alert("test test");
-        }
-      };
+    //         if(response.data.message){
+    //             setLoginStatus(response.data.message);
+    //         }
+    //         else{
+    //             navigation.navigate("Patient");
+    //         }
+    //       })
+    //     } catch (error) {
+    //       // handle error
+    //       //alert(error.message);
+    //       alert("test test");
+    //     }
+    //   };
 
     const onSignInPressed = () => {
-        postDataUsingAsyncAwait()
-        //navigation.navigate('Patient');
+        //postDataUsingAsyncAwait()
+        navigation.navigate('Patient');
         //navigation.navigate("Doctor");
     };
 

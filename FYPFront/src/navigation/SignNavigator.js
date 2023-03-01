@@ -53,7 +53,7 @@ const SignNavigator=()=>{
                     component={NewPasswordScreen}
                 />
 
-                {/* <Stack.Screen
+                <Stack.Screen
                     name='Patient'
                     component={PatientNavigator}
                 />
@@ -61,9 +61,9 @@ const SignNavigator=()=>{
                 <Stack.Screen
                     name='PatientInfo'
                     component={PatientInformationScreen}
-                /> */}
+                />
 
-                <Stack.Screen
+                {/* <Stack.Screen
                     name='Doctor'
                     component={DoctorNavigator}
                 />
@@ -71,7 +71,7 @@ const SignNavigator=()=>{
                 <Stack.Screen
                     name='DoctorInfo'
                     component={DoctorInformationScreen}
-                />
+                /> */}
             </Stack.Navigator>
     )
 }
