@@ -72,8 +72,6 @@ app.get('/surgeries', (req, res) => {
 		};
 	});
 });
-
-
 app.post('/login', (req,res) => {
 	const email = req.body.email.toLowerCase().trim(); 
 	const password = req.body.password.trim();
@@ -198,8 +196,94 @@ app.post('/commonsignup', (req, res) => {
 		}
 	});
 });
+app.post('/patientsignup', (req, res) => {
+	const patId = req.body.id;
+	let birthDate = req.body.birthDate;
+	let bloodType = req.body.bloodType;
+	let firstPregDay = req.body.firstPregnancyDay.trim();
+	let medication = req.body.medication;
+	let diabetes = req.body.diabetes;
+	let hypertension = req.body.hypertension;
+	let previousPregnancies = req.body.previousPregnancies;
+	let previousSurgeries = req.body.previousSurgeries;
+	let sql = "";
+	if (patId && birthDate && bloodType && firstPregDay && medication && diabetes && hypertension && previousPregnancies && previousSurgeries) {
+		sql = 'UPDATE `patient` SET birth_date = ?, blood_type = ?,\
+		first_pregnant_day = ?, medication_taken = ?, diabetes = ?, hypertension = ?,\
+		previous_pregnancies = ?, previous_surgeries = ? WHERE pat_id = ?';
+		con.connection.query(sql, [birthDate, bloodType, firstPregDay, medication, diabetes, hypertension, previousPregnancies, previousSurgeries, patId], async function(error,result){
+			if(error){
+				console.log(error);
+				return res.status(404).send({ message: 'Patient Signup Issue' });
+			}else{
+				return res.status(200).send({ result })
+			}
+		});
+	}else{
+		console.log(patId , birthDate , bloodType , firstPregDay , medication , diabetes , hypertension , previousPreg , previousSurg);
+		return res.status(401).send({ message: 'All Fields Are Required.' });
+	}
+});
+app.post('/doctorsignup', (req, res) => {
+	const docId = req.body.id;
+	let speciality = req.body.speciality;
+	let oopnum = req.body.oopnum;
+	let gender = req.body.gender;
+	let sql = "";
+	if (speciality && oopnum && gender) {
+		sql = 'UPDATE `doctor` SET oop_number = ?, speciality = ?, gender = ? WHERE dr_id = ?';
+		con.connection.query(sql, [oopnum, speciality, gender, docId], async function(error,result){
+			if(error){
+				console.log(error);
+				return res.status(404).send({ message: 'Doctor Signup Issue' });
+			}else{
+				return res.status(200).send({ result })
+			}
+		});
+	}else{
+		return res.status(401).send({ message: 'All Fields Are Required.' });
+	}
+});
+app.post('/doctorlocation', (req, res) => {
+	let docid = req.body.id;
+	let country = req.body.country;
+	let city = req.body.city;
+	let street = req.body.street;
+	let building = req.body.building;
+	let floor = req.body.floor;
+	let sql = "";
+	if(docid && country && city && street && building && floor){
+		sql = 'INSERT INTO `doctor_address`(`doctor_id` , `clinic_country`, `clinic_city`, `clinic_street`, `clinic_building`, `clinic_floor`) VALUES (?, ?, ?, ?, ?, ?)';
+		con.connection.query(sql, [docid, country, city, street, building, floor], async function(error,result){
+			if(error){
+				console.log(error);
+				return res.status(404).send({ message: 'Doctor Location Signup Issue' });
+			}else{
+				return res.status(200).send({ result })
+			}
+		});
+	}else{
+		return res.status(401).send({ message: 'Missing Required Fields.'})
+	}
+});
+app.post('/emailconfirmation', (req,res) => {
+	let userid = req.body.id;
+	let isDoctor = req.body.isDoctor;
+	let sql = "";
+	if(isDoctor){
+		sql = "SELECT email from `doctor` WHERE dr_id = ?"
+	}else{
+		sql = "SELECT email from `patient` WHERE pat_id = ?"
+	}
+	con.connection.query(sql, userid, async function(error,rows, fields){
+		if(error){
+			return res.status(404).send({ message: 'Finding Email Issue. ' });
+		}else{
+			console.log(rows);
+		}
+	});
 
-
+})
 
 //handle db
 //handle routes
