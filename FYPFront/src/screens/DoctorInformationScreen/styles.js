@@ -11,6 +11,11 @@ const styles = StyleSheet.create({
         color:'#651B70',
         marginVertical:20,
     },
+    error:{
+        fontSize:16,
+        color:'red',
+        marginBottom:5
+    },
     
 });
 

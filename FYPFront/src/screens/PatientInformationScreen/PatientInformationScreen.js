@@ -1,25 +1,70 @@
 import React, {useState} from "react";
 import { Text, View, ScrollView } from "react-native";
+import { Checkbox } from 'react-native-paper';
 
+import CustomPicker from '../../components/CustomPicker/CustomPicker';
 import CustomInput from '../../components/CustomInput';
 import CustomButton from "../../components/CustomButton/CustomButton";
+
 import styles from './styles';
 
 import {useNavigation} from '@react-navigation/native';
 
 const PatientInformationScreen =() =>{
     const [BDay, setBDay] = useState('');
-    const [BloodType, setBloodType] = useState('');
+    const [BloodType, setBloodType] = useState('option1');
     const [PregDay, setPregDay] = useState('');
-    const [Medication, setMedication] = useState('');
-    const [Diabetes, setDiabetes] = useState('');
-    const [Hypertension, setHypertension] = useState('');
-    const [Surgeries, setSurgeries] = useState('');
-    const [PrevPreg, setPrevPreg] = useState('');
+    const [Medication, setMedication] = useState('option1m');
+    const [checkDiabetes, setCheckDiabetes] = useState(false);
+    const [checkHypertension, setCheckHypertension] = useState(false);
+    const [Surgeries, setSurgeries] = useState('optionsSurgeries');
+    const [checkPrevPreg, setCheckPrevPreg] = useState('');
+
+    const optionsBloodType = [
+        { label: 'Option 1', value: 'option1' },
+        { label: 'Option 2', value: 'option2' },
+        { label: 'Option 3', value: 'option3' }
+    ];
+
+    const optionsMedication = [
+        { label: 'Option 1', value: 'option1m' },
+        { label: 'Option 2', value: 'option2m' },
+        { label: 'Option 3', value: 'option3m' }
+    ];
+
+    const optionsSurgeries = [
+        { label: 'Option 1', value: 'option1s' },
+        { label: 'Option 2', value: 'option2s' },
+        { label: 'Option 3', value: 'option3s' }
+    ];
+
+    const [patientInfoStatus, setPatientInfoStatus] = useState("");
 
     const navigation = useNavigation();
 
+    // const postDataUsingAsyncAwait = async () => {
+    //     try {
+    //       await axios.post(
+    //         '127.0.0.1:3000/login', JSON.stringify({'email': email, 'password': password, 'checked':checked})
+    //       )
+    //       .then(function (response){
+
+    //         if(response.data.message){
+    //             setPatientInfoStatus(response.data.message);
+    //         }
+    //         else{
+    //             navigation.navigate("SignIn");
+    //         }
+    //       })
+    //     } catch (error) {
+    //       // handle error
+    //       //alert(error.message);
+    //       alert("test test");
+    //     }
+    //   };
+
     const onSubmitPressed = () => {
+        //postDataUsingAsyncAwait()
         navigation.navigate("SignIn");
     };
 
@@ -31,6 +76,8 @@ const PatientInformationScreen =() =>{
         <ScrollView>
         <View style={styles.root}>
             <Text style={styles.title}>Please fill all the information to complete your file</Text>
+            <Text style={styles.error}>{patientInfoStatus}</Text>
+
             <CustomInput
                 label="Birth Date"
                 IconName="calendar"
@@ -39,12 +86,12 @@ const PatientInformationScreen =() =>{
                 setValue={setBDay}
             />
 
-            <CustomInput
+            <CustomPicker
                 label="Blood Type"
                 IconName="blood-bag"
-                placeholder="Enter your blood type"
-                value={BloodType}
-                setValue={setBloodType}
+                selOption={BloodType}
+                setSelOption={setBloodType}
+                opt={optionsBloodType}
             />
             
             <CustomInput
@@ -55,44 +102,52 @@ const PatientInformationScreen =() =>{
                 setValue={setPregDay}
             />
 
-            <CustomInput
+            <CustomPicker
                 label="Medication"
                 IconName="medical-bag"
-                placeholder="Enter Your medication"
-                value={Medication}
-                setValue={setMedication}
+                selOption={Medication}
+                setSelOption={setMedication}
+                opt={optionsMedication}
             />
 
-            <CustomInput
-                label="Diabetes"
-                IconName="diabetes"
-                placeholder="Are you diabetic?"
-                value={Diabetes}
-                setValue={setDiabetes}
-            />
+            <Text style={styles.txt}>Check the box next to your corresponding case(s):</Text>
 
-            <CustomInput
-                label="Hypertension"
-                IconName="water"
-                placeholder="Are you hypertensive?"
-                value={Hypertension}
-                setValue={setHypertension}
-            />
+            <View style={styles.checkboxContainer}>
+                <View style={styles.checkbox}>
+                <Checkbox
+                    status={checkDiabetes ? 'checked' : 'unchecked'}
+                    onPress={() => { setCheckDiabetes(!checkDiabetes); }}
+                    color='#651B70'
+                />
+                <Text>Diabetes </Text>
+            </View>
 
-            <CustomInput
+            <View style={styles.checkbox}>
+                <Checkbox
+                    status={checkHypertension ? 'checked' : 'unchecked'}
+                    onPress={() => { setCheckHypertension(!checkHypertension); }}
+                    color='#651B70'
+                />
+                <Text>Hypertension </Text>
+            </View>
+
+            <View style={styles.checkbox}>
+                <Checkbox
+                    status={checkPrevPreg ? 'checked' : 'unchecked'}
+                    onPress={() => { setCheckPrevPreg(!checkPrevPreg); }}
+                    color='#651B70'
+                />
+                <Text>Previous Pregnancies </Text>
+            </View>
+
+            </View>
+            
+            <CustomPicker
                 label="Previous surgeries"
                 IconName="scissors-cutting"
-                placeholder="Do you have previous surgeries?"
-                value={Surgeries}
-                setValue={setSurgeries}
-            />
-
-            <CustomInput
-                label="Previous Pregnancies"
-                IconName="human-pregnant"
-                placeholder="Do you have previous pregnancies?"
-                value={PrevPreg}
-                setValue={setPrevPreg}
+                selOption={Surgeries}
+                setSelOption={setSurgeries}
+                opt={optionsSurgeries}
             />
 
             <CustomButton

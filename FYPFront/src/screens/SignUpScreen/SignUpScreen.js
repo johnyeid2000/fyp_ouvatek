@@ -1,27 +1,67 @@
 import React, {useState} from "react";
 import { Text, View, ScrollView } from "react-native";
-import { RadioButton } from 'react-native-paper';
+import { Checkbox } from 'react-native-paper';
 
+import CustomPicker from '../../components/CustomPicker/CustomPicker';
 import CustomInput from '../../components/CustomInput';
 import CustomButton from "../../components/CustomButton/CustomButton";
 import styles from './styles';
-
+import axios from 'axios';
 import {useNavigation} from '@react-navigation/native';
 
 
 const SignUpScreen =() =>{
     const [fname, setFname] = useState('');
-    const [lname, setLname] = useState('');
+    const [lname, setLname] = useState(''); 
     const [email, setEmail] = useState('');
+    const [country, setCountry] = useState([]);
+
+    const [optionsCountries, setOptionsCountries] = useState([]);
     const [phoneNb, setPhoneNb] = useState('');
     const [password, setPassword] = useState('');
     const [passwordRepeat, setPasswordRepeat] = useState('');
 
-    const [checked, setChecked] = useState('');
+    const [singnupStatus, setSignupStatus] = useState("");
+
+    const [checked, setChecked] = useState(false);
+
+    (async () => {
+    try {
+        const response = await axios.get(
+        '10.10.11.189:3000',
+        );
+        setOptionsCountries(response.data);
+        } catch (error) {
+            alert(error.message);
+        }
+    })();
+
 
     const navigation = useNavigation();
 
+    // const postDataUsingAsyncAwait = async () => {
+    //     try {
+    //       await axios.post(
+    //         '127.0.0.1:3000/login', JSON.stringify({'email': email, 'password': password, 'checked':checked})
+    //       )
+    //       .then(function (response){
+
+    //         if(response.data.message){
+    //             setSignupStatus(response.data.message);
+    //         }
+    //         else{
+    //             navigation.navigate("ConfirmEmail");
+    //         }
+    //       })
+    //     } catch (error) {
+    //       // handle error
+    //       //alert(error.message);
+    //       alert("test test");
+    //     }
+    //   };
+
     const onRegisterPressed = () => {
+        //postDataUsingAsyncAwait()
         navigation.navigate("ConfirmEmail");
     };
 
@@ -33,6 +73,8 @@ const SignUpScreen =() =>{
         <ScrollView>
         <View style={styles.root}>
             <Text style={styles.title}>Create an account</Text>
+
+            <Text style={styles.error}>{singnupStatus}</Text>
 
             <CustomInput
                 label="First name"
@@ -57,12 +99,21 @@ const SignUpScreen =() =>{
                 setValue={setEmail}
             />
 
+            <CustomPicker
+                label="Country"
+                IconName="map-marker-radius"
+                selOption={country}
+                setSelOption={setCountry}
+                opt={optionsCountries}
+            />
+
             <CustomInput
                 label="Phone Number"
                 IconName="phone-outline"
                 placeholder="Enter Your phone number"
                 value={phoneNb}
                 setValue={setPhoneNb}
+                keyType="phone-pad"
             />
 
             <CustomInput
@@ -77,27 +128,19 @@ const SignUpScreen =() =>{
             <CustomInput
                 label="Confirm Password"
                 IconName="lock-outline"
-                placeholder="Confirm Your Password"
+                placeholder="Re-enter Your Password"
                 value={passwordRepeat}
                 setValue={setPasswordRepeat}
                 secureTextEntry
             />
 
-            <View style={{flexDirection:'row'}}>
-                <RadioButton.Item 
-                    label="Doctor" 
-                    value="doctor" 
-                    status={ checked === 'doctor' ? 'checked' : 'unchecked' }
-                    onPress={() => setChecked('doctor')}
+            <View style={styles.checkbox}>
+                <Checkbox
+                    status={checked ? 'checked' : 'unchecked'}
+                    onPress={() => { setChecked(!checked); }}
                     color='#651B70'
-                    />
-                <RadioButton.Item 
-                    label="Patient" 
-                    value="patient"
-                    status={ checked === 'patient' ? 'checked' : 'unchecked' }
-                    onPress={() => setChecked('patient')} 
-                    color='#651B70'
-                    />
+                />
+                <Text> Sign up as a doctor </Text>
             </View>
 
             <CustomButton

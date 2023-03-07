@@ -4,7 +4,7 @@ import  Icon  from "react-native-vector-icons/MaterialCommunityIcons";
 import styles from './styles';
 
 
-const CustomInput =({label, IconName, value, setValue, placeholder, secureTextEntry}) =>{
+const CustomInput =({label, IconName, value, setValue, placeholder, secureTextEntry, keyType}) =>{
 
     return(
         <View style={styles.root}>
@@ -20,6 +20,8 @@ const CustomInput =({label, IconName, value, setValue, placeholder, secureTextEn
                     placeholder={placeholder}
                     style={styles.input}
                     secureTextEntry={secureTextEntry}
+                    keyboardType={keyType}
+
                 />
             </View>
 
