@@ -6,19 +6,15 @@ const app = express();
 // const port = process.env.PORT;
 const port = 3000;
 var bodyParser = require('body-parser');
-const { hash } = require('bcrypt');
-
 app.use(bodyParser.json({type: 'application/json'}));
 app.use(bodyParser.urlencoded({extended:true}));
 
 app.listen(port, () => {
 	console.log(`Backend - 404`)
-  })
-
+})
 app.get('/', (req, res) => {
   res.send('Backend - 404')
 })
-
 app.get('/patient', (req,res) => { //when going to profile page /users/3939 (3939 should be dynamic using express somewaayyy)
 	con.connection.query(`select * from patient`, function(error,rows,fields){
 		if(error) console.log(error);
@@ -31,7 +27,6 @@ app.get('/doctor', (req,res) => { //when going to profile page /users/3939 (3939
 		else{ console.log(rows); res.send(rows)};
 	});
 })
-
 app.get('/countries', (req, res) => {
 	sql = "SELECT * FROM `country`";
 	con.connection.query(sql, function(error,rows,fields){
@@ -277,7 +272,7 @@ app.post('/emailconfirmation', (req,res) => {
 	}
 	con.connection.query(sql, userid, async function(error,rows, fields){
 		if(error){
-			return res.status(404).send({ message: 'Finding Email Issue. ' });
+			return res.status(404).send({ message: 'Finding Email Issue.' });
 		}else{
 			console.log(rows);
 		}
