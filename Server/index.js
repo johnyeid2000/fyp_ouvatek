@@ -1,12 +1,20 @@
 const bcrypt = require('./bcrypt.js');
 const countries = require('./countries.js');
 const con = require('./connectdb.js');
+const nodemailer = require('nodemailer');
 const express = require('express');
 const app = express();
 const port = process.env.PORT || 3000;
 var bodyParser = require('body-parser');
 app.use(bodyParser.json({type: 'application/json'}));
 app.use(bodyParser.urlencoded({extended:true}));
+const transporter = nodemailer.createTransport({
+	service: 'hotmail',
+	auth: {
+	  user: process.env.MAIL,
+	  pass: process.env.PASS
+	}
+  });
 
 app.listen(port, () => {
 	console.log(`Backend - 404`)
@@ -14,19 +22,19 @@ app.listen(port, () => {
 app.get('/', (req, res) => {
   res.send('Backend - 404')
 })
-app.get('/patient', (req,res) => { //when going to profile page /users/3939 (3939 should be dynamic using express somewaayyy)
+app.get('/api/patient', (req,res) => { //when going to profile page /users/3939 (3939 should be dynamic using express somewaayyy)
 	con.connection.query(`select * from patient`, function(error,rows,fields){
 		if(error) console.log(error);
 		else{ console.log(rows); res.send(rows)};
 	});
 })
-app.get('/doctor', (req,res) => { //when going to profile page /users/3939 (3939 should be dynamic using express somewaayyy)
+app.get('/api/doctor', (req,res) => { //when going to profile page /users/3939 (3939 should be dynamic using express somewaayyy)
 	con.connection.query(`select * from doctor`, function(error,rows,fields){
 		if(error) console.log(error);
 		else{ console.log(rows); res.send(rows)};
 	});
 })
-app.get('/countries', (req, res) => {
+app.get('/api/countries', (req, res) => {
 	sql = "SELECT * FROM `country`";
 	con.connection.query(sql, function(error,rows,fields){
 		if(error){
@@ -36,7 +44,7 @@ app.get('/countries', (req, res) => {
 		};
 	});
 });
-app.get('/medication', (req, res) => {
+app.get('/api/medication', (req, res) => {
 	sql = "SELECT * FROM `medication`";
 	con.connection.query(sql, function(error,rows,fields){
 		if(error){
@@ -46,7 +54,7 @@ app.get('/medication', (req, res) => {
 		};
 	});
 });
-app.get('/bloodtype', (req, res) => {
+app.get('/api/bloodtype', (req, res) => {
 	sql = "SELECT * FROM `blood_type`";
 	con.connection.query(sql, function(error,rows,fields){
 		if(error){
@@ -56,7 +64,7 @@ app.get('/bloodtype', (req, res) => {
 		};
 	});
 });
-app.get('/surgeries', (req, res) => {
+app.get('/api/surgeries', (req, res) => {
 	sql = "SELECT * FROM `surgeries`";
 	con.connection.query(sql, function(error,rows,fields){
 		if(error){
@@ -66,7 +74,7 @@ app.get('/surgeries', (req, res) => {
 		};
 	});
 });
-app.post('/login', (req,res) => {
+app.post('/api/login', (req,res) => {
 	const email = req.body.email.toLowerCase().trim(); 
 	const password = req.body.password.trim();
 	const checkDoctor = req.body.checked;
@@ -99,7 +107,7 @@ app.post('/login', (req,res) => {
 		};
 	});
 });
-app.post('/commonsignup', (req, res) => {
+app.post('/api/commonsignup', (req, res) => {
 	let firstName = req.body.firstName;
 	let lastName = req.body.lastName;
 	let email = req.body.email;
@@ -190,7 +198,7 @@ app.post('/commonsignup', (req, res) => {
 		}
 	});
 });
-app.post('/patientsignup', (req, res) => {
+app.post('/api/patientsignup', (req, res) => {
 	const patId = req.body.id;
 	let birthDate = req.body.birthDate;
 	let bloodType = req.body.bloodType;
@@ -218,7 +226,7 @@ app.post('/patientsignup', (req, res) => {
 		return res.status(401).send({ message: 'All Fields Are Required.' });
 	}
 });
-app.post('/doctorsignup', (req, res) => {
+app.post('/api/doctorsignup', (req, res) => {
 	const docId = req.body.id;
 	let speciality = req.body.speciality;
 	let oopnum = req.body.oopnum;
@@ -238,7 +246,7 @@ app.post('/doctorsignup', (req, res) => {
 		return res.status(401).send({ message: 'All Fields Are Required.' });
 	}
 });
-app.post('/doctorlocation', (req, res) => {
+app.post('/api/doctorlocation', (req, res) => {
 	let docid = req.body.id;
 	let country = req.body.country;
 	let city = req.body.city;
@@ -260,7 +268,7 @@ app.post('/doctorlocation', (req, res) => {
 		return res.status(401).send({ message: 'Missing Required Fields.'})
 	}
 });
-app.post('/emailconfirmation', (req,res) => {
+app.post('/api/emailconfirmation', (req,res) => {
 	let userid = req.body.id;
 	let isDoctor = req.body.isDoctor;
 	let sql = "";
@@ -274,6 +282,23 @@ app.post('/emailconfirmation', (req,res) => {
 			return res.status(404).send({ message: 'Finding Email Issue.' });
 		}else{
 			console.log(rows);
+			const mailOptions = {
+				from: process.env.MAIL,
+				to: rows,
+				subject: 'Email Confirmation',
+				text: 'Thank you for registering with us.'
+			  };
+			
+			  // Send email
+			  transporter.sendMail(mailOptions, (error, info) => {
+				if (error) {
+				  console.log(error);
+				  res.send('Error: ' + error);
+				} else {
+				  console.log('Email sent: ' + info.response);
+				  res.status(200).send('Email sent: ' + info.response);
+				}
+			  });
 		}
 	});
 
