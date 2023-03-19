@@ -268,7 +268,7 @@ app.post('/api/doctorlocation', (req, res) => {
 		return res.status(401).send({ message: 'Missing Required Fields.'})
 	}
 });
-app.post('/api/emailconfirmation', (req,res) => {
+app.post('/api/sendconfirmation', (req,res) => {
 	let userid = req.body.id;
 	let isDoctor = req.body.isDoctor;
 	let sql = "";
@@ -281,29 +281,41 @@ app.post('/api/emailconfirmation', (req,res) => {
 		if(error){
 			return res.status(404).send({ message: 'Finding Email Issue.' });
 		}else{
-			console.log(rows);
+			const code = Math.floor(Math.random() * 900000) + 100000;
 			const mailOptions = {
 				from: process.env.MAIL,
-				to: rows,
+				to: rows[0].email,
 				subject: 'Email Confirmation',
-				text: 'Thank you for registering with us.'
+				text: `Thank you for registering with us.\n Your verification Number is: ${code}`
 			  };
-			
-			  // Send email
 			  transporter.sendMail(mailOptions, (error, info) => {
 				if (error) {
-				  console.log(error);
-				  res.send('Error: ' + error);
+				  	console.log(error);
+				  	res.status(404).send('Sending Mail Error:' + error);
 				} else {
-				  console.log('Email sent: ' + info.response);
-				  res.status(200).send('Email sent: ' + info.response);
+				  	res.status(200).send('Email sent: ' + info.response);
 				}
 			  });
 		}
 	});
 
 })
-
+app.post('/api/sendcode', (req,res) => {
+	let confirmationUserid = req.body.id;
+	let confirmationIsDoctor = req.body.isDoctor;
+	let confirmationCode = req.body.code;
+	if(confirmationUserid && confirmationIsDoctor && confirmationCode){
+		if(code == confirmationcode &&  userId == confirmationUserid && isDoctor == confirmationIsDoctor){
+			res.status(401).send({ message: 'Wrong Verification Code'})
+		}
+		else{
+			res.status(200).send({ message: 'Account Verified. Proceed to Login'})
+		}
+	}
+	else{
+		res.status(401).send({ message: 'Verication Code Cant be null.'})
+	}
+});
 //handle db
 //handle routes
 //handles validations 
