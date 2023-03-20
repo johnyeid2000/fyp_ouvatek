@@ -46,19 +46,16 @@ const SignInScreen =() =>{
 
 const loginUser = async () => {
   try {
-    console.log('Email',email);
-    console.log('Password',password);
-    console.log('Checked',checked);
-    const response = await axios.post('https://ouvatek.herokuapp.com/api/login', {
-      // 'email': 'johny_eid@live.com',
-      // 'password': 'test',
-      'email': email,
-      'password': password,
-      'checked': checked,
-    });
-    console.log(response.data);
+    const response = await axios.post('https://ouvatek.herokuapp.com/api/login', {email, password, checked},
+        {
+            headers: {'Content-Type': 'application/json'},
+        },
+    );
+    console.log("answer: " , response.data.message);
+    console.log("status: ", response.status);
   } catch (error) {
-    console.log(error);
+    console.log("error: ", error.response.data.message);
+    console.log("error: ", error.response.status);
   }
 };
 
