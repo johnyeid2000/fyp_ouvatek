@@ -12,6 +12,7 @@ import PatientInformationScreen from '../screens/PatientInformationScreen';
 
 import DoctorNavigator from './DoctorNavigator';
 import DoctorInformationScreen from '../screens/DoctorInformationScreen';
+import DoctorClinic from '../screens/DoctorClinic';
 
 import EditPatientScreen from '../screens/EditPatientScreen';
 import EditDoctorScreen from '../screens/EditDoctorScreen';
@@ -71,6 +72,11 @@ const SignNavigator=()=>{
                 <Stack.Screen
                     name='DoctorInfo'
                     component={DoctorInformationScreen}
+                />
+
+                <Stack.Screen
+                    name='DoctorClinic'
+                    component={DoctorClinic}
                 /> */}
             </Stack.Navigator>
     )

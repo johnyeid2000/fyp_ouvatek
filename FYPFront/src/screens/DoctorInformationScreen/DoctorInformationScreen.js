@@ -9,7 +9,6 @@ import styles from './styles';
 import {useNavigation} from '@react-navigation/native';
 
 const DoctorInformationScreen =() =>{
-    const [hospital, setHospital] = useState('');
     const [speciality, setSpeciality] = useState('');
     const [gender, setGender] = useState('Select your gender');
     const [oop, setOop] = useState('');
@@ -18,8 +17,8 @@ const DoctorInformationScreen =() =>{
 
     const optionsGender = [
         { label: 'Select your gender', value:''},
-        { label: 'Male', value: 'male' },
-        { label: 'Female', value: 'female' }
+        { label: 'Male', value: 'M' },
+        { label: 'Female', value: 'F' }
     ];
 
     const navigation = useNavigation();
@@ -47,7 +46,7 @@ const DoctorInformationScreen =() =>{
 
     const onSubmitPressed = () => {
         //postDataUsingAsyncAwait()
-        navigation.navigate("SignIn");
+        navigation.navigate("DoctorClinic");
     };
 
     const onSignInPressed = () => {
@@ -58,14 +57,6 @@ const DoctorInformationScreen =() =>{
         <View style={styles.root}>
             <Text style={styles.title}>Please fill all the information to complete your file</Text>
             <Text style={styles.error}>{doctorInfoStatus}</Text>
-
-            <CustomInput
-                label="Hospital"
-                IconName="hospital-building"
-                placeholder="Enter the hospital your are working in"
-                value={hospital}
-                setValue={setHospital}
-            />
             
             <CustomInput
                 label="Speciality"

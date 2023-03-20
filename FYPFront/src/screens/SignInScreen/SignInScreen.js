@@ -1,5 +1,5 @@
-import React, {useState} from "react";
-import { Text, View , Image, useWindowDimensions} from "react-native";
+import React, {useState, useEffect} from "react";
+import { Text, View , Image, useWindowDimensions,  BackHandler, Alert } from "react-native";
 import { Checkbox } from 'react-native-paper';
 
 import axios from 'axios';
@@ -56,7 +56,39 @@ const SignInScreen =() =>{
 
     const onSignUpPressed = () =>{
         navigation.navigate("SignUp"); 
-    }
+    };
+
+useEffect(() => {
+    const handleBackPress = () => {
+      // Check if the user is on the sign-in screen
+      if (navigation.isFocused()) {
+        // Show a confirmation dialog when the user presses the back button
+        Alert.alert(
+          'Are you sure you want to exit?',
+          '',
+          [
+            { text: 'Cancel', onPress: () => false, style: 'cancel' },
+            { text: 'OK', onPress: () => BackHandler.exitApp() },
+          ],
+          { cancelable: false }
+        );
+
+        // Prevent going back to the previous screen
+        return true;
+      }
+
+      // Allow going back to the previous screen
+      return false;
+    };
+
+    // Add the event listener
+    BackHandler.addEventListener('hardwareBackPress', handleBackPress);
+
+    // Remove the event listener when the component is unmounted
+    return () => {
+      BackHandler.removeEventListener('hardwareBackPress', handleBackPress);
+    };
+  }, [navigation]);
 
     return(
         <View style={styles.root}>

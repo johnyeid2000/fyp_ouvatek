@@ -65,7 +65,8 @@ const PatientInformationScreen =() =>{
 
     const onSubmitPressed = () => {
         //postDataUsingAsyncAwait()
-        navigation.navigate("SignIn");
+        //navigation.navigate("SignIn");
+        navigation.navigate('ConfirmEmail');
     };
 
     const onSignInPressed = () => {

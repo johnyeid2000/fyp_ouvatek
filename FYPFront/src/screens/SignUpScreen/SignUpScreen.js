@@ -6,7 +6,7 @@ import CustomPicker from '../../components/CustomPicker/CustomPicker';
 import CustomInput from '../../components/CustomInput';
 import CustomButton from "../../components/CustomButton/CustomButton";
 import styles from './styles';
-import axios from 'axios';
+//import axios from 'axios';
 import {useNavigation} from '@react-navigation/native';
 
 
@@ -14,28 +14,31 @@ const SignUpScreen =() =>{
     const [fname, setFname] = useState('');
     const [lname, setLname] = useState(''); 
     const [email, setEmail] = useState('');
-    const [country, setCountry] = useState([]);
-
-    const [optionsCountries, setOptionsCountries] = useState([]);
+    // const [country, setCountry] = useState([]);
+    const [country, setCountry] = useState('option1c');
+    //const [optionsCountries, setOptionsCountries] = useState([]);
     const [phoneNb, setPhoneNb] = useState('');
     const [password, setPassword] = useState('');
     const [passwordRepeat, setPasswordRepeat] = useState('');
-
     const [singnupStatus, setSignupStatus] = useState("");
-
     const [checked, setChecked] = useState(false);
 
-    (async () => {
-    try {
-        const response = await axios.get(
-        '10.10.11.189:3000',
-        );
-        setOptionsCountries(response.data);
-        } catch (error) {
-            alert(error.message);
-        }
-    })();
+    const optionsCountry = [
+        { label: 'Option 1', value: 'option1c' },
+        { label: 'Option 2', value: 'option2c' },
+        { label: 'Option 3', value: 'option3c' }
+    ];
 
+    // (async () => {
+    // try {
+    //     const response = await axios.get(
+    //     'localhost:3000',
+    //     );
+    //     setOptionsCountries(response.data);
+    //     } catch (error) {
+    //         alert(error.message);
+    //     }
+    // })();
 
     const navigation = useNavigation();
 
@@ -62,7 +65,11 @@ const SignUpScreen =() =>{
 
     const onRegisterPressed = () => {
         //postDataUsingAsyncAwait()
-        navigation.navigate("ConfirmEmail");
+        //navigation.navigate("DoctorInfo");
+        navigation.navigate("PatientInfo");
+        //navigation.navigate("Patient");
+        //navigation.navigate("Doctor");
+        // navigation.navigate("ConfirmEmail");
     };
 
     const onSignInPressed = () => {
@@ -104,7 +111,8 @@ const SignUpScreen =() =>{
                 IconName="map-marker-radius"
                 selOption={country}
                 setSelOption={setCountry}
-                opt={optionsCountries}
+                //opt={optionsCountries}
+                opt={optionsCountry}
             />
 
             <CustomInput
