@@ -75,7 +75,6 @@ app.get('/api/surgeries', (req, res) => {
 	});
 });
 app.post('/api/login', (req,res) => {
-	console.log(req.body);
 	const email = req.body.email.toLowerCase().trim(); 
 	const password = req.body.password.trim();
 	const checkDoctor = req.body.checked;
