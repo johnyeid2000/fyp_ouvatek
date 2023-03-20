@@ -26,7 +26,7 @@ const SignInScreen =() =>{
     // const postDataUsingAsyncAwait = async () => {
     //     try {
     //       await axios.post(
-    //         '127.0.0.1:3000/login', JSON.stringify({'email': email, 'password': password, 'checked':checked})
+    //         ' https://ouvatek.herokuapp.com/api/login', JSON.stringify({'email': email, 'password': password, 'checked':checked})
     //       )
     //       .then(function (response){
 
@@ -44,9 +44,30 @@ const SignInScreen =() =>{
     //     }
     //   };
 
+const loginUser = async () => {
+  try {
+    console.log('Email',email);
+    console.log('Password',password);
+    console.log('Checked',checked);
+    const response = await axios.post('https://ouvatek.herokuapp.com/api/login', {
+      // 'email': 'johny_eid@live.com',
+      // 'password': 'test',
+      'email': email,
+      'password': password,
+      'checked': checked,
+    });
+    console.log(response.data);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+
+
     const onSignInPressed = () => {
+        loginUser();
         //postDataUsingAsyncAwait()
-        navigation.navigate('Patient');
+        //navigation.navigate('Patient');
         //navigation.navigate("Doctor");
     };
 
