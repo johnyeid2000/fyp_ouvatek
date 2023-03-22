@@ -162,19 +162,22 @@ app.post('/api/commonsignup', (req, res) => {
 app.post('/api/patientsignup', (req, res) => {
 	let userId = req.body.id;
 	let birthDate = req.body.birthDate;
-	let bloodType = req.body.bloodType;
+	let bloodType = req.body.selectedBloodType;
 	let firstPregDay = req.body.firstPregnancyDay;
-	let medication = req.body.medication;
-	let diabetes = req.body.diabetes;
-	let hypertension = req.body.hypertension;
-	let previousPregnancies = req.body.previousPregnancies;
-	let previousSurgeries = req.body.previousSurgeries;
+	let medication = req.body.selectedMedication;
+	let diabetes = req.body.checkDiabetes;
+	let hypertension = req.body.checkHypertension;
+	let previousPregnancies = req.body.checkPrevPreg;
+	let previousSurgeries = req.body.selectedSurgeries;
 	let sql = "";
-	if (userId && birthDate && bloodType && firstPregDay && medication && diabetes!=null && hypertension!=null && previousPregnancies!=null && previousSurgeries) {
-		sql = 'UPDATE `patient` SET user_id = ?, birth_date = ?, blood_type = ?,\
-		first_pregnant_day = ?, medication_taken = ?, diabetes = ?, hypertension = ?,\
-		previous_pregnancies = ?, previous_surgeries = ? WHERE pat_id = ?';
-		con.connection.query(sql, [userId, birthDate, bloodType, firstPregDay, medication, diabetes, hypertension, previousPregnancies, previousSurgeries, patId], async function(error,result){
+	const today = new Date();
+	const year = today.getFullYear();
+	const month = String(today.getMonth() + 1).padStart(2, '0'); // add leading zero if needed
+	const day = String(today.getDate()).padStart(2, '0'); // add leading zero if needed
+	const date = `${year}-${month}-${day}`;
+	if (userId && birthDate && bloodType && firstPregDay && medication!=null && diabetes!=null && hypertension!=null && previousPregnancies!=null && previousSurgeries!=null) {
+		sql = 'INSERT INTO `patient` (user_id, birth_date, blood_type, first_pregnant_day, medication_taken, diabetes, hypertension, previous_pregnancies, previous_surgeries, created_on) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)';
+		con.connection.query(sql, [userId, birthDate, bloodType, firstPregDay, medication, diabetes, hypertension, previousPregnancies, previousSurgeries, date], async function(error,result){
 			if(error){
 				console.log(error);
 				return res.status(404).send({ message: 'Patient Signup Issue' });
@@ -192,9 +195,15 @@ app.post('/api/doctorsignup', (req, res) => {
 	let oopnum = req.body.oopnum;
 	let gender = req.body.gender;
 	let sql = "";
+	console.log(userId, speciality, oopnum, gender);
+	const today = new Date();
+	const year = today.getFullYear();
+	const month = String(today.getMonth() + 1).padStart(2, '0'); // add leading zero if needed
+	const day = String(today.getDate()).padStart(2, '0'); // add leading zero if needed
+	const date = `${year}-${month}-${day}`;
 	if (userId && speciality && oopnum && gender) {
-		sql = 'UPDATE `doctor` SET user_id = ?, oop_number = ?, speciality = ?, gender = ? WHERE dr_id = ?';
-		con.connection.query(sql, [userId, oopnum, speciality, gender, docId], async function(error,result){
+		sql = 'INSERT INTO `doctor` (user_id, oop_number, speciality, gender, created_on) VALUES (?, ?, ?, ?, ?)';
+		con.connection.query(sql, [userId, oopnum, speciality, gender, date], async function(error,result){
 			if(error){
 				console.log(error);
 				return res.status(404).send({ message: 'Doctor Signup Issue' });
@@ -207,8 +216,8 @@ app.post('/api/doctorsignup', (req, res) => {
 	}
 });
 app.post('/api/doctorlocation', (req, res) => {
-	let doctorId = req.body.id;
-	let country = req.body.country;
+	let doctorId = req.body.doctorId;
+	let country = req.body.selectedCountry;
 	let city = req.body.city;
 	let street = req.body.street;
 	let building = req.body.building;
@@ -267,28 +276,27 @@ app.post('/api/sendcode', (req,res) => {
 	let userId = req.body.id;
 	let code = req.body.code;
 	if(userId && code){
-		let sql = "SELECT * FROM `confirmation_code` WHERE user_id = ?";
+		let sql = "SELECT * FROM `confirmation_code` WHERE user_id = ? ORDER BY `created_on` DESC";
 		con.connection.query(sql, userId, async function(error,rows, fields){
 			if(error){
 				return res.status(404).send({ message: 'Verification Not Issued Or Expired.' });
 			}else{
-				
+				let confirmationCode =rows[0].confirmation_code;
+				if(code == confirmationCode){
+					let sql = "DELETE FROM `verification_code` WHERE user_id = ?"
+					con.connection.query(sql, userId, async function(error, result){
+						if(error){
+							return res.status(404).send({ message: 'Removing verification to database Issue.' });
+						}else{
+							res.status(200).send({ message: 'Account Verified. Proceed to Login'})
+						}
+					});
+				}
+				else{
+					res.status(401).send({ message: 'Verification Code Wrong or Expired'})
+				}
 			}
 		});
-		if(code == confirmationcode &&  userId == confirmationUserid){
-			let sql = "DELETE FROM `verification_code` WHERE user_id = ?"
-			con.connection.query(sql, userid, async function(error, result){
-				if(error){
-					return res.status(404).send({ message: 'Removing verification to database Issue.' });
-				}else{
-					console.log(result);
-				}
-			});
-			res.status(200).send({ message: 'Account Verified. Proceed to Login'})
-		}
-		else{
-			res.status(401).send({ message: 'Verification Code Wrong or Expired'})
-		}
 	}
 	else{
 		res.status(401).send({ message: 'Verication Code Cant be null.'})
