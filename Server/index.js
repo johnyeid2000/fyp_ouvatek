@@ -1,6 +1,7 @@
 const bcrypt = require('./bcrypt.js');
-const countries = require('./countries.js');
+const timer = require('./timer.js');
 const con = require('./connectdb.js');
+const countries = require('./countries.js'); // used to create the countries table. 
 const nodemailer = require('nodemailer');
 const express = require('express');
 const app = express();
@@ -14,7 +15,7 @@ const transporter = nodemailer.createTransport({
 	  user: process.env.MAIL,
 	  pass: process.env.PASS
 	}
-  });
+});
 
 app.listen(port, () => {
 	console.log(`Backend - 404`)
@@ -22,13 +23,15 @@ app.listen(port, () => {
 app.get('/', (req, res) => {
   res.send('Backend - 404')
 })
-app.get('/api/patient', (req,res) => { //when going to profile page /users/3939 (3939 should be dynamic using express somewaayyy)
+
+// -------------------------Shared Information------------------------------- //
+app.get('/api/patient', (req,res) => {
 	con.connection.query(`select * from patient`, function(error,rows,fields){
 		if(error) console.log(error);
 		else{ console.log(rows); res.send(rows)};
 	});
 })
-app.get('/api/doctor', (req,res) => { //when going to profile page /users/3939 (3939 should be dynamic using express somewaayyy)
+app.get('/api/doctor', (req,res) => {
 	con.connection.query(`select * from doctor`, function(error,rows,fields){
 		if(error) console.log(error);
 		else{ console.log(rows); res.send(rows)};
@@ -74,47 +77,16 @@ app.get('/api/surgeries', (req, res) => {
 		};
 	});
 });
-app.post('/api/login', (req,res) => {
-	const email = req.body.email.toLowerCase().trim(); 
-	const password = req.body.password.trim();
-	const checkDoctor = req.body.checked;
-	console.log(checkDoctor);
-	if (!email || !password) {
-		return res.status(400).send({ message: 'Email And Password Are Required' });
-	}
-	// validate the email format
-	if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
-		return res.status(400).send({ message: 'Invalid Email Format' });
-	}
-	let sql = "";
-	if(checkDoctor){
-		sql = "SELECT `dr_id`, `email`, `password` FROM `doctor` WHERE email=(?)"
-	}
-	else{
-		sql = "SELECT `pat_id`, `email`, `password` FROM `patient` WHERE email=(?)"
-	}
-	con.connection.query(sql, email, function(error,rows,fields){
-		if(error){
-			return res.status(404).send({ message: 'User Not Found' });
-		}else{
-			if(rows.length == 1){
-				(async () => {
-					let result = await bcrypt.comparePassword(password, rows[0].password);
-					if(result == true){return res.status(200).send({ message: 'Sign In Successful' });}
-					else{return res.status(401).send({ message: 'Incorrect Username Or Password.' })}
-				})();			
-			}else{return res.status(403).send({ message: 'Something Went Wrong.' });}
-		};
-	});
-});
+// -------------------------Shared Information------------------------------- //
+
 app.post('/api/commonsignup', (req, res) => {
-	let firstName = req.body.firstName;
-	let lastName = req.body.lastName;
+	let firstName = req.body.fname;
+	let lastName = req.body.lname;
 	let email = req.body.email;
-	let country = req.body.country;
-	let phoneNumber = req.body.phoneNumber;
+	let country = req.body.selectedCountry;
+	let phoneNumber = req.body.phoneNb;
 	let password = req.body.password;
-	let confPassword = req.body.confirmationPassword;
+	let confPassword = req.body.passwordRepeat;
 	let isDoctor = req.body.userType;
 	if(!firstName){
 		return res.status(400).send({ message: 'Missing First Name.' });
@@ -159,13 +131,7 @@ app.post('/api/commonsignup', (req, res) => {
 	if(password!=confPassword){
 		return res.status(400).send({ message: 'Passwords Do Not Match.' });
 	}
-	let sql = "";
-	if(isDoctor == true){
-		sql = "SELECT `dr_id` FROM `doctor` WHERE email=(?)";
-	}
-	else{
-		sql = "SELECT `pat_id` FROM `patient` WHERE email=(?)";
-	}
+	let sql = "SELECT `id` FROM `user` WHERE email=(?)";
 	con.connection.query(sql, email, async function(error,rows,fields){
 		if(error){
 			return res.status(404).send({ message: 'Duplicate Email' });
@@ -180,15 +146,10 @@ app.post('/api/commonsignup', (req, res) => {
 				const month = String(today.getMonth() + 1).padStart(2, '0'); // add leading zero if needed
 				const day = String(today.getDate()).padStart(2, '0'); // add leading zero if needed
 				const date = `${year}-${month}-${day}`;
-				let sql = "";
-				if(isDoctor == true){
-					sql = "INSERT INTO `doctor`(`first_name`, `last_name`, `email`, `password`, `country`, `phone_number`, `Acc_Created_On`) VALUES (?, ?, ?, ?, ?, ?, ?)";
-				}
-				else{
-					sql = "INSERT INTO `patient`(`first_name`, `last_name`, `email`, `password`, `phone_number`, `country`, `Acc_Created_On`) VALUES (?, ?, ?, ?, ?, ?, ?)";
-				}
-				con.connection.query(sql, [firstName, lastName, email, hashpass, country, phoneNumber, date], function(error, result){
+				let	sql = "INSERT INTO `user`(`first_name`, `last_name`, `email`, `password`, `country`, `phone_number`, `user_type`, `created_on`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+				con.connection.query(sql, [firstName, lastName, email, hashpass, country, phoneNumber, isDoctor ,date], function(error, result){
 					if(error){
+						console.log(error);
 						return res.status(403).send({ message: 'Cannot Insert Data - Sign up' });
 					}else{
 						return res.status(200).send({ message: 'User Created.', userId: result.insertId, isDoctor: isDoctor })
@@ -199,47 +160,46 @@ app.post('/api/commonsignup', (req, res) => {
 	});
 });
 app.post('/api/patientsignup', (req, res) => {
-	const patId = req.body.id;
+	let userId = req.body.id;
 	let birthDate = req.body.birthDate;
 	let bloodType = req.body.bloodType;
-	let firstPregDay = req.body.firstPregnancyDay.trim();
+	let firstPregDay = req.body.firstPregnancyDay;
 	let medication = req.body.medication;
 	let diabetes = req.body.diabetes;
 	let hypertension = req.body.hypertension;
 	let previousPregnancies = req.body.previousPregnancies;
 	let previousSurgeries = req.body.previousSurgeries;
 	let sql = "";
-	if (patId && birthDate && bloodType && firstPregDay && medication && diabetes && hypertension && previousPregnancies && previousSurgeries) {
-		sql = 'UPDATE `patient` SET birth_date = ?, blood_type = ?,\
+	if (userId && birthDate && bloodType && firstPregDay && medication && diabetes!=null && hypertension!=null && previousPregnancies!=null && previousSurgeries) {
+		sql = 'UPDATE `patient` SET user_id = ?, birth_date = ?, blood_type = ?,\
 		first_pregnant_day = ?, medication_taken = ?, diabetes = ?, hypertension = ?,\
 		previous_pregnancies = ?, previous_surgeries = ? WHERE pat_id = ?';
-		con.connection.query(sql, [birthDate, bloodType, firstPregDay, medication, diabetes, hypertension, previousPregnancies, previousSurgeries, patId], async function(error,result){
+		con.connection.query(sql, [userId, birthDate, bloodType, firstPregDay, medication, diabetes, hypertension, previousPregnancies, previousSurgeries, patId], async function(error,result){
 			if(error){
 				console.log(error);
 				return res.status(404).send({ message: 'Patient Signup Issue' });
 			}else{
-				return res.status(200).send({ result })
+				return res.status(200).send({ message: 'Patient Created.', userId: result.insertId, result})
 			}
 		});
 	}else{
-		console.log(patId , birthDate , bloodType , firstPregDay , medication , diabetes , hypertension , previousPreg , previousSurg);
 		return res.status(401).send({ message: 'All Fields Are Required.' });
 	}
 });
 app.post('/api/doctorsignup', (req, res) => {
-	const docId = req.body.id;
+	const userId = req.body.id;
 	let speciality = req.body.speciality;
 	let oopnum = req.body.oopnum;
 	let gender = req.body.gender;
 	let sql = "";
-	if (speciality && oopnum && gender) {
-		sql = 'UPDATE `doctor` SET oop_number = ?, speciality = ?, gender = ? WHERE dr_id = ?';
-		con.connection.query(sql, [oopnum, speciality, gender, docId], async function(error,result){
+	if (userId && speciality && oopnum && gender) {
+		sql = 'UPDATE `doctor` SET user_id = ?, oop_number = ?, speciality = ?, gender = ? WHERE dr_id = ?';
+		con.connection.query(sql, [userId, oopnum, speciality, gender, docId], async function(error,result){
 			if(error){
 				console.log(error);
 				return res.status(404).send({ message: 'Doctor Signup Issue' });
 			}else{
-				return res.status(200).send({ result })
+				return res.status(200).send({ message: 'Doctor Created.', doctorId: result.insertId, result })
 			}
 		});
 	}else{
@@ -247,18 +207,17 @@ app.post('/api/doctorsignup', (req, res) => {
 	}
 });
 app.post('/api/doctorlocation', (req, res) => {
-	let docid = req.body.id;
+	let doctorId = req.body.id;
 	let country = req.body.country;
 	let city = req.body.city;
 	let street = req.body.street;
 	let building = req.body.building;
 	let floor = req.body.floor;
 	let sql = "";
-	if(docid && country && city && street && building && floor){
+	if(doctorId && country && city && street && building && floor){
 		sql = 'INSERT INTO `doctor_address`(`doctor_id` , `clinic_country`, `clinic_city`, `clinic_street`, `clinic_building`, `clinic_floor`) VALUES (?, ?, ?, ?, ?, ?)';
 		con.connection.query(sql, [docid, country, city, street, building, floor], async function(error,result){
 			if(error){
-				console.log(error);
 				return res.status(404).send({ message: 'Doctor Location Signup Issue' });
 			}else{
 				return res.status(200).send({ result })
@@ -270,18 +229,22 @@ app.post('/api/doctorlocation', (req, res) => {
 });
 app.post('/api/sendconfirmation', (req,res) => {
 	let userid = req.body.id;
-	let isDoctor = req.body.isDoctor;
-	let sql = "";
-	if(isDoctor){
-		sql = "SELECT email from `doctor` WHERE dr_id = ?"
-	}else{
-		sql = "SELECT email from `patient` WHERE pat_id = ?"
-	}
+	let sql = "SELECT email from `user` WHERE id = ?"
 	con.connection.query(sql, userid, async function(error,rows, fields){
 		if(error){
 			return res.status(404).send({ message: 'Finding Email Issue.' });
 		}else{
+			let time = new Date();
+			const finalDate = time.toISOString().slice(0, 19).replace('T', ' ');
 			const code = Math.floor(Math.random() * 900000) + 100000;
+			let sql = "INSERT INTO `confirmation_code` (`user_id`, `confirmation_code`, `created_on`) VALUES (?, ?, ?)";
+			con.connection.query(sql, [userid, code, finalDate], async function(error, result){
+				if(error){
+					return res.status(404).send({ message: 'Adding verification to database Issue.' });
+				}else{
+					console.log(result);
+				}
+			});
 			const mailOptions = {
 				from: process.env.MAIL,
 				to: rows[0].email,
@@ -301,23 +264,63 @@ app.post('/api/sendconfirmation', (req,res) => {
 
 })
 app.post('/api/sendcode', (req,res) => {
-	let confirmationUserid = req.body.id;
-	let confirmationIsDoctor = req.body.isDoctor;
-	let confirmationCode = req.body.code;
-	if(confirmationUserid && confirmationIsDoctor && confirmationCode){
-		if(code == confirmationcode &&  userId == confirmationUserid && isDoctor == confirmationIsDoctor){
-			res.status(401).send({ message: 'Wrong Verification Code'})
+	let userId = req.body.id;
+	let code = req.body.code;
+	if(userId && code){
+		let sql = "SELECT * FROM `confirmation_code` WHERE user_id = ?";
+		con.connection.query(sql, userId, async function(error,rows, fields){
+			if(error){
+				return res.status(404).send({ message: 'Verification Not Issued Or Expired.' });
+			}else{
+				
+			}
+		});
+		if(code == confirmationcode &&  userId == confirmationUserid){
+			let sql = "DELETE FROM `verification_code` WHERE user_id = ?"
+			con.connection.query(sql, userid, async function(error, result){
+				if(error){
+					return res.status(404).send({ message: 'Removing verification to database Issue.' });
+				}else{
+					console.log(result);
+				}
+			});
+			res.status(200).send({ message: 'Account Verified. Proceed to Login'})
 		}
 		else{
-			res.status(200).send({ message: 'Account Verified. Proceed to Login'})
+			res.status(401).send({ message: 'Verification Code Wrong or Expired'})
 		}
 	}
 	else{
 		res.status(401).send({ message: 'Verication Code Cant be null.'})
 	}
 });
-//handle db
-//handle routes
-//handles validations 
-//countries.getDataUsingAsyncAwaitGetCall(); 
+app.post('/api/login', (req,res) => {
+	const email = req.body.email.toLowerCase().trim(); 
+	const password = req.body.password.trim();
+	const checkDoctor = req.body.checked;
+	if (!email || !password) {
+		return res.status(400).send({ message: 'Email And Password Are Required' });
+	}
+	// validate the email format
+	if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
+		return res.status(400).send({ message: 'Invalid Email Format' });
+	}
+	let	sql = "SELECT `id`, `email`, `password` FROM `user` WHERE email=(?)";
+	con.connection.query(sql, email, function(error,rows,fields){
+		if(error){
+			return res.status(404).send({ message: 'User Not Found' });
+		}else{
+			if(rows.length == 1){
+				(async () => {
+					let result = await bcrypt.comparePassword(password, rows[0].password);
+					if(result == true){return res.status(200).send({ message: 'Sign In Successful' });}
+					else{return res.status(401).send({ message: 'Incorrect Username Or Password.' })}
+				})();			
+			}else{return res.status(403).send({ message: 'Something Went Wrong.' });}
+		};
+	});
+});
+
+//countries.getDataUsingAsyncAwaitGetCall();
+timer.cleanVerification(); //cleans the database from verification codes that have been there for more than 10 minutes
 
