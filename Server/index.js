@@ -176,7 +176,7 @@ app.post('/api/patientsignup', (req, res) => {
 	const day = String(today.getDate()).padStart(2, '0'); // add leading zero if needed
 	const date = `${year}-${month}-${day}`;
 	if (userId && birthDate && bloodType && firstPregDay && medication!=null && diabetes!=null && hypertension!=null && previousPregnancies!=null && previousSurgeries!=null) {
-		sql = 'INSERT INTO `patient` (user_id, birth_date, blood_type, first_pregnant_day, medication_taken, diabetes, hypertension, previous_pregnancies, previous_surgeries, created_on) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)';
+		sql = 'INSERT INTO `patient` (user_id, birth_date, blood_type, first_pregnant_day, medication_taken, diabetes, hypertension, previous_pregnancies, previous_surgeries, created_on) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
 		con.connection.query(sql, [userId, birthDate, bloodType, firstPregDay, medication, diabetes, hypertension, previousPregnancies, previousSurgeries, date], async function(error,result){
 			if(error){
 				console.log(error);
@@ -195,7 +195,6 @@ app.post('/api/doctorsignup', (req, res) => {
 	let oopnum = req.body.oopnum;
 	let gender = req.body.gender;
 	let sql = "";
-	console.log(userId, speciality, oopnum, gender);
 	const today = new Date();
 	const year = today.getFullYear();
 	const month = String(today.getMonth() + 1).padStart(2, '0'); // add leading zero if needed
@@ -225,8 +224,9 @@ app.post('/api/doctorlocation', (req, res) => {
 	let sql = "";
 	if(doctorId && country && city && street && building && floor){
 		sql = 'INSERT INTO `doctor_address`(`doctor_id` , `clinic_country`, `clinic_city`, `clinic_street`, `clinic_building`, `clinic_floor`) VALUES (?, ?, ?, ?, ?, ?)';
-		con.connection.query(sql, [docid, country, city, street, building, floor], async function(error,result){
+		con.connection.query(sql, [doctorId, country, city, street, building, floor], async function(error,result){
 			if(error){
+				console.log(error);
 				return res.status(404).send({ message: 'Doctor Location Signup Issue' });
 			}else{
 				return res.status(200).send({ result })
@@ -300,6 +300,8 @@ app.post('/api/sendcode', (req,res) => {
 	}
 	else{
 		res.status(401).send({ message: 'Verication Code Cant be null.'})
+		console.log("Test");
+
 	}
 });
 app.post('/api/login', (req,res) => {
