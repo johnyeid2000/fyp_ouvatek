@@ -1,5 +1,5 @@
 const bcrypt = require('./bcrypt.js');
-const timer = require('./timer.js');
+const timer = require('./cleaner.js');
 const con = require('./connectdb.js');
 const countries = require('./countries.js'); // used to create the countries table. 
 const nodemailer = require('nodemailer');
@@ -16,7 +16,6 @@ const transporter = nodemailer.createTransport({
 	  pass: process.env.PASS
 	}
 });
-
 app.listen(port, () => {
 	console.log(`Backend - 404`)
 })
@@ -283,12 +282,12 @@ app.post('/api/sendcode', (req,res) => {
 			}else{
 				let confirmationCode =rows[0].confirmation_code;
 				if(code == confirmationCode){
-					let sql = "DELETE FROM `verification_code` WHERE user_id = ?"
+					let sql = "DELETE FROM `confirmation_code` WHERE user_id = ?"
 					con.connection.query(sql, userId, async function(error, result){
 						if(error){
-							return res.status(404).send({ message: 'Removing verification to database Issue.' });
+							return res.status(404).send({ message: 'Removing verification from database Issue.' });
 						}else{
-							res.status(200).send({ message: 'Account Verified. Proceed to Login'})
+							return res.status(200).send({ message: 'Account Verified. Proceed to Login'})
 						}
 					});
 				}
@@ -315,17 +314,22 @@ app.post('/api/login', (req,res) => {
 	if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
 		return res.status(400).send({ message: 'Invalid Email Format' });
 	}
-	let	sql = "SELECT `id`, `email`, `password` FROM `user` WHERE email=(?)";
+	let	sql = "SELECT `id`, `email`, `password`, `user_type` FROM `user` WHERE email=(?)";
 	con.connection.query(sql, email, function(error,rows,fields){
 		if(error){
 			return res.status(404).send({ message: 'User Not Found' });
 		}else{
 			if(rows.length == 1){
-				(async () => {
-					let result = await bcrypt.comparePassword(password, rows[0].password);
-					if(result == true){return res.status(200).send({ message: 'Sign In Successful' });}
-					else{return res.status(401).send({ message: 'Incorrect Username Or Password.' })}
-				})();			
+				if(rows[0].user_type == checkDoctor){
+					(async () => {
+						let result = await bcrypt.comparePassword(password, rows[0].password);
+						if(result == true){return res.status(200).send({ message: 'Sign In Successful' });}
+						else{return res.status(401).send({ message: 'Incorrect Username Or Password.' })}
+					})();	
+				}else{
+					return res.status(404).send({ message: 'User Not Found' });
+				}
+		
 			}else{return res.status(403).send({ message: 'Something Went Wrong.' });}
 		};
 	});
