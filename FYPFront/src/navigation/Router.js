@@ -19,11 +19,10 @@ const Router = (props) => {
                     component={SignNavigator}
                 />
 
-                {/* <Stack.Screen
+                <Stack.Screen
                 name='Doctor'
                 component={DoctorNavigator}
-                /> */}
-
+                />
 
                 <Stack.Screen
                     name='Patient'

@@ -1,5 +1,6 @@
 import React, {useState} from "react";
 import { Text, View } from "react-native";
+import axios from "axios";
 
 import CustomPicker from '../../components/CustomPicker/CustomPicker';
 import CustomInput from '../../components/CustomInput';
@@ -8,12 +9,13 @@ import styles from './styles';
 
 import {useNavigation} from '@react-navigation/native';
 
-const DoctorInformationScreen =() =>{
+const DoctorInformationScreen =({route}) =>{
     const [speciality, setSpeciality] = useState('');
-    const [gender, setGender] = useState('Select your gender');
-    const [oop, setOop] = useState('');
+    const [gender, setGender] = useState(null);
+    const [oopnum, setOopnum] = useState('');
 
-    const [doctorInfoStatus, setDoctorInfoStatus] = useState("");
+    const [doctorInfoStatus, setDoctorInfoStatus] = useState(null);
+    const { id } = route.params;
 
     const optionsGender = [
         { label: 'Select your gender', value:''},
@@ -23,30 +25,25 @@ const DoctorInformationScreen =() =>{
 
     const navigation = useNavigation();
 
-    // const postDataUsingAsyncAwait = async () => {
-    //     try {
-    //       await axios.post(
-    //         '127.0.0.1:3000/login', JSON.stringify({'email': email, 'password': password, 'checked':checked})
-    //       )
-    //       .then(function (response){
-
-    //         if(response.data.message){
-    //             setDoctorInfoStatus(response.data.message);
-    //         }
-    //         else{
-    //             navigation.navigate("SignIn");
-    //         }
-    //       })
-    //     } catch (error) {
-    //       // handle error
-    //       //alert(error.message);
-    //       alert("test test");
-    //     }
-    //   };
+    const signUpDoctor = async () => {
+  try {
+    const response = await axios.post('https://ouvatek.herokuapp.com/api/doctorsignup', 
+    {id, speciality, oopnum, gender},
+        {
+            headers: {'Content-Type': 'application/json'},
+        },
+    );
+    const doctorId= response.data.doctorId;
+    if(response.status===200 ){
+        navigation.navigate("DoctorClinic",{doctorId:doctorId, id:id});
+    }
+  } catch (error) {
+    setDoctorInfoStatus(error.response.data.message);
+  }
+};
 
     const onSubmitPressed = () => {
-        //postDataUsingAsyncAwait()
-        navigation.navigate("DoctorClinic");
+        signUpDoctor();
     };
 
     const onSignInPressed = () => {
@@ -70,8 +67,8 @@ const DoctorInformationScreen =() =>{
                 label="OOP number"
                 IconName="doctor"
                 placeholder="Enter Your OOP number"
-                value={oop}
-                setValue={setOop}
+                value={oopnum}
+                setValue={setOopnum}
                 keyType="phone-pad"
             />
 

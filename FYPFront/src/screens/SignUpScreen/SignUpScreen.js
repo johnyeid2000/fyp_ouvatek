@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import { Text, View, ScrollView } from "react-native";
 import { Checkbox } from 'react-native-paper';
 
@@ -6,7 +6,9 @@ import CustomPicker from '../../components/CustomPicker/CustomPicker';
 import CustomInput from '../../components/CustomInput';
 import CustomButton from "../../components/CustomButton/CustomButton";
 import styles from './styles';
-//import axios from 'axios';
+
+import axios from 'axios';
+
 import {useNavigation} from '@react-navigation/native';
 
 
@@ -14,62 +16,52 @@ const SignUpScreen =() =>{
     const [fname, setFname] = useState('');
     const [lname, setLname] = useState(''); 
     const [email, setEmail] = useState('');
-    // const [country, setCountry] = useState([]);
-    const [country, setCountry] = useState('option1c');
-    //const [optionsCountries, setOptionsCountries] = useState([]);
+
+    const [countries, setCountries] = useState([]);
+    const [selectedCountry, setSelectedCountry] = useState(null);
+
     const [phoneNb, setPhoneNb] = useState('');
     const [password, setPassword] = useState('');
     const [passwordRepeat, setPasswordRepeat] = useState('');
-    const [singnupStatus, setSignupStatus] = useState("");
+
+    const [singnupStatus, setSignupStatus] = useState(null);
     const [checked, setChecked] = useState(false);
 
-    const optionsCountry = [
-        { label: 'Option 1', value: 'option1c' },
-        { label: 'Option 2', value: 'option2c' },
-        { label: 'Option 3', value: 'option3c' }
-    ];
-
-    // (async () => {
-    // try {
-    //     const response = await axios.get(
-    //     'localhost:3000',
-    //     );
-    //     setOptionsCountries(response.data);
-    //     } catch (error) {
-    //         alert(error.message);
-    //     }
-    // })();
+    useEffect(() => {
+  axios.get('https://ouvatek.herokuapp.com/api/countries')
+    .then(response => {
+      setCountries(response.data.rows);
+    })
+    .catch(error => {
+      console.log(error);
+    });
+}, []);
 
     const navigation = useNavigation();
 
-    // const postDataUsingAsyncAwait = async () => {
-    //     try {
-    //       await axios.post(
-    //         '127.0.0.1:3000/login', JSON.stringify({'email': email, 'password': password, 'checked':checked})
-    //       )
-    //       .then(function (response){
 
-    //         if(response.data.message){
-    //             setSignupStatus(response.data.message);
-    //         }
-    //         else{
-    //             navigation.navigate("ConfirmEmail");
-    //         }
-    //       })
-    //     } catch (error) {
-    //       // handle error
-    //       //alert(error.message);
-    //       alert("test test");
-    //     }
-    //   };
+const signUpUser = async () => {
+  try {
+    const response = await axios.post('https://ouvatek.herokuapp.com/api/commonsignup', 
+    {fname, lname,email, selectedCountry, phoneNb, password, passwordRepeat, 'userType':checked},
+        {
+            headers: {'Content-Type': 'application/json'},
+        },
+    );
+    const id = response.data.userId;
+    if(response.status===200 && !checked){
+        navigation.navigate("PatientInfo", {id: id});
+    }
+   else if(response.status===200 && checked){
+        navigation.navigate("DoctorInfo", {id: id});
+   }
+  } catch (error) {
+    setSignupStatus(error.response.data.message);
+  }
+};
 
     const onRegisterPressed = () => {
-        //postDataUsingAsyncAwait()
-        //navigation.navigate("DoctorInfo");
-        navigation.navigate("PatientInfo");
-        //navigation.navigate("Patient");
-        //navigation.navigate("Doctor");
-        // navigation.navigate("ConfirmEmail");
+        signUpUser();
     };
 
     const onSignInPressed = () => {
@@ -109,10 +101,9 @@ const SignUpScreen =() =>{
             <CustomPicker
                 label="Country"
                 IconName="map-marker-radius"
-                selOption={country}
-                setSelOption={setCountry}
-                //opt={optionsCountries}
-                opt={optionsCountry}
+                selOption={selectedCountry}
+                setSelOption={setSelectedCountry}
+                opt={countries.map(country => ({ label: country.country_name, value: country.country_id }))}
             />
 
             <CustomInput
