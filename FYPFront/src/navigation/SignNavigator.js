@@ -14,9 +14,6 @@ import DoctorNavigator from './DoctorNavigator';
 import DoctorInformationScreen from '../screens/DoctorInformationScreen';
 import DoctorClinic from '../screens/DoctorClinic';
 
-import EditPatientScreen from '../screens/EditPatientScreen';
-import EditDoctorScreen from '../screens/EditDoctorScreen';
-import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 const Stack = createNativeStackNavigator();
@@ -64,7 +61,7 @@ const SignNavigator=()=>{
                     component={PatientInformationScreen}
                 />
 
-                {/* <Stack.Screen
+                <Stack.Screen
                     name='Doctor'
                     component={DoctorNavigator}
                 />
@@ -77,7 +74,7 @@ const SignNavigator=()=>{
                 <Stack.Screen
                     name='DoctorClinic'
                     component={DoctorClinic}
-                /> */}
+                />
             </Stack.Navigator>
     )
 }

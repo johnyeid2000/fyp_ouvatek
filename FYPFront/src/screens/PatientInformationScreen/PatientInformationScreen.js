@@ -1,7 +1,7 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import { Text, View, ScrollView } from "react-native";
 import { Checkbox } from 'react-native-paper';
-
+import axios from "axios";
 import CustomPicker from '../../components/CustomPicker/CustomPicker';
 import CustomInput from '../../components/CustomInput';
 import CustomButton from "../../components/CustomButton/CustomButton";
@@ -10,63 +10,78 @@ import styles from './styles';
 
 import {useNavigation} from '@react-navigation/native';
 
-const PatientInformationScreen =() =>{
-    const [BDay, setBDay] = useState('');
-    const [BloodType, setBloodType] = useState('option1');
-    const [PregDay, setPregDay] = useState('');
-    const [Medication, setMedication] = useState('option1m');
+const PatientInformationScreen =({route}) =>{
+    const [birthDate, setBirthDate] = useState('');
+    
+    const [BloodType, setBloodType] = useState([]);
+    const [selectedBloodType, setSelectedBloodType] = useState(null);
+
+    const [firstPregnancyDay, setFirstPregnancyDay] = useState('');
+    
+    const [Medication, setMedication] = useState([]);
+    const [selectedMedication, setSelectedMedication] = useState(null);
+
     const [checkDiabetes, setCheckDiabetes] = useState(false);
     const [checkHypertension, setCheckHypertension] = useState(false);
-    const [Surgeries, setSurgeries] = useState('optionsSurgeries');
+    
+    const [Surgeries, setSurgeries] = useState([]);
+    const [selectedSurgeries, setSelectedSurgeries] = useState(null);
+
     const [checkPrevPreg, setCheckPrevPreg] = useState('');
+    const { id } = route.params;
 
-    const optionsBloodType = [
-        { label: 'Option 1', value: 'option1' },
-        { label: 'Option 2', value: 'option2' },
-        { label: 'Option 3', value: 'option3' }
-    ];
+    useEffect(() => {
+  axios.get('https://ouvatek.herokuapp.com/api/bloodtype')
+    .then(response => {
+      setBloodType(response.data.rows);
+    })
+    .catch(error => {
+      console.log(error);
+    });
+}, []);
 
-    const optionsMedication = [
-        { label: 'Option 1', value: 'option1m' },
-        { label: 'Option 2', value: 'option2m' },
-        { label: 'Option 3', value: 'option3m' }
-    ];
+useEffect(() => {
+  axios.get('https://ouvatek.herokuapp.com/api/medication')
+    .then(response => {
+      setMedication(response.data.rows);
+    })
+    .catch(error => {
+      console.log(error);
+    });
+}, []);
 
-    const optionsSurgeries = [
-        { label: 'Option 1', value: 'option1s' },
-        { label: 'Option 2', value: 'option2s' },
-        { label: 'Option 3', value: 'option3s' }
-    ];
+useEffect(() => {
+  axios.get('https://ouvatek.herokuapp.com/api/surgeries')
+    .then(response => {
+      setSurgeries(response.data.rows);
+    })
+    .catch(error => {
+      console.log(error);
+    });
+}, []);
 
-    const [patientInfoStatus, setPatientInfoStatus] = useState("");
+    const [patientInfoStatus, setPatientInfoStatus] = useState(null);
 
     const navigation = useNavigation();
 
-    // const postDataUsingAsyncAwait = async () => {
-    //     try {
-    //       await axios.post(
-    //         '127.0.0.1:3000/login', JSON.stringify({'email': email, 'password': password, 'checked':checked})
-    //       )
-    //       .then(function (response){
-
-    //         if(response.data.message){
-    //             setPatientInfoStatus(response.data.message);
-    //         }
-    //         else{
-    //             navigation.navigate("SignIn");
-    //         }
-    //       })
-    //     } catch (error) {
-    //       // handle error
-    //       //alert(error.message);
-    //       alert("test test");
-    //     }
-    //   };
+    const signUpPatient = async () => {
+  try {
+    const response = await axios.post('https://ouvatek.herokuapp.com/api/patientsignup', 
+    {id,birthDate, selectedBloodType, firstPregnancyDay, selectedMedication, checkDiabetes, checkHypertension, selectedSurgeries, checkPrevPreg},
+        {
+            headers: {'Content-Type': 'application/json'},
+        },
+    );
+    if(response.status===200 ){
+        navigation.navigate("ConfirmEmail",{id:id});
+    }
+  } catch (error) {
+    setPatientInfoStatus(error.response.data.message);
+  }
+};
 
     const onSubmitPressed = () => {
-        //postDataUsingAsyncAwait()
-        //navigation.navigate("SignIn");
-        navigation.navigate('ConfirmEmail');
+        signUpPatient();
     };
 
     const onSignInPressed = () => {
@@ -83,32 +98,32 @@ const PatientInformationScreen =() =>{
                 label="Birth Date"
                 IconName="calendar"
                 placeholder="Enter Your Birth Date"
-                value={BDay}
-                setValue={setBDay}
+                value={birthDate}
+                setValue={setBirthDate}
             />
 
             <CustomPicker
                 label="Blood Type"
                 IconName="blood-bag"
-                selOption={BloodType}
-                setSelOption={setBloodType}
-                opt={optionsBloodType}
+                selOption={selectedBloodType}
+                setSelOption={setSelectedBloodType}
+                opt={BloodType.map(bloodType => ({ label: bloodType.type_name, value: bloodType.type_id }))}
             />
             
             <CustomInput
                 label="First Pregnancy Day"
                 IconName="calendar-heart"
                 placeholder="Enter Your first day of pregnancy"
-                value={PregDay}
-                setValue={setPregDay}
+                value={firstPregnancyDay}
+                setValue={setFirstPregnancyDay}
             />
 
             <CustomPicker
                 label="Medication"
                 IconName="medical-bag"
-                selOption={Medication}
-                setSelOption={setMedication}
-                opt={optionsMedication}
+                selOption={selectedMedication}
+                setSelOption={setSelectedMedication}
+                opt={Medication.map(medication => ({ label: medication.medication_name, value: medication.medication_id }))}
             />
 
             <Text style={styles.txt}>Check the box next to your corresponding case(s):</Text>
@@ -142,13 +157,13 @@ const PatientInformationScreen =() =>{
             </View>
 
             </View>
-            
+
             <CustomPicker
                 label="Previous surgeries"
                 IconName="scissors-cutting"
-                selOption={Surgeries}
-                setSelOption={setSurgeries}
-                opt={optionsSurgeries}
+                selOption={selectedSurgeries}
+                setSelOption={setSelectedSurgeries}
+                opt={Surgeries.map(surgery => ({ label: surgery.surgeries_name, value: surgery.surgeries_id }))}
             />
 
             <CustomButton

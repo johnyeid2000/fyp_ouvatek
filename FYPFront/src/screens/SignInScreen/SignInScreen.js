@@ -14,35 +14,13 @@ import {useNavigation} from '@react-navigation/native';
 const SignInScreen =() =>{
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-
     const [checked, setChecked] = useState(false);
 
-    const [loginStatus, setLoginStatus] = useState("");
+    const [loginStatus, setLoginStatus] = useState(null);
 
     const {height} = useWindowDimensions();
 
     const navigation = useNavigation();
-    
-    // const postDataUsingAsyncAwait = async () => {
-    //     try {
-    //       await axios.post(
-    //         ' https://ouvatek.herokuapp.com/api/login', JSON.stringify({'email': email, 'password': password, 'checked':checked})
-    //       )
-    //       .then(function (response){
-
-    //         if(response.data.message){
-    //             setLoginStatus(response.data.message);
-    //         }
-    //         else{
-    //             navigation.navigate("Patient");
-    //         }
-    //       })
-    //     } catch (error) {
-    //       // handle error
-    //       //alert(error.message);
-    //       alert("test test");
-    //     }
-    //   };
 
 const loginUser = async () => {
   try {
@@ -51,21 +29,19 @@ const loginUser = async () => {
             headers: {'Content-Type': 'application/json'},
         },
     );
-    console.log("answer: ", response.data.message);
-    console.log("status: ", response.status);
+    if(response.status===200 && !checked){
+        navigation.navigate("Patient");
+    }
+   else if(response.status===200 && checked){
+    navigation.navigate("Doctor");
+   }
   } catch (error) {
-    console.log("error: ", error.response.data.message);
-    console.log("error: ", error.response.status);
+    setLoginStatus(error.response.data.message);
   }
 };
 
-
-
     const onSignInPressed = () => {
         loginUser();
-        //postDataUsingAsyncAwait()
-        //navigation.navigate('Patient');
-        //navigation.navigate("Doctor");
     };
 
     const onForgotPasswordPressed = () => {
@@ -163,8 +139,6 @@ useEffect(() => {
         </View>
     );
 };
-
-
 
 export default SignInScreen 
 
