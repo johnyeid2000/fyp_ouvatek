@@ -1,5 +1,5 @@
 const con = require('./connectdb.js');
-function cleanVerification() {
+cleanVerification = () =>{
     let sql = "SELECT * from `confirmation_code` ORDER BY `created_on` DESC";
     con.connection.query(sql, function(error, rows, fields){
         if(error){
@@ -13,9 +13,9 @@ function cleanVerification() {
                     if(Math.abs(currentDate - stamp.created_on) > 10* 60 * 1000){
                         let sql = "DELETE FROM `confirmation_code` WHERE user_id = ?"
 					    con.connection.query(sql, stamp.user_id, async function(error, result){
-						if(error){
-                            console.log("Error Cleaning", error);
-						}
+                            if(error){
+                                console.log("Error Cleaning", error);
+                            }
 					    });
                     }
                 });

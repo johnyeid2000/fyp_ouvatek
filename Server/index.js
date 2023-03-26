@@ -1,8 +1,10 @@
 const bcrypt = require('./bcrypt.js');
 const timer = require('./cleaner.js');
 const con = require('./connectdb.js');
+const helper = require('./helper.js');
 const countries = require('./countries.js'); // used to create the countries table. 
 const nodemailer = require('nodemailer');
+const jwt = require('jsonwebtoken');
 const express = require('express');
 const app = express();
 const port = process.env.PORT || 3000;
@@ -238,7 +240,7 @@ app.post('/api/doctorlocation', (req, res) => {
 app.post('/api/sendconfirmation', (req,res) => {
 	let userid = req.body.id;
 	let sql = "SELECT email from `user` WHERE id = ?"
-	con.connection.query(sql, userid, async function(error,rows, fields){
+	con.connection.query(sql, userid, async function(error,rows){
 		if(error){
 			return res.status(404).send({ message: 'Finding Email Issue.' });
 		}else{
@@ -246,11 +248,9 @@ app.post('/api/sendconfirmation', (req,res) => {
 			const finalDate = time.toISOString().slice(0, 19).replace('T', ' ');
 			const code = Math.floor(Math.random() * 900000) + 100000;
 			let sql = "INSERT INTO `confirmation_code` (`user_id`, `confirmation_code`, `created_on`) VALUES (?, ?, ?)";
-			con.connection.query(sql, [userid, code, finalDate], async function(error, result){
+			con.connection.query(sql, [userid, code, finalDate], async function(error){
 				if(error){
 					return res.status(404).send({ message: 'Adding verification to database Issue.' });
-				}else{
-					console.log(result);
 				}
 			});
 			const mailOptions = {
@@ -323,18 +323,53 @@ app.post('/api/login', (req,res) => {
 				if(rows[0].user_type == checkDoctor){
 					(async () => {
 						let result = await bcrypt.comparePassword(password, rows[0].password);
-						if(result == true){return res.status(200).send({ message: 'Sign In Successful' });}
-						else{return res.status(401).send({ message: 'Incorrect Username Or Password.' })}
+						if(result == true){
+							let userId = rows[0].id;
+							const token = jwt.sign({ userId }, process.env.SECRET, { expiresIn: '10m' });
+							return res.status(200).send({ message: 'Sign In Successful', token: token });
+						}else{
+							return res.status(401).send({ message: 'Incorrect Username Or Password.' })
+						}
 					})();	
 				}else{
 					return res.status(404).send({ message: 'User Not Found' });
 				}
-		
-			}else{return res.status(403).send({ message: 'Something Went Wrong.' });}
+			}else{
+				return res.status(403).send({ message: 'Something Went Wrong.' });
+			}
 		};
 	});
 });
-
+app.get('/api/profile', (req,res) => {
+	(async () => {
+		const token = req.headers.authorization.split(' ')[1];
+		let result = await helper.validateUser(token);
+		if(result.indicator){
+			let sql = 'SELECT `first_name`, `last_name`, `email`, `phone_number`, `country` FROM `user` WHERE id=?';
+			con.connection.query(sql, result.value.userId, function(error, rows){
+				if(error){
+					return res.status(404).send({message: "User Not Found. Login again.", reason: error.message})
+				}else{
+					let sql = "";
+					if(rows[0].user_type){
+						sql = "SELECT * FROM `doctor` where user_id=?"
+					}else{
+						sql = "SELECT * FROM `patient` where user_id=?"
+					}
+					con.connection.query(sql, result.value.userId, function(error, rowsSpecific){
+						if(error){
+							return res.status(404).send({message: "User Not Found. Login again.", reason: error.message})
+						}else{
+							return res.status(200).send({userData: rows[0], specificData: rowsSpecific[0]})
+						}
+					});
+				}
+			});
+		}else{
+			return res.status(401).send({ message: "You are not an authorized user." , reason: result.value})
+		}
+	})();
+});
 //countries.getDataUsingAsyncAwaitGetCall();
 timer.cleanVerification(); //cleans the database from verification codes that have been there for more than 10 minutes
 
