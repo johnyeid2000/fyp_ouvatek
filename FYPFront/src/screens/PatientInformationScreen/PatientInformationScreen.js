@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from "react";
-import { Text, View, ScrollView } from "react-native";
+import { Text, View, ScrollView , BackHandler} from "react-native";
 import { Checkbox } from 'react-native-paper';
 import axios from "axios";
 import CustomPicker from '../../components/CustomPicker/CustomPicker';
@@ -31,54 +31,67 @@ const PatientInformationScreen =({route}) =>{
     const { id } = route.params;
 
     useEffect(() => {
-  axios.get('https://ouvatek.herokuapp.com/api/bloodtype')
-    .then(response => {
-      setBloodType(response.data.rows);
-    })
-    .catch(error => {
-      console.log(error);
-    });
-}, []);
+      axios.get('https://ouvatek.herokuapp.com/api/bloodtype')
+        .then(response => {
+          setBloodType(response.data.rows);
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    }, []);
 
-useEffect(() => {
-  axios.get('https://ouvatek.herokuapp.com/api/medication')
-    .then(response => {
-      setMedication(response.data.rows);
-    })
-    .catch(error => {
-      console.log(error);
-    });
-}, []);
+    useEffect(() => {
+      axios.get('https://ouvatek.herokuapp.com/api/medication')
+        .then(response => {
+          setMedication(response.data.rows);
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    }, []);
 
-useEffect(() => {
-  axios.get('https://ouvatek.herokuapp.com/api/surgeries')
-    .then(response => {
-      setSurgeries(response.data.rows);
-    })
-    .catch(error => {
-      console.log(error);
-    });
-}, []);
+    useEffect(() => {
+      axios.get('https://ouvatek.herokuapp.com/api/surgeries')
+        .then(response => {
+          setSurgeries(response.data.rows);
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    }, []);
+
+    useEffect(() => {
+      const backHandler = BackHandler.addEventListener('hardwareBackPress', handleBackPress);
+
+      return () => {
+        backHandler.remove();
+      };
+    }, []);
+
+      const handleBackPress = () => {
+        // Return true to prevent default back navigation
+        return true;
+      };
 
     const [patientInfoStatus, setPatientInfoStatus] = useState(null);
 
     const navigation = useNavigation();
 
     const signUpPatient = async () => {
-  try {
-    const response = await axios.post('https://ouvatek.herokuapp.com/api/patientsignup', 
-    {id,birthDate, selectedBloodType, firstPregnancyDay, selectedMedication, checkDiabetes, checkHypertension, selectedSurgeries, checkPrevPreg},
-        {
-            headers: {'Content-Type': 'application/json'},
-        },
-    );
-    if(response.status===200 ){
-        navigation.navigate("ConfirmEmail",{id:id});
-    }
-  } catch (error) {
-    setPatientInfoStatus(error.response.data.message);
-  }
-};
+      try {
+        const response = await axios.post('https://ouvatek.herokuapp.com/api/patientsignup', 
+          {id,birthDate, selectedBloodType, firstPregnancyDay, selectedMedication, checkDiabetes, checkHypertension, selectedSurgeries, checkPrevPreg},
+            {
+              headers: {'Content-Type': 'application/json'},
+            },
+          );
+            if(response.status===200 ){
+              navigation.navigate("ConfirmEmail",{id:id});
+            }
+        } catch (error) {
+          setPatientInfoStatus(error.response.data.message);
+        }
+    };
 
     const onSubmitPressed = () => {
         signUpPatient();

@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { Text, View } from "react-native";
+import React, { useState, useEffect} from "react";
+import { Text, View, BackHandler } from "react-native";
 import axios from "axios";
 
 import CustomInput from '../../components/CustomInput';
@@ -14,7 +14,6 @@ const ConfirmEmailScreen = ({ route }) => {
     const [isResendDisabled, setIsResendDisabled] = useState(true);
     const [confirmEmailStatus, setConfirmEmailStatus] = useState(null);
     const { id } = route.params;
-    console.log(id);
     const navigation = useNavigation();
 
     useEffect(() => {
@@ -28,6 +27,19 @@ const ConfirmEmailScreen = ({ route }) => {
                 console.log(error);
             });
     }, []);
+
+    useEffect(() => {
+      const backHandler = BackHandler.addEventListener('hardwareBackPress', handleBackPress);
+
+      return () => {
+        backHandler.remove();
+      };
+    }, []);
+
+      const handleBackPress = () => {
+        // Return true to prevent default back navigation
+        return true;
+      };
 
 
     const onConfirmPressed = async () => {
@@ -45,9 +57,9 @@ const ConfirmEmailScreen = ({ route }) => {
         }
     };
 
-    const onSignInPressed = () => {
-        navigation.navigate("SignIn");
-    };
+    // const onSignInPressed = () => {
+    //     navigation.navigate("SignIn");
+    // };
 
     const onResendPressed = () => {
         setIsResendDisabled(true);
@@ -87,11 +99,11 @@ const ConfirmEmailScreen = ({ route }) => {
                 disabled={isResendDisabled}
             />
 
-            <CustomButton
+            {/* <CustomButton
                 text="Back to Sign In"
                 onPress={onSignInPressed}
                 type='Teritiary'
-            />
+            /> */}
         </View>
     );
 };

@@ -1,5 +1,5 @@
-import React, {useState} from "react";
-import { Text, View } from "react-native";
+import React, {useState, useEffect} from "react";
+import { Text, View , BackHandler} from "react-native";
 import axios from "axios";
 
 import CustomPicker from '../../components/CustomPicker/CustomPicker';
@@ -24,6 +24,19 @@ const DoctorInformationScreen =({route}) =>{
     ];
 
     const navigation = useNavigation();
+
+    useEffect(() => {
+      const backHandler = BackHandler.addEventListener('hardwareBackPress', handleBackPress);
+
+      return () => {
+        backHandler.remove();
+      };
+    }, []);
+
+      const handleBackPress = () => {
+        // Return true to prevent default back navigation
+        return true;
+      };
 
     const signUpDoctor = async () => {
   try {

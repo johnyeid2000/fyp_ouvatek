@@ -1,5 +1,5 @@
 import React, {useState,useEffect} from "react";
-import { Text, View, ScrollView } from "react-native";
+import { Text, View, ScrollView, BackHandler } from "react-native";
 import axios from "axios";
 import CustomPicker from '../../components/CustomPicker/CustomPicker';
 import CustomInput from '../../components/CustomInput';
@@ -33,6 +33,19 @@ const DoctorClinic =({route}) =>{
 
     const navigation = useNavigation();
 
+    useEffect(() => {
+      const backHandler = BackHandler.addEventListener('hardwareBackPress', handleBackPress);
+
+      return () => {
+        backHandler.remove();
+      };
+    }, []);
+
+      const handleBackPress = () => {
+        // Return true to prevent default back navigation
+        return true;
+      };
+      
     const insertDoctorClinic = async () => {
   try {
     const response = await axios.post('https://ouvatek.herokuapp.com/api/doctorlocation', 

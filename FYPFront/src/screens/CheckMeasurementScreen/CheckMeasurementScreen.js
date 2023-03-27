@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, FlatList, Text, Image, Pressable } from 'react-native';
+import React, {useEffect} from 'react';
+import { View, FlatList, Text, Image, Pressable, BackHandler, Alert } from 'react-native';
 
 import styles from './styles';
 
@@ -38,6 +38,36 @@ const patients = [
 const CheckMeasurementScreen =()=>{
 
     const navigation = useNavigation();
+
+  useEffect(() => {
+    const handleBackPress = () => {
+      if (navigation.isFocused()) {
+        Alert.alert(
+          'Are you sure you want to Logout?',
+          '',
+          [
+            { text: 'NO', onPress: () => false, style: 'cancel' },
+            { text: 'YES', onPress: () => navigation.navigate("SignIn")},
+          ],
+          { cancelable: false }
+        );
+
+        // Prevent going back to the previous screen
+        return true;
+      }
+
+      // Allow going back to the previous screen
+      return false;
+    };
+
+    // Add the event listener
+    BackHandler.addEventListener('hardwareBackPress', handleBackPress);
+
+    // Remove the event listener when the component is unmounted
+    return () => {
+      BackHandler.removeEventListener('hardwareBackPress', handleBackPress);
+    };
+  }, [navigation]);
 
     const patientPressed = () => {
         navigation.navigate('PatientMeasurements');
