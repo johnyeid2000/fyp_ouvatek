@@ -5,7 +5,7 @@ import axios from "axios";
 import CustomPicker from '../../components/CustomPicker/CustomPicker';
 import CustomInput from '../../components/CustomInput';
 import CustomButton from "../../components/CustomButton/CustomButton";
-
+import CustomDatePicker from "../../components/CustomDatePicker/CustomDatePicker";
 import styles from './styles';
 
 import {useNavigation} from '@react-navigation/native';
@@ -107,12 +107,11 @@ const PatientInformationScreen =({route}) =>{
             <Text style={styles.title}>Please fill all the information to complete your file</Text>
             <Text style={styles.error}>{patientInfoStatus}</Text>
 
-            <CustomInput
-                label="Birth Date"
-                IconName="calendar"
-                placeholder="Enter Your Birth Date"
-                value={birthDate}
-                setValue={setBirthDate}
+            <CustomDatePicker
+              label="Birth Date"
+              IconName="calendar"
+              value={birthDate}
+              onChange={setBirthDate}
             />
 
             <CustomPicker
@@ -123,12 +122,11 @@ const PatientInformationScreen =({route}) =>{
                 opt={BloodType.map(bloodType => ({ label: bloodType.type_name, value: bloodType.type_id }))}
             />
             
-            <CustomInput
-                label="First Pregnancy Day"
-                IconName="calendar-heart"
-                placeholder="Enter Your first day of pregnancy"
-                value={firstPregnancyDay}
-                setValue={setFirstPregnancyDay}
+            <CustomDatePicker
+              label="First Pregnancy Day"
+              IconName="calendar-heart"
+              value={firstPregnancyDay}
+              onChange={setFirstPregnancyDay}
             />
 
             <CustomPicker

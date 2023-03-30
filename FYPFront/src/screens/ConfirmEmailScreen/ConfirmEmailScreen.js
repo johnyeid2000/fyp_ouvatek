@@ -85,6 +85,7 @@ const ConfirmEmailScreen = ({ route }) => {
                 placeholder="Enter Confirmation Code"
                 value={code}
                 setValue={setCode}
+                keyType="phone-pad"
             />
 
             <CustomButton

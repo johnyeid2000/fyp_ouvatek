@@ -93,7 +93,7 @@ useEffect(() => {
             />
 
             <Text style={styles.error}>{loginStatus}</Text>
-
+            
             <CustomInput
                 label="Email"
                 IconName="account-outline"
