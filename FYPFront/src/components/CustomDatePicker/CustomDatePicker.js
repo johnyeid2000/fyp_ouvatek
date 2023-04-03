@@ -5,9 +5,14 @@ import moment from "moment";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import styles from "./styles";
 
-const CustomDatePicker = ({ label, IconName, value, onChange }) => {
+const CustomDatePicker = ({ label, IconName, value, onChange, isMaxDateDisabled, isMinDateDisabled}) => {
   const [date, setDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [maxDate, setMaxDate] = useState(new Date());
+  var today = new Date();
+  const minDate = new Date();
+  minDate.setMonth(today.getMonth() - 8);
+  minDate.setDate(today.getDate() - 15);
 
   const handleDateChange = (event, selectedDate) => {
     setShowDatePicker(Platform.OS === "ios");
@@ -20,6 +25,14 @@ const CustomDatePicker = ({ label, IconName, value, onChange }) => {
   const showDatepicker = () => {
     setShowDatePicker(true);
   };
+
+  const handleFirstPregnancyDayChange = (event, selectedDate) => {
+    if (selectedDate !== undefined) {
+      const newMaxDate = new Date(selectedDate);
+      setMaxDate(newMaxDate);
+    }
+  };
+  
 
   return (
     <View style={styles.root}>
@@ -41,6 +54,8 @@ const CustomDatePicker = ({ label, IconName, value, onChange }) => {
           value={date}
           mode="date"
           display="default"
+          minimumDate={isMinDateDisabled? minDate : undefined}
+          maximumDate={isMaxDateDisabled ? maxDate : undefined}
           onChange={handleDateChange}
         />
       )}

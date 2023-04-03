@@ -112,6 +112,7 @@ const PatientInformationScreen =({route}) =>{
               IconName="calendar"
               value={birthDate}
               onChange={setBirthDate}
+              isMaxDateDisabled={true}
             />
 
             <CustomPicker
@@ -127,6 +128,8 @@ const PatientInformationScreen =({route}) =>{
               IconName="calendar-heart"
               value={firstPregnancyDay}
               onChange={setFirstPregnancyDay}
+              isMaxDateDisabled={true}
+              isMinDateDisabled={true}
             />
 
             <CustomPicker
