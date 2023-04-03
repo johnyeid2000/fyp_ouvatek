@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { Text, View, BackHandler } from "react-native";
 import axios from "axios";
 
@@ -20,8 +20,12 @@ const ConfirmEmailScreen = ({ route }) => {
         // Call the sendconfirmation endpoint when the component is loaded
         axios.post('https://ouvatek.herokuapp.com/api/sendconfirmation', { id })
             .then((response) => {
-                // Set the resend button as enabled after 3 minutes
-                setTimeout(() => setIsResendDisabled(false), 3 * 60 * 1000);
+                setIsResendDisabled(true);
+
+                setTimeout(() => {
+                    setIsResendDisabled(false);
+                }, 180000);
+
             })
             .catch((error) => {
                 console.log(error);
@@ -29,30 +33,30 @@ const ConfirmEmailScreen = ({ route }) => {
     }, []);
 
     useEffect(() => {
-      const backHandler = BackHandler.addEventListener('hardwareBackPress', handleBackPress);
+        const backHandler = BackHandler.addEventListener('hardwareBackPress', handleBackPress);
 
-      return () => {
-        backHandler.remove();
-      };
+        return () => {
+            backHandler.remove();
+        };
     }, []);
 
-      const handleBackPress = () => {
+    const handleBackPress = () => {
         // Return true to prevent default back navigation
         return true;
-      };
+    };
 
 
     const onConfirmPressed = async () => {
         try {
             const response = await axios.post('https://ouvatek.herokuapp.com/api/sendcode', { id, code },
                 {
-                    headers: {'Content-Type': 'application/json'},
+                    headers: { 'Content-Type': 'application/json' },
                 },
             );
-            if(response.status===200 ){
+            if (response.status === 200) {
                 navigation.navigate("SignIn");
             }
-        }catch (error) {
+        } catch (error) {
             setConfirmEmailStatus(error.response.data.message);
         }
     };
@@ -62,12 +66,12 @@ const ConfirmEmailScreen = ({ route }) => {
     // };
 
     const onResendPressed = () => {
-        setIsResendDisabled(true);
         // Call the sendconfirmation endpoint again to resend the confirmation code
         axios.post('https://ouvatek.herokuapp.com/api/sendconfirmation', { id })
             .then((response) => {
+                setIsResendDisabled(true);
                 // Set the resend button as enabled after 3 minutes
-                setTimeout(() => setIsResendDisabled(false), 3 * 60 * 1000);
+                setTimeout(() => setIsResendDisabled(false), 180000);
             })
             .catch((error) => {
                 console.log(error);
