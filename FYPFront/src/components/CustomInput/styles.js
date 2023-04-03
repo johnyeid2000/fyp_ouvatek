@@ -20,7 +20,7 @@ const styles =StyleSheet.create({
         alignItems:'center'
     },
     input:{
-        width:'100%'
+        width:'75%'
     },
     label:{
         marginVertical:2,

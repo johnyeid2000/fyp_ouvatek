@@ -122,6 +122,7 @@ const signUpUser = async () => {
                 value={password}
                 setValue={setPassword}
                 secureTextEntry
+                isPassword
             />
 
             <CustomInput
@@ -131,6 +132,7 @@ const signUpUser = async () => {
                 value={passwordRepeat}
                 setValue={setPasswordRepeat}
                 secureTextEntry
+                isPassword
             />
 
             <View style={styles.checkbox}>

@@ -30,10 +30,18 @@ const loginUser = async () => {
         },
     );
     if(response.status===200 && !checked){
+        setEmail('');
+        setPassword('');
+        setChecked(false);
+        setLoginStatus('');
         navigation.navigate("Patient");
     }
    else if(response.status===200 && checked){
-    navigation.navigate("Doctor");
+        setEmail('');
+        setPassword('');
+        setChecked(false);
+        setLoginStatus('');
+        navigation.navigate("Doctor");
    }
   } catch (error) {
     setLoginStatus(error.response.data.message);
@@ -109,6 +117,7 @@ useEffect(() => {
                 value={password}
                 setValue={setPassword}
                 secureTextEntry
+                isPassword
             />
 
             <View style={styles.checkbox}>
