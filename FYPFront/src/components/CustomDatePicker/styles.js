@@ -19,9 +19,6 @@ const styles =StyleSheet.create({
         flexDirection: 'row',
         alignItems:'center'
     },
-    input:{
-        width:'80%'
-    },
     label:{
         marginVertical:2,
         fontWeight:'800',

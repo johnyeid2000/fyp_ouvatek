@@ -20,7 +20,8 @@ const DoctorInformationScreen =({route}) =>{
     const optionsGender = [
         { label: 'Select your gender', value:''},
         { label: 'Male', value: 'M' },
-        { label: 'Female', value: 'F' }
+        { label: 'Female', value: 'F' },
+        { label:'Prefer not to say', value:'P'}
     ];
 
     const navigation = useNavigation();
