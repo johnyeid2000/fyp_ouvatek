@@ -1,6 +1,7 @@
 const bcrypt = require('./bcrypt.js');
 const timer = require('./cleaner.js');
 const con = require('./connectdb.js');
+const dbops = require('./dbops.js');
 const helper = require('./helper.js');
 const countries = require('./countries.js'); // used to create the countries table. 
 const nodemailer = require('nodemailer');
@@ -70,6 +71,16 @@ app.get('/api/bloodtype', (req, res) => {
 });
 app.get('/api/surgeries', (req, res) => {
 	sql = "SELECT * FROM `surgeries`";
+	con.connection.query(sql, function(error,rows,fields){
+		if(error){
+			return res.status(404).send({ message: 'Surgeries Not Found' });
+		}else{
+			return res.status(200).send({rows});
+		};
+	});
+});
+app.get('/api/experience', (req, res) => {
+	sql = "SELECT * FROM `experience`";
 	con.connection.query(sql, function(error,rows,fields){
 		if(error){
 			return res.status(404).send({ message: 'Surgeries Not Found' });
@@ -176,9 +187,10 @@ app.post('/api/patientsignup', (req, res) => {
 	const month = String(today.getMonth() + 1).padStart(2, '0'); // add leading zero if needed
 	const day = String(today.getDate()).padStart(2, '0'); // add leading zero if needed
 	const date = `${year}-${month}-${day}`;
+	let trimester = helper.getTrimester(firstPregDay);
 	if (userId && birthDate && bloodType && firstPregDay && medication!=null && diabetes!=null && hypertension!=null && previousPregnancies!=null && previousSurgeries!=null) {
-		sql = 'INSERT INTO `patient` (user_id, birth_date, blood_type, first_pregnant_day, medication_taken, diabetes, hypertension, previous_pregnancies, previous_surgeries, created_on) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
-		con.connection.query(sql, [userId, birthDate, bloodType, firstPregDay, medication, diabetes, hypertension, previousPregnancies, previousSurgeries, date], async function(error,result){
+		sql = 'INSERT INTO `patient` (user_id, birth_date, blood_type, first_pregnant_day, trimester, medication_taken, diabetes, hypertension, previous_pregnancies, previous_surgeries, created_on) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+		con.connection.query(sql, [userId, birthDate, bloodType, firstPregDay, trimester, medication, diabetes, hypertension, previousPregnancies, previousSurgeries, date], async function(error,result){
 			if(error){
 				console.log(error);
 				return res.status(404).send({ message: 'Patient Signup Issue' });
@@ -195,6 +207,8 @@ app.post('/api/doctorsignup', (req, res) => {
 	let speciality = req.body.speciality;
 	let oopnum = req.body.oopnum;
 	let gender = req.body.gender;
+	let experience = req.body.experience;
+	let biography = req.body.biography;
 	let sql = "";
 	const today = new Date();
 	const year = today.getFullYear();
@@ -202,8 +216,8 @@ app.post('/api/doctorsignup', (req, res) => {
 	const day = String(today.getDate()).padStart(2, '0'); // add leading zero if needed
 	const date = `${year}-${month}-${day}`;
 	if (userId && speciality && oopnum && gender) {
-		sql = 'INSERT INTO `doctor` (user_id, oop_number, speciality, gender, created_on) VALUES (?, ?, ?, ?, ?)';
-		con.connection.query(sql, [userId, oopnum, speciality, gender, date], async function(error,result){
+		sql = 'INSERT INTO `doctor` (user_id, oop_number, speciality, gender, created_on, experience, biography) VALUES (?, ?, ?, ?, ?, ?, ?)';
+		con.connection.query(sql, [userId, oopnum, speciality, gender, date, experience, biography], async function(error,result){
 			if(error){
 				console.log(error);
 				return res.status(404).send({ message: 'Doctor Signup Issue' });
@@ -345,24 +359,33 @@ app.get('/api/profile', (req,res) => {
 		const token = req.headers.authorization.split(' ')[1];
 		let result = await helper.validateUser(token);
 		if(result.indicator){
-			let sql = 'SELECT `first_name`, `last_name`, `email`, `phone_number`, `country` FROM `user` WHERE id=?';
+			let sql = 'SELECT `first_name`, `last_name`, `email`, `phone_number`, `country`, `user_type` FROM `user` WHERE id=?';
 			con.connection.query(sql, result.value.userId, function(error, rows){
 				if(error){
 					return res.status(404).send({message: "User Not Found. Login again.", reason: error.message})
 				}else{
+					rows[0].countryName = dbops.getCountryName(rows[0].country);
 					let sql = "";
 					if(rows[0].user_type){
-						sql = "SELECT * FROM `doctor` where user_id=?"
+						sql = "SELECT `oop_number`, `speciality`, `gender`, `biography`, `experience` FROM `doctor` where user_id=?"
+						con.connection.query(sql, result.value.userId, function(error, rowsSpecific){
+							if(error){
+								return res.status(404).send({message: "User Not Found. Login again.", reason: error.message})
+							}else{
+								return res.status(200).send({userData: rows[0], specificData: rowsSpecific[0]})
+							}
+						});
 					}else{
-						sql = "SELECT * FROM `patient` where user_id=?"
+						sql = "SELECT `birth_date`, `first_pregnant_day`, `trimester`, `blood_type`, `medication_taken`, `previous_surgeries`, `diabetes`, `hypertension`, `previous_pregnancies` FROM `patient` where user_id=?"
+						con.connection.query(sql, result.value.userId, function(error, rowsSpecific){
+							if(error){
+								return res.status(404).send({message: "User Not Found. Login again.", reason: error.message})
+							}else{
+								return res.status(200).send({userData: rows[0], specificData: rowsSpecific[0]})
+							}
+						});
 					}
-					con.connection.query(sql, result.value.userId, function(error, rowsSpecific){
-						if(error){
-							return res.status(404).send({message: "User Not Found. Login again.", reason: error.message})
-						}else{
-							return res.status(200).send({userData: rows[0], specificData: rowsSpecific[0]})
-						}
-					});
+
 				}
 			});
 		}else{
