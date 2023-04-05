@@ -406,4 +406,4 @@ app.get('/api/profile', (req,res) => {
 });
 //countries.getDataUsingAsyncAwaitGetCall();
 timer.cleanVerification(); //cleans the database from verification codes that have been there for more than 10 minutes
-
+// timer.updateTrimester();
