@@ -339,7 +339,7 @@ app.post('/api/login', (req,res) => {
 						let result = await bcrypt.comparePassword(password, rows[0].password);
 						if(result == true){
 							let userId = rows[0].id;
-							const token = jwt.sign({ userId }, process.env.SECRET, { expiresIn: '10m' });
+							const token = jwt.sign({ userId }, process.env.SECRET, { expiresIn: '1h' });
 							return res.status(200).send({ message: 'Sign In Successful', token: token });
 						}else{
 							return res.status(401).send({ message: 'Incorrect Username Or Password.' })
@@ -359,15 +359,18 @@ app.get('/api/profile', (req,res) => {
 		const token = req.headers.authorization.split(' ')[1];
 		let result = await helper.validateUser(token);
 		if(result.indicator){
-			let sql = 'SELECT `first_name`, `last_name`, `email`, `phone_number`, `country`, `user_type` FROM `user` WHERE id=?';
+			let sql = 'SELECT user.`first_name`, user.`last_name`, user.`email`, user.`phone_number`, user.`country`, user.`user_type`, country.country_name FROM `user` JOIN `country` ON user.country = country.country_id  WHERE id=?';
 			con.connection.query(sql, result.value.userId, function(error, rows){
 				if(error){
 					return res.status(404).send({message: "User Not Found. Login again.", reason: error.message})
 				}else{
-					rows[0].countryName = dbops.getCountryName(rows[0].country);
 					let sql = "";
 					if(rows[0].user_type){
-						sql = "SELECT `oop_number`, `speciality`, `gender`, `biography`, `experience` FROM `doctor` where user_id=?"
+						sql = "SELECT doctor.`dr_id`, doctor.`oop_number`, doctor.`speciality`, doctor.`gender`,\
+						doctor.`biography`, doctor.`experience`, experience.`exp_years`, doctor_address.* FROM `doctor`\
+						JOIN `experience` ON doctor.experience = experience.exp_id\
+						JOIN `doctor_address` ON doctor.dr_id = doctor_address.doctor_id\
+						WHERE user_id=?"
 						con.connection.query(sql, result.value.userId, function(error, rowsSpecific){
 							if(error){
 								return res.status(404).send({message: "User Not Found. Login again.", reason: error.message})
@@ -376,7 +379,15 @@ app.get('/api/profile', (req,res) => {
 							}
 						});
 					}else{
-						sql = "SELECT `birth_date`, `first_pregnant_day`, `trimester`, `blood_type`, `medication_taken`, `previous_surgeries`, `diabetes`, `hypertension`, `previous_pregnancies` FROM `patient` where user_id=?"
+						sql = "SELECT patient.`birth_date`, patient.`first_pregnant_day`, patient.`trimester`,\
+						patient.`blood_type`, patient.`medication_taken`, patient.`previous_surgeries`, patient.`diabetes`,\
+						patient.`hypertension`, patient.`previous_pregnancies`, blood_type.`type_name`, medication.`medication_name`,\
+						surgeries.`surgeries_name`, trimester.`trimester_name` FROM `patient`\
+						JOIN `blood_type` ON patient.blood_type = blood_type.type_id\
+						JOIN `medication` ON patient.medication_taken = medication.medication_id\
+						JOIN `surgeries` ON patient.blood_type = surgeries.surgeries_id\
+						JOIN `trimester` ON patient.blood_type = trimester.trimester_id\
+						WHERE user_id=?"
 						con.connection.query(sql, result.value.userId, function(error, rowsSpecific){
 							if(error){
 								return res.status(404).send({message: "User Not Found. Login again.", reason: error.message})

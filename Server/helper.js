@@ -47,8 +47,16 @@ function getTrimester(oldDate) {
         return result;
     }
 }
+function fixDate(givenDate){
+    let year = givenDate.getFullYear();
+    let month = ("0" + (givenDate.getMonth() + 1)).slice(-2); // Adding 1 since January is 0
+    let day = ("0" + givenDate.getDate()).slice(-2); // Adding leading zero if needed
 
+    let formattedDate = year + "-" + month + "-" + day;
+    return formattedDate;
+}
 exports.validateUser = validateUser;
 exports.getWeek = getWeek;
 exports.getTrimester = getTrimester;
+exports.fixDate = fixDate;
 
