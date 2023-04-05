@@ -1,7 +1,6 @@
 const bcrypt = require('./bcrypt.js');
 const timer = require('./cleaner.js');
 const con = require('./connectdb.js');
-const dbops = require('./dbops.js');
 const helper = require('./helper.js');
 const countries = require('./countries.js'); // used to create the countries table. 
 const nodemailer = require('nodemailer');
@@ -392,6 +391,7 @@ app.get('/api/profile', (req,res) => {
 							if(error){
 								return res.status(404).send({message: "User Not Found. Login again.", reason: error.message})
 							}else{
+								rowsSpecific[0].birthDate = helper.fixDate(rowsSpecific[0].birth_date);
 								return res.status(200).send({userData: rows[0], specificData: rowsSpecific[0]})
 							}
 						});
