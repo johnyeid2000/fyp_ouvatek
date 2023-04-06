@@ -4,7 +4,7 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import styles from './styles';
 
 
-const CustomInput = ({ label, IconName, value, setValue, placeholder, secureTextEntry, keyType, isPassword = false }) => {
+const CustomInput = ({ label, IconName, value, setValue, placeholder, secureTextEntry, keyType, isPassword = false, customStyleIcon, customStyle }) => {
 
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
@@ -18,13 +18,13 @@ const CustomInput = ({ label, IconName, value, setValue, placeholder, secureText
       <View style={styles.container}>
         <Icon
           name={IconName}
-          style={styles.icon}
+          style={[styles.icon, customStyleIcon]}
         />
         <TextInput
           value={value}
           onChangeText={setValue}
           placeholder={placeholder}
-          style={styles.input}
+          style={[styles.input, customStyle]}
           secureTextEntry={secureTextEntry && !isPasswordVisible}
           keyboardType={keyType}
         />
