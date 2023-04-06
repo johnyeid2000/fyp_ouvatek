@@ -66,7 +66,7 @@ const DoctorProfileScreen = () => {
       <View style={styles.userInfoSection}>
         <View style={{ flexDirection: 'row' }}>
           <Avatar.Image
-            source={require('../../assets/images/2.jpeg')}
+            source={require('../../assets/images/doctor.jpg')}
             size={80}
           />
           <View style={{ marginLeft: 20 }}>
@@ -109,17 +109,6 @@ const DoctorProfileScreen = () => {
           <Text style={styles.txtRow}>{specificData.experience}</Text>
         </View>
       </View>
-
-      {/* <View style={[styles.btn, {marginTop:'10%'}]}>
-            <CustomButton
-                text="Logout"
-                onPress={onLogoutPressed}
-                type='Secondary'
-
-            />
-        </View> */}
-
-
 
     </SafeAreaView>
   );

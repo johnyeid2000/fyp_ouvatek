@@ -65,13 +65,13 @@ const PatientProfileScreen = () => {
       <View style={styles.userInfoSection}>
         <View style={{ flexDirection: 'row', marginTop: 15 }}>
           <Avatar.Image
-            source={require('../../assets/images/1.jpg')}
+            source={require('../../assets/images/pregWoman.png')}
             size={80}
+            style={{ backgroundColor: 'white' }}
           />
           <View style={{ marginLeft: 20 }}>
             <Title style={styles.title}>{userData.first_name} {userData.last_name}</Title>
             <Caption style={styles.caption}>{userData.email}</Caption>
-            {/* <Caption style={styles.caption}>Age: 26</Caption> */}
             <Caption style={styles.caption}>Date Of Birth: {specificData.birth_date}</Caption>
           </View>
         </View>
