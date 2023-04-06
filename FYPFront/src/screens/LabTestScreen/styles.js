@@ -11,7 +11,7 @@ const styles = StyleSheet.create({
     },
     icon: {
         fontSize: 130,
-        color: '#651B70',
+        color: '#651B70'
     },
 
     titleContainer: {

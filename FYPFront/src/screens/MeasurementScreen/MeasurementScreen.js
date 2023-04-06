@@ -1,8 +1,8 @@
-import React , {useEffect} from 'react';
-import {View, Text, BackHandler, Alert} from 'react-native';
+import React, { useEffect } from 'react';
+import { View, Text, BackHandler, Alert } from 'react-native';
 import MeasurementButton from '../../components/MeasurementButton/MeasurementButton';
 
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 
 
 const MeasurementScreen = () => {
@@ -10,7 +10,7 @@ const MeasurementScreen = () => {
   const navigation = useNavigation();
 
 
-      useEffect(() => {
+  useEffect(() => {
     const handleBackPress = () => {
       if (navigation.isFocused()) {
         Alert.alert(
@@ -18,7 +18,7 @@ const MeasurementScreen = () => {
           '',
           [
             { text: 'NO', onPress: () => false, style: 'cancel' },
-            { text: 'YES', onPress: () => navigation.navigate("SignIn")},
+            { text: 'YES', onPress: () => navigation.navigate("SignIn") },
           ],
           { cancelable: false }
         );
@@ -42,27 +42,26 @@ const MeasurementScreen = () => {
 
   const HeartRatePressed = () => {
     navigation.navigate('HeartRate');
-    //console.warn('Heart Rate and blood pressure Pressed');
   };
   const TemperaturePressed = () => {
-    console.warn('Temperature Pressed');
+    navigation.navigate('Temperature');
   };
   const BloodGlucosePressed = () => {
-    console.warn('Blood Glucose Pressed');
+    navigation.navigate('BloodGlucose');
   };
   const LabTestPressed = () => {
-    console.warn('Lab Test Pressed');
+    navigation.navigate('LabTest');
   };
   const SpO2Pressed = () => {
-    console.warn('SpO2 Pressed');
+    navigation.navigate('Spo2');
   };
   const FetusPressed = () => {
-    console.warn('Fetus Pressed');
+    navigation.navigate('Fetus');
   };
 
   return (
     <View>
-      <View style={{marginTop: '10%'}}>
+      <View style={{ marginTop: '10%' }}>
         <MeasurementButton
           text="Heart rate & blood pressure"
           onPress={HeartRatePressed}
