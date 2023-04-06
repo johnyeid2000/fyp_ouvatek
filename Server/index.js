@@ -78,6 +78,16 @@ app.get('/api/surgeries', (req, res) => {
 		};
 	});
 });
+app.get('/api/experience', (req, res) => {
+	sql = "SELECT * FROM `experience`";
+	con.connection.query(sql, function(error,rows,fields){
+		if(error){
+			return res.status(404).send({ message: 'Surgeries Not Found' });
+		}else{
+			return res.status(200).send({rows});
+		};
+	});
+});
 // -------------------------Shared Information------------------------------- //
 
 app.post('/api/commonsignup', (req, res) => {
@@ -176,9 +186,10 @@ app.post('/api/patientsignup', (req, res) => {
 	const month = String(today.getMonth() + 1).padStart(2, '0'); // add leading zero if needed
 	const day = String(today.getDate()).padStart(2, '0'); // add leading zero if needed
 	const date = `${year}-${month}-${day}`;
+	let trimester = helper.getTrimester(firstPregDay);
 	if (userId && birthDate && bloodType && firstPregDay && medication!=null && diabetes!=null && hypertension!=null && previousPregnancies!=null && previousSurgeries!=null) {
-		sql = 'INSERT INTO `patient` (user_id, birth_date, blood_type, first_pregnant_day, medication_taken, diabetes, hypertension, previous_pregnancies, previous_surgeries, created_on) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
-		con.connection.query(sql, [userId, birthDate, bloodType, firstPregDay, medication, diabetes, hypertension, previousPregnancies, previousSurgeries, date], async function(error,result){
+		sql = 'INSERT INTO `patient` (user_id, birth_date, blood_type, first_pregnant_day, trimester, medication_taken, diabetes, hypertension, previous_pregnancies, previous_surgeries, created_on) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+		con.connection.query(sql, [userId, birthDate, bloodType, firstPregDay, trimester, medication, diabetes, hypertension, previousPregnancies, previousSurgeries, date], async function(error,result){
 			if(error){
 				console.log(error);
 				return res.status(404).send({ message: 'Patient Signup Issue' });
@@ -195,6 +206,8 @@ app.post('/api/doctorsignup', (req, res) => {
 	let speciality = req.body.speciality;
 	let oopnum = req.body.oopnum;
 	let gender = req.body.gender;
+	let experience = req.body.experience;
+	let biography = req.body.biography;
 	let sql = "";
 	const today = new Date();
 	const year = today.getFullYear();
@@ -202,8 +215,8 @@ app.post('/api/doctorsignup', (req, res) => {
 	const day = String(today.getDate()).padStart(2, '0'); // add leading zero if needed
 	const date = `${year}-${month}-${day}`;
 	if (userId && speciality && oopnum && gender) {
-		sql = 'INSERT INTO `doctor` (user_id, oop_number, speciality, gender, created_on) VALUES (?, ?, ?, ?, ?)';
-		con.connection.query(sql, [userId, oopnum, speciality, gender, date], async function(error,result){
+		sql = 'INSERT INTO `doctor` (user_id, oop_number, speciality, gender, created_on, experience, biography) VALUES (?, ?, ?, ?, ?, ?, ?)';
+		con.connection.query(sql, [userId, oopnum, speciality, gender, date, experience, biography], async function(error,result){
 			if(error){
 				console.log(error);
 				return res.status(404).send({ message: 'Doctor Signup Issue' });
@@ -325,7 +338,7 @@ app.post('/api/login', (req,res) => {
 						let result = await bcrypt.comparePassword(password, rows[0].password);
 						if(result == true){
 							let userId = rows[0].id;
-							const token = jwt.sign({ userId }, process.env.SECRET, { expiresIn: '10m' });
+							const token = jwt.sign({ userId }, process.env.SECRET, { expiresIn: '1h' });
 							return res.status(200).send({ message: 'Sign In Successful', token: token });
 						}else{
 							return res.status(401).send({ message: 'Incorrect Username Or Password.' })
@@ -345,24 +358,45 @@ app.get('/api/profile', (req,res) => {
 		const token = req.headers.authorization.split(' ')[1];
 		let result = await helper.validateUser(token);
 		if(result.indicator){
-			let sql = 'SELECT `first_name`, `last_name`, `email`, `phone_number`, `country` FROM `user` WHERE id=?';
+			let sql = 'SELECT user.`first_name`, user.`last_name`, user.`email`, user.`phone_number`, user.`country`, user.`user_type`, country.country_name FROM `user` JOIN `country` ON user.country = country.country_id  WHERE id=?';
 			con.connection.query(sql, result.value.userId, function(error, rows){
 				if(error){
 					return res.status(404).send({message: "User Not Found. Login again.", reason: error.message})
 				}else{
 					let sql = "";
 					if(rows[0].user_type){
-						sql = "SELECT * FROM `doctor` where user_id=?"
+						sql = "SELECT doctor.`dr_id`, doctor.`oop_number`, doctor.`speciality`, doctor.`gender`,\
+						doctor.`biography`, doctor.`experience`, experience.`exp_years`, doctor_address.* FROM `doctor`\
+						JOIN `experience` ON doctor.experience = experience.exp_id\
+						JOIN `doctor_address` ON doctor.dr_id = doctor_address.doctor_id\
+						WHERE user_id=?"
+						con.connection.query(sql, result.value.userId, function(error, rowsSpecific){
+							if(error){
+								return res.status(404).send({message: "User Not Found. Login again.", reason: error.message})
+							}else{
+								return res.status(200).send({userData: rows[0], specificData: rowsSpecific[0]})
+							}
+						});
 					}else{
-						sql = "SELECT * FROM `patient` where user_id=?"
+						sql = "SELECT patient.`birth_date`, patient.`first_pregnant_day`, patient.`trimester`,\
+						patient.`blood_type`, patient.`medication_taken`, patient.`previous_surgeries`, patient.`diabetes`,\
+						patient.`hypertension`, patient.`previous_pregnancies`, blood_type.`type_name`, medication.`medication_name`,\
+						surgeries.`surgeries_name`, trimester.`trimester_name` FROM `patient`\
+						JOIN `blood_type` ON patient.blood_type = blood_type.type_id\
+						JOIN `medication` ON patient.medication_taken = medication.medication_id\
+						JOIN `surgeries` ON patient.blood_type = surgeries.surgeries_id\
+						JOIN `trimester` ON patient.blood_type = trimester.trimester_id\
+						WHERE user_id=?"
+						con.connection.query(sql, result.value.userId, function(error, rowsSpecific){
+							if(error){
+								return res.status(404).send({message: "User Not Found. Login again.", reason: error.message})
+							}else{
+								rowsSpecific[0].birthDate = helper.fixDate(rowsSpecific[0].birth_date);
+								return res.status(200).send({userData: rows[0], specificData: rowsSpecific[0]})
+							}
+						});
 					}
-					con.connection.query(sql, result.value.userId, function(error, rowsSpecific){
-						if(error){
-							return res.status(404).send({message: "User Not Found. Login again.", reason: error.message})
-						}else{
-							return res.status(200).send({userData: rows[0], specificData: rowsSpecific[0]})
-						}
-					});
+
 				}
 			});
 		}else{
@@ -372,4 +406,4 @@ app.get('/api/profile', (req,res) => {
 });
 //countries.getDataUsingAsyncAwaitGetCall();
 timer.cleanVerification(); //cleans the database from verification codes that have been there for more than 10 minutes
-
+// timer.updateTrimester();
