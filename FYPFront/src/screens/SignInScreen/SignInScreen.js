@@ -32,7 +32,6 @@ const SignInScreen = () => {
       );
       if (response.status === 200) {
         const token = response.data.token;
-        console.log(token);
         await AsyncStorage.setItem('token', token);
         setEmail('');
         setPassword('');
