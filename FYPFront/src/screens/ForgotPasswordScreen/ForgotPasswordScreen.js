@@ -1,27 +1,45 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import { Text, View } from "react-native";
 import CustomInput from '../../components/CustomInput';
 import CustomButton from "../../components/CustomButton/CustomButton";
 import styles from './styles';
 
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 
-const ForgotPasswordScreen =() =>{
+const ForgotPasswordScreen = () => {
     const [email, setEmail] = useState('');
+    const [forgotPassStatus, setForgotPassStatus] = useState(null);
+
 
     const navigation = useNavigation();
 
     const onSendPressed = () => {
-        navigation.navigate("NewPassword");
+        navigation.navigate("ConfirmEmailPassword");
     };
 
-    const onSignInPressed = () => {
-        navigation.navigate("SignIn");
-    };
+    // const onSendPressed = async () => {
+    //     try {
+    //         const response = await axios.post('https://ouvatek.herokuapp.com/api/...',
+    //             { email},
+    //             {
+    //                 headers: { 'Content-Type': 'application/json' },
+    //             },
+    //         );
+    //         const id = response.data.userId;
+    //         if (response.status === 200 ) {
+    //             navigation.navigate("ConfirmEmailPassword", { id: id });
+    //         }
+    //     } catch (error) {
+    //         setForgotPassStatus(error.response.data.message);
+    //     }
+    // };
 
-    return(
+
+    return (
         <View style={styles.root}>
-            <Text style={styles.title}>Reset your password</Text>
+            <Text style={styles.title}>Please enter your email</Text>
+            <Text style={styles.error}>{forgotPassStatus}</Text>
+
 
             <CustomInput
                 label="Email"
@@ -36,15 +54,10 @@ const ForgotPasswordScreen =() =>{
                 onPress={onSendPressed}
             />
 
-            <CustomButton
-                text="Back to Sign In"
-                onPress={onSignInPressed}
-                type='Teritiary'
-            />
         </View>
     );
 };
 
 
-export default ForgotPasswordScreen 
+export default ForgotPasswordScreen
 

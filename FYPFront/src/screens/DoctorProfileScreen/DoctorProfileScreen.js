@@ -1,87 +1,117 @@
-import React from 'react';
-import {View, SafeAreaView, Pressable} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, SafeAreaView, Pressable, Alert } from 'react-native';
 import { Avatar, Title, Caption, Text } from 'react-native-paper';
 import styles from './styles';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import CustomButton from "../../components/CustomButton/CustomButton";
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 
 const DoctorProfileScreen = () => {
+  const [userData, setUserData] = useState('');
+  const [specificData, setSpecificData] = useState('');
 
-    const navigation = useNavigation();
+  const navigation = useNavigation();
 
-    const onEditAccountPressed = () =>{
-        navigation.navigate('EditDoctor');
+  const getProfileData = async () => {
+    try {
+      const token = await AsyncStorage.getItem('token');
+      console.log(token);
+      const response = await axios.get('https://ouvatek.herokuapp.com/api/profile', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      setUserData(response.data.userData);
+      setSpecificData(response.data.specificData);
+      console.log(specificData);
+    } catch (error) {
+      console.error(error);
     }
+  };
 
-    const onLogoutPressed = () =>{
-        navigation.navigate('SignIn');
-    }
+  useEffect(() => {
+    getProfileData();
+  }, []);
 
 
-    return (
-        <SafeAreaView style={styles.container}>
-        <View style={styles.editLogoutContainer}>
-          <Pressable onPress={onEditAccountPressed}>
-          <Icon name='account-edit-outline' color="#651B70" size={25} style={{marginLeft:'5%'}}/>
-          </Pressable>
+  const onEditAccountPressed = () => {
+    navigation.navigate('EditDoctor');
+  }
 
-          <Pressable onPress={onLogoutPressed}> 
-          <Icon name='logout' color="#777777" size={25} style={{marginRight:'5%'}}/>
-          </Pressable>
+  const onLogoutPressed = () => {
+    Alert.alert(
+      'Are you sure you want to Logout?',
+      '',
+      [
+        { text: 'NO', onPress: () => false, style: 'cancel' },
+        { text: 'YES', onPress: () => navigation.navigate("SignIn") },
+      ],
+      { cancelable: false }
+    );
+  }
+
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <View style={styles.editLogoutContainer}>
+        <Pressable onPress={onEditAccountPressed}>
+          <Icon name='account-edit-outline' color="#651B70" size={25} style={{ marginLeft: '5%' }} />
+        </Pressable>
+
+        <Pressable onPress={onLogoutPressed}>
+          <Icon name='logout' color="#777777" size={25} style={{ marginRight: '5%' }} />
+        </Pressable>
+      </View>
+      <View style={styles.userInfoSection}>
+        <View style={{ flexDirection: 'row' }}>
+          <Avatar.Image
+            source={require('../../assets/images/2.jpeg')}
+            size={80}
+          />
+          <View style={{ marginLeft: 20 }}>
+            <Title style={[styles.title, {
+              marginTop: 15,
+              marginBottom: 5,
+            }]}>{userData.first_name} {userData.last_name}</Title>
+            <Caption style={styles.caption}>{userData.email}</Caption>
+          </View>
         </View>
-          <View style={styles.userInfoSection}>
-            <View style={{flexDirection: 'row'}}>
-              <Avatar.Image 
-                source={require('../../assets/images/2.jpeg')}
-                size={80}
-              />
-              <View style={{marginLeft: 20}}>
-                <Title style={[styles.title, {
-                  marginTop:15,
-                  marginBottom: 5,
-                }]}>Dr. Jack Ross</Title>
-                <Caption style={styles.caption}>jack.Ross@hotmail.com</Caption>
-              </View>
-            </View>
-          </View>
+      </View>
 
-          {/* <View style={styles.btn}>
-            <CustomButton
-                text="Edit Account"
-                onPress={onEditAccountPressed}
-            />
-          </View> */}
-    
-          <View style={styles.userInfoSection}>
-          <View style={styles.row}>
-              <Icon name="hospital-building" color="#651B70" size={20}/>
-              <Text style={styles.txtRow}>CHU-NDS</Text>
-            </View>
-            <View style={styles.row}>
-              <Icon name="map-marker-radius" color="#651B70" size={20}/>
-              <Text style={styles.txtRow}>Jbeil, Lebanon</Text>
-            </View>
-            <View style={styles.row}>
-              <Icon name="phone" color="#651B70" size={20}/>
-              <Text style={styles.txtRow}>+961-** *** ***</Text>
-            </View>
-            <View style={styles.row}>
-              <Icon name="certificate-outline" color="#651B70" size={20}/>
-              <Text style={styles.txtRow}>Endocrinologist</Text>
-            </View>
-            <View style={styles.row}>
-              <Icon name="gender-male-female" color="#651B70" size={20}/>
-              <Text style={styles.txtRow}>Male</Text>
-            </View>
-            <View style={styles.row}>
-              <Icon name="timelapse" color="#651B70" size={20}/>
-              <Text style={styles.txtRow}>5 of experience</Text>
-            </View>
-          </View>
+      <View style={styles.userInfoSection}>
+        <View style={styles.row}>
+          <Icon name="hospital-building" color="#651B70" size={20} />
+          <Text style={styles.txtRow}>CHU-NDS</Text>
+        </View>
+        <View style={styles.row}>
+          <Icon name="map-marker-radius" color="#651B70" size={20} />
+          <Text style={styles.txtRow}>Jbeil, Lebanon</Text>
+        </View>
+        <View style={styles.row}>
+          <Icon name="phone" color="#651B70" size={20} />
+          <Text style={styles.txtRow}>+961-{userData.phone_number}</Text>
+        </View>
+        <View style={styles.row}>
+          <Icon name="doctor" color="#651B70" size={20} />
+          <Text style={styles.txtRow}>{specificData.oop_number}</Text>
+        </View>
+        <View style={styles.row}>
+          <Icon name="certificate-outline" color="#651B70" size={20} />
+          <Text style={styles.txtRow}>{specificData.speciality}</Text>
+        </View>
+        <View style={styles.row}>
+          <Icon name="gender-male-female" color="#651B70" size={20} />
+          <Text style={styles.txtRow}>{specificData.gender}</Text>
+        </View>
+        <View style={styles.row}>
+          <Icon name="timelapse" color="#651B70" size={20} />
+          <Text style={styles.txtRow}>{specificData.experience}</Text>
+        </View>
+      </View>
 
-        {/* <View style={[styles.btn, {marginTop:'10%'}]}>
+      {/* <View style={[styles.btn, {marginTop:'10%'}]}>
             <CustomButton
                 text="Logout"
                 onPress={onLogoutPressed}
@@ -89,12 +119,12 @@ const DoctorProfileScreen = () => {
 
             />
         </View> */}
-        
 
 
-        </SafeAreaView>
-      );
 
-  };
+    </SafeAreaView>
+  );
+
+};
 
 export default DoctorProfileScreen

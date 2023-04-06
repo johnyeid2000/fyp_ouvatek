@@ -14,14 +14,14 @@ const styles = StyleSheet.create({
     },
     text:{
         color:'gray',
-        marginVertical:10,
+        marginVertical:10
     },
     error:{
         fontSize:16,
         color:'red',
         marginBottom:5
     },
+    
 });
-
 
 export default styles;
