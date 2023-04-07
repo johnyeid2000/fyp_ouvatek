@@ -136,7 +136,7 @@ app.post('/api/commonsignup', (req, res) => {
 	if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
 		return res.status(400).send({ message: 'Invalid Email Format.' });
 	}
-	if(/^[078]\d{8}$/.test(phoneNumber)){
+	if(/^(03|70|71|76|78|79|81)\d{8}$/.test(phoneNumber)){
 		return res.status(400).send({ message: 'Invalid Phone Number Format.' });
 	}
 	if(password!=confPassword){
@@ -235,10 +235,11 @@ app.post('/api/doctorlocation', (req, res) => {
 	let street = req.body.street;
 	let building = req.body.building;
 	let floor = req.body.floor;
+	let phone = req.body.phoneNumber;
 	let sql = "";
-	if(doctorId && country && city && street && building && floor){
-		sql = 'INSERT INTO `doctor_address`(`doctor_id` , `clinic_country`, `clinic_city`, `clinic_street`, `clinic_building`, `clinic_floor`) VALUES (?, ?, ?, ?, ?, ?)';
-		con.connection.query(sql, [doctorId, country, city, street, building, floor], async function(error,result){
+	if(doctorId && country && city && street && building && floor && phone){
+		sql = 'INSERT INTO `doctor_address`(`doctor_id` , `clinic_country`, `clinic_city`, `clinic_street`, `clinic_building`, `clinic_floor`, `clinic_number`) VALUES (?, ?, ?, ?, ?, ?, ?)';
+		con.connection.query(sql, [doctorId, country, city, street, building, floor, phone], async function(error,result){
 			if(error){
 				console.log(error);
 				return res.status(404).send({ message: 'Doctor Location Signup Issue' });
@@ -300,7 +301,7 @@ app.post('/api/sendcode', (req,res) => {
 						if(error){
 							return res.status(404).send({ message: 'Removing verification from database Issue.' });
 						}else{
-							return res.status(200).send({ message: 'Account Verified. Proceed to Login'})
+							return res.status(200).send({ message: 'Account Verified. You can proceed.'})
 						}
 					});
 				}
@@ -312,9 +313,44 @@ app.post('/api/sendcode', (req,res) => {
 	}
 	else{
 		res.status(401).send({ message: 'Verication Code Cant be null.'})
-		console.log("Test");
-
 	}
+});
+app.get('/api/forgotpassmail', (req,res) => {
+	let email = req.body.email;
+	let sql = "SELECT id from `user` WHERE email = ?"
+	con.connection.query(sql, email, async function(error,rows){
+		if(error){
+			return res.status(404).send({ message: 'User Never Registered.' });
+		}else{
+			let time = new Date();
+			const finalDate = time.toISOString().slice(0, 19).replace('T', ' ');
+			const code = Math.floor(Math.random() * 900000) + 100000;
+			let userid = rows[0].id;
+			let sql = "INSERT INTO `confirmation_code` (`user_id`, `confirmation_code`, `created_on`) VALUES (?, ?, ?)";
+			con.connection.query(sql, [userid, code, finalDate], async function(error){
+				if(error){
+					return res.status(404).send({ message: 'Adding verification to database Issue.' });
+				}
+			});
+			const mailOptions = {
+				from: process.env.MAIL,
+				to: email,
+				subject: 'Email Confirmation',
+				text: `You have requested a Password Change due to forgeting your password.\n
+				If you did not do so, kindly disregard this email.\n
+				Your verification Number is: ${code}`
+			  };
+			  transporter.sendMail(mailOptions, (error, info) => {
+				if (error) {
+				  	console.log(error);
+				  	res.status(404).send('Sending Mail Error:' + error);
+				} else {
+				  	res.status(200).send('Email sent: ' + info.response);
+				}
+			  });
+		}
+	});
+
 });
 app.post('/api/login', (req,res) => {
 	const email = req.body.email.toLowerCase().trim(); 
@@ -366,9 +402,10 @@ app.get('/api/profile', (req,res) => {
 					let sql = "";
 					if(rows[0].user_type){
 						sql = "SELECT doctor.`dr_id`, doctor.`oop_number`, doctor.`speciality`, doctor.`gender`,\
-						doctor.`biography`, doctor.`experience`, experience.`exp_years`, doctor_address.* FROM `doctor`\
+						doctor.`biography`, doctor.`experience`, experience.`exp_years`, doctor_address.* , country.country_name FROM `doctor`\
 						JOIN `experience` ON doctor.experience = experience.exp_id\
 						JOIN `doctor_address` ON doctor.dr_id = doctor_address.doctor_id\
+						JOIN `country` ON doctor_address.clinic_country = country.country_id\
 						WHERE user_id=?"
 						con.connection.query(sql, result.value.userId, function(error, rowsSpecific){
 							if(error){
@@ -404,6 +441,7 @@ app.get('/api/profile', (req,res) => {
 		}
 	})();
 });
+
 //countries.getDataUsingAsyncAwaitGetCall();
 timer.cleanVerification(); //cleans the database from verification codes that have been there for more than 10 minutes
 // timer.updateTrimester();
