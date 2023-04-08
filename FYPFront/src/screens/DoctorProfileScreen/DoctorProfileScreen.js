@@ -24,7 +24,6 @@ const DoctorProfileScreen = () => {
       });
       setUserData(response.data.userData);
       setSpecificData(response.data.specificData);
-      console.log(specificData);
     } catch (error) {
       console.error(error);
     }
@@ -82,12 +81,14 @@ const DoctorProfileScreen = () => {
       <View style={styles.userInfoSection}>
         <View style={styles.row}>
           <Icon name="hospital-building" color="#651B70" size={20} />
-          <Text style={styles.txtRow}>CHU-NDS</Text>
+          <Text style={styles.txtRow}>{specificData.country_name} - {specificData.clinic_city} -
+            Street {specificData.clinic_street} - Building {specificData.clinic_building} - Floor {specificData.clinic_floor}</Text>
         </View>
         <View style={styles.row}>
-          <Icon name="map-marker-radius" color="#651B70" size={20} />
-          <Text style={styles.txtRow}>Jbeil, Lebanon</Text>
+          <Icon name="phone-classic" color="#651B70" size={20} />
+          <Text style={styles.txtRow}>{specificData.clinic_number}</Text>
         </View>
+
         <View style={styles.row}>
           <Icon name="phone" color="#651B70" size={20} />
           <Text style={styles.txtRow}>+961-{userData.phone_number}</Text>
@@ -106,7 +107,11 @@ const DoctorProfileScreen = () => {
         </View>
         <View style={styles.row}>
           <Icon name="timelapse" color="#651B70" size={20} />
-          <Text style={styles.txtRow}>{specificData.experience}</Text>
+          <Text style={styles.txtRow}>{specificData.exp_years}</Text>
+        </View>
+        <View style={styles.row}>
+          <Icon name="book-outline" color="#651B70" size={20} />
+          <Text style={styles.txtRow}>{specificData.biography}</Text>
         </View>
       </View>
 

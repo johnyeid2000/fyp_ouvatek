@@ -3,6 +3,7 @@ import { Text, View } from "react-native";
 import CustomInput from '../../components/CustomInput';
 import CustomButton from "../../components/CustomButton/CustomButton";
 import styles from './styles';
+import axios from 'axios';
 
 import { useNavigation } from '@react-navigation/native';
 
@@ -13,26 +14,26 @@ const ForgotPasswordScreen = () => {
 
     const navigation = useNavigation();
 
-    const onSendPressed = () => {
-        navigation.navigate("ConfirmEmailPassword");
-    };
-
-    // const onSendPressed = async () => {
-    //     try {
-    //         const response = await axios.post('https://ouvatek.herokuapp.com/api/...',
-    //             { email},
-    //             {
-    //                 headers: { 'Content-Type': 'application/json' },
-    //             },
-    //         );
-    //         const id = response.data.userId;
-    //         if (response.status === 200 ) {
-    //             navigation.navigate("ConfirmEmailPassword", { id: id });
-    //         }
-    //     } catch (error) {
-    //         setForgotPassStatus(error.response.data.message);
-    //     }
+    // const onSendPressed = () => {
+    //     navigation.navigate("ConfirmEmailPassword");
     // };
+
+    const onSendPressed = async () => {
+        try {
+            const response = await axios.post('https://ouvatek.herokuapp.com/api/forgotpassmail',
+                { email },
+                {
+                    headers: { 'Content-Type': 'application/json' },
+                },
+            );
+            const id = response.data.userId;
+            if (response.status === 200) {
+                navigation.navigate("ConfirmEmailPassword", { id: id });
+            }
+        } catch (error) {
+            setForgotPassStatus(error.response.data.message);
+        }
+    };
 
 
     return (
