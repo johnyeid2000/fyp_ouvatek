@@ -181,6 +181,21 @@ app.post('/api/patientsignup', (req, res) => {
 	let previousPregnancies = req.body.checkPrevPreg;
 	let previousSurgeries = req.body.selectedSurgeries;
 	let sql = "";
+	if(diabetes == true || diabetes == "true"){
+		diabetes = 1;
+	}else{
+		diabetes = 0;
+	}
+	if(hypertension == true || hypertension == "true"){
+		hypertension = 1;
+	}else{
+		hypertension = 0;
+	}
+	if(previousPregnancies == true || previousPregnancies == "true"){
+		previousPregnancies = 1;
+	}else{
+		previousPregnancies = 0;
+	}
 	const today = new Date();
 	const year = today.getFullYear();
 	const month = String(today.getMonth() + 1).padStart(2, '0'); // add leading zero if needed
@@ -377,13 +392,16 @@ app.post('/api/changepass', (req,res) => {
 			return res.status(400).send({ message: 'Passwords Do Not Match.' });
 		}else{
 			(async() => {
+				console.log(password);
+				console.log(userId);
 				let pass = await bcrypt.hashPassword(password);
 				let sql = 'UPDATE `user` SET password = ? WHERE id=?'
-				con.connection.query(sql, [pass, userId], function(error, rows){
+				con.connection.query(sql, [pass, userId], function(error, result){
 					if(error){
 						return res.status(404).send({ message: 'User not Found.' });
 					}
 					else{
+						console.log(result);
 						return res.status(200).send({ message: 'Password Changed. Proceed to Login.'})
 					}
 			});
@@ -402,12 +420,12 @@ app.post('/api/login', (req,res) => {
 	}
 	// validate the email format
 	if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
-		return res.status(400).send({ message: 'Invalid Email Format' });
+		return res.status(400).send({ message: 'Invalid Email Format.' });
 	}
 	let	sql = "SELECT `id`, `email`, `password`, `user_type` FROM `user` WHERE email=(?)";
 	con.connection.query(sql, email, function(error,rows,fields){
 		if(error){
-			return res.status(404).send({ message: 'User Not Found' });
+			return res.status(404).send({ message: 'User Not Found.' });
 		}else{
 			if(rows.length == 1){
 				if(rows[0].user_type == checkDoctor){
@@ -416,13 +434,13 @@ app.post('/api/login', (req,res) => {
 						if(result == true){
 							let userId = rows[0].id;
 							const token = jwt.sign({ userId }, process.env.SECRET, { expiresIn: '1h' });
-							return res.status(200).send({ message: 'Sign In Successful', token: token });
+							return res.status(200).send({ message: 'Sign In Successful.', token: token });
 						}else{
 							return res.status(401).send({ message: 'Incorrect Username Or Password.' })
 						}
 					})();	
 				}else{
-					return res.status(404).send({ message: 'User Not Found' });
+					return res.status(404).send({ message: 'User Not Found.' });
 				}
 			}else{
 				return res.status(403).send({ message: 'Something Went Wrong.' });
@@ -434,14 +452,17 @@ app.get('/api/profile', (req,res) => {
 	(async () => {
 		const token = req.headers.authorization.split(' ')[1];
 		let result = await helper.validateUser(token);
+		console.log("Test1");
 		if(result.indicator){
 			let sql = 'SELECT user.`first_name`, user.`last_name`, user.`email`, user.`phone_number`, user.`country`, user.`user_type`, country.country_name FROM `user` JOIN `country` ON user.country = country.country_id  WHERE id=?';
 			con.connection.query(sql, result.value.userId, function(error, rows){
 				if(error){
 					return res.status(404).send({message: "User Not Found. Login again.", reason: error.message})
 				}else{
+					console.log("Test2");
 					if(rows.length == 1){
 						let sql = "";
+						console.log("Test3");
 						if(rows[0].user_type){
 							sql = "SELECT doctor.`dr_id`, doctor.`oop_number`, doctor.`speciality`, doctor.`gender`,\
 							doctor.`biography`, doctor.`experience`, experience.`exp_years`, doctor_address.* , country.country_name FROM `doctor`\
@@ -449,14 +470,17 @@ app.get('/api/profile', (req,res) => {
 							JOIN `doctor_address` ON doctor.dr_id = doctor_address.doctor_id\
 							JOIN `country` ON doctor_address.clinic_country = country.country_id\
 							WHERE user_id=?"
+							console.log("Test4");
 							con.connection.query(sql, result.value.userId, function(error, rowsSpecific){
 								if(error){
 									return res.status(404).send({message: "User Not Found. Login again.", reason: error.message})
 								}else{
+									console.log("Test5");
 									return res.status(200).send({userData: rows[0], specificData: rowsSpecific[0]})
 								}
 							});
 						}else{
+							console.log("Test6");
 							sql = "SELECT patient.`birth_date`, patient.`first_pregnant_day`, patient.`trimester`,\
 							patient.`blood_type`, patient.`medication_taken`, patient.`previous_surgeries`, patient.`diabetes`,\
 							patient.`hypertension`, patient.`previous_pregnancies`, blood_type.`type_name`, medication.`medication_name`,\
@@ -467,10 +491,31 @@ app.get('/api/profile', (req,res) => {
 							JOIN `trimester` ON patient.blood_type = trimester.trimester_id\
 							WHERE user_id=?"
 							con.connection.query(sql, result.value.userId, function(error, rowsSpecific){
+								console.log("Test7");
+								if(rowsSpecific[0].previous_pregnancies){
+									rowsSpecific[0].previous_pregnancies = "Had previous pregnancies";
+								}
+								else{
+									rowsSpecific[0].previous_pregnancies = "No previous pregnancies";
+								}
+								if(rowsSpecific[0].diabetes){
+									rowsSpecific[0].diabetes = "Diabetic";
+								}
+								else{
+									rowsSpecific[0].diabetes = "Not Diabetic";
+								}
+								if(rowsSpecific[0].hypertension){
+									rowsSpecific[0].hypertension = "Hypertensive";
+								}
+								else{
+									rowsSpecific[0].hypertension = "Not Hypertensive";
+								}
 								rowsSpecific[0].birthDate = helper.fixDate(rowsSpecific[0].birth_date);
+								rowsSpecific[0].week = helper.getWeek(rowsSpecific[0].first_pregnant_day);
 								if(error){
 									return res.status(404).send({message: "User Not Found. Login again.", reason: error.message})
 								}else{
+									console.log("Test8");
 									return res.status(200).send({userData: rows[0], specificData: rowsSpecific[0]})
 								}
 							});
