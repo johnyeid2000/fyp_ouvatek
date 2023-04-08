@@ -181,6 +181,21 @@ app.post('/api/patientsignup', (req, res) => {
 	let previousPregnancies = req.body.checkPrevPreg;
 	let previousSurgeries = req.body.selectedSurgeries;
 	let sql = "";
+	if(diabetes == true || diabetes == "true"){
+		diabetes = 1;
+	}else{
+		diabetes = 0;
+	}
+	if(hypertension == true || hypertension == "true"){
+		hypertension = 1;
+	}else{
+		hypertension = 0;
+	}
+	if(previousPregnancies == true || previousPregnancies == "true"){
+		previousPregnancies = 1;
+	}else{
+		previousPregnancies = 0;
+	}
 	const today = new Date();
 	const year = today.getFullYear();
 	const month = String(today.getMonth() + 1).padStart(2, '0'); // add leading zero if needed
@@ -377,13 +392,16 @@ app.post('/api/changepass', (req,res) => {
 			return res.status(400).send({ message: 'Passwords Do Not Match.' });
 		}else{
 			(async() => {
+				console.log(password);
+				console.log(userId);
 				let pass = await bcrypt.hashPassword(password);
 				let sql = 'UPDATE `user` SET password = ? WHERE id=?'
-				con.connection.query(sql, [pass, userId], function(error, rows){
+				con.connection.query(sql, [pass, userId], function(error, result){
 					if(error){
 						return res.status(404).send({ message: 'User not Found.' });
 					}
 					else{
+						console.log(result);
 						return res.status(200).send({ message: 'Password Changed. Proceed to Login.'})
 					}
 			});
@@ -402,12 +420,12 @@ app.post('/api/login', (req,res) => {
 	}
 	// validate the email format
 	if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
-		return res.status(400).send({ message: 'Invalid Email Format' });
+		return res.status(400).send({ message: 'Invalid Email Format.' });
 	}
 	let	sql = "SELECT `id`, `email`, `password`, `user_type` FROM `user` WHERE email=(?)";
 	con.connection.query(sql, email, function(error,rows,fields){
 		if(error){
-			return res.status(404).send({ message: 'User Not Found' });
+			return res.status(404).send({ message: 'User Not Found.' });
 		}else{
 			if(rows.length == 1){
 				if(rows[0].user_type == checkDoctor){
@@ -416,13 +434,13 @@ app.post('/api/login', (req,res) => {
 						if(result == true){
 							let userId = rows[0].id;
 							const token = jwt.sign({ userId }, process.env.SECRET, { expiresIn: '1h' });
-							return res.status(200).send({ message: 'Sign In Successful', token: token });
+							return res.status(200).send({ message: 'Sign In Successful.', token: token });
 						}else{
 							return res.status(401).send({ message: 'Incorrect Username Or Password.' })
 						}
 					})();	
 				}else{
-					return res.status(404).send({ message: 'User Not Found' });
+					return res.status(404).send({ message: 'User Not Found.' });
 				}
 			}else{
 				return res.status(403).send({ message: 'Something Went Wrong.' });
@@ -453,7 +471,24 @@ app.get('/api/profile', (req,res) => {
 								if(error){
 									return res.status(404).send({message: "User Not Found. Login again.", reason: error.message})
 								}else{
-									return res.status(200).send({userData: rows[0], specificData: rowsSpecific[0]})
+									let clinics = [];
+									rowsSpecific.forEach(line => {
+										let clinic = {};
+										clinic.country = line.country_name;
+										clinic.number = line.clinic_number;
+										clinic.floor = line.clinic_floor;
+										clinic.building = line.clinic_building;
+										clinic.street = line.clinic_street;
+										clinic.city = line.clinic_city;
+										clinics.push(clinic);
+									});
+									let doctorData = {};
+									doctorData.oop_number = rowsSpecific[0].oop_number;
+									doctorData.speciality = rowsSpecific[0].speciality;
+									doctorData.gender = rowsSpecific[0].gender;
+									doctorData.biography = rowsSpecific[0].biography;
+									doctorData.exp_years = rowsSpecific[0].exp_years;
+									return res.status(200).send({userData: rows[0], specificData: doctorData, address: clinics})
 								}
 							});
 						}else{
@@ -467,7 +502,26 @@ app.get('/api/profile', (req,res) => {
 							JOIN `trimester` ON patient.blood_type = trimester.trimester_id\
 							WHERE user_id=?"
 							con.connection.query(sql, result.value.userId, function(error, rowsSpecific){
+								if(rowsSpecific[0].previous_pregnancies){
+									rowsSpecific[0].previous_pregnancies = "Had previous pregnancies";
+								}
+								else{
+									rowsSpecific[0].previous_pregnancies = "No previous pregnancies";
+								}
+								if(rowsSpecific[0].diabetes){
+									rowsSpecific[0].diabetes = "Diabetic";
+								}
+								else{
+									rowsSpecific[0].diabetes = "Not Diabetic";
+								}
+								if(rowsSpecific[0].hypertension){
+									rowsSpecific[0].hypertension = "Hypertensive";
+								}
+								else{
+									rowsSpecific[0].hypertension = "Not Hypertensive";
+								}
 								rowsSpecific[0].birthDate = helper.fixDate(rowsSpecific[0].birth_date);
+								rowsSpecific[0].week = helper.getWeek(rowsSpecific[0].first_pregnant_day);
 								if(error){
 									return res.status(404).send({message: "User Not Found. Login again.", reason: error.message})
 								}else{
@@ -488,6 +542,106 @@ app.get('/api/profile', (req,res) => {
 });
 app.post('/api/editcommon', (req, res) => {
 
+});
+app.post('/api/deleteuser', (req,res) => {
+	let email = req.body.email;
+	let sql = "SELECT `id`,`user_type` FROM user WHERE email = ?"
+	con.connection.query(sql, email, function(error, rows){
+		if(error){
+			return res.status(404).send(error);
+		}else{
+			if(rows.length !=1){
+				return res.status(404).send("Invalid");
+			}else{
+				if(rows[0].user_type){
+					let sql = "SELECT `dr_id`, `user_id` FROM doctor WHERE user_id=?"
+					con.connection.query(sql, rows[0].id, function(error, rows){
+						if(error){
+							return res.status(404).send(error);
+						}else{
+							if(rows.length < 1){
+								let sql = "DELETE FROM user WHERE email=?"
+								con.connection.query(sql, email, function(error, result){
+										console.log(error)
+										console.log(result);
+										return res.status(200).send({message: "Doctor Deleted Successfully"});
+								});
+							}else{
+								let sql = "DELETE FROM confirmation_code WHERE user_id=?";
+								con.connection.query(sql, rows[0].user_id);
+								sql = "DELETE FROM doctor_address WHERE doctor_id=?";
+								con.connection.query(sql, rows[0].dr_id);
+								sql = "DELETE FROM doctor WHERE dr_id=?"
+								con.connection.query(sql, rows[0].dr_id);
+								sql = "DELETE FROM user WHERE id=?"
+								con.connection.query(sql, rows[0].user_id);
+								return res.status(200).send({message: "Doctor Deleted Successfully"});
+							}
+						}
+					});
+				}else{
+					let sql = "SELECT `pat_id`, `user_id` FROM patient WHERE user_id=?"
+					con.connection.query(sql, rows[0].id, function(error, rows){
+						if(error){
+							return res.status(404).send(error);
+						}else{
+							if(rows.length < 1){
+								let sql = "DELETE FROM user WHERE email=?"
+								con.connection.query(sql, email, function(error, result){
+										console.log(error)
+										console.log(result);
+										return res.status(200).send({message: "Patient Deleted Successfully"});
+								});
+							}else{
+								let sql = "DELETE FROM confirmation_code WHERE user_id=?";
+								con.connection.query(sql, rows[0].user_id, function(error, result){
+									console.log(error)
+									console.log(result);
+								});
+								sql = "DELETE FROM fetal_measurements WHERE patient_id=?"
+								con.connection.query(sql, rows[0].pat_id, function(error, result){
+									console.log(error)
+									console.log(result);
+								});
+								sql = "DELETE FROM glucose WHERE pat_id=?"
+								con.connection.query(sql, rows[0].pat_id, function(error, result){
+									console.log(error)
+									console.log(result);
+								});
+								sql = "DELETE FROM heart_rate WHERE pat_id=?"
+								con.connection.query(sql, rows[0].pat_id, function(error, result){
+									console.log(error)
+									console.log(result);
+								});
+								sql = "DELETE FROM spo2 WHERE pat_id=?"
+								con.connection.query(sql, rows[0].pat_id, function(error, result){
+									console.log(error)
+									console.log(result);
+								});
+								sql = "DELETE FROM temperature WHERE pat_id=?"
+								con.connection.query(sql, rows[0].pat_id, function(error, result){
+									console.log(error)
+									console.log(result);
+								});
+								sql = "DELETE FROM patient WHERE pat_id=?"
+								con.connection.query(sql, rows[0].pat_id, function(error, result){
+									console.log(error)
+									console.log(result);
+								});
+								sql = "DELETE FROM user WHERE id=?"
+								con.connection.query(sql, rows[0].user_id, function(error, result){
+									console.log(error)
+									console.log(result);
+								});
+								return res.status(200).send({message: "Patient Deleted Successfully"});
+							}
+						}
+					});
+				}
+
+			}
+		}
+	});
 });
 //countries.getDataUsingAsyncAwaitGetCall();
 timer.cleanVerification(); //cleans the database from verification codes that have been there for more than 10 minutes
