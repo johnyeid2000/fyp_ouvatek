@@ -13,7 +13,6 @@ const DoctorProfileScreen = () => {
   const [specificData, setSpecificData] = useState('');
   const [clinics, setClinics] = useState([]);
 
-
   const navigation = useNavigation();
 
   const getProfileData = async () => {
@@ -91,13 +90,6 @@ const DoctorProfileScreen = () => {
               {clinic.number}</Text>
           </View>
         ))}
-        {/* <View style={styles.row}>
-          <Icon name="hospital-building" color="#651B70" size={20} />
-          <Text style={styles.txtRow}>{specificData.country_name} - {specificData.clinic_city} -
-            Street {specificData.clinic_street} - Building {specificData.clinic_building} -
-            Floor {specificData.clinic_floor} -  <Icon name="phone-classic" color="#d1a4eb" size={20} />
-            {specificData.clinic_number}</Text>
-        </View> */}
 
         <View style={styles.row}>
           <Icon name="phone" color="#651B70" size={20} />
