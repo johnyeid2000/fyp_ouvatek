@@ -53,10 +53,18 @@ const SignInScreen = () => {
   };
 
   const onForgotPasswordPressed = () => {
+    setEmail('');
+    setPassword('');
+    setChecked(false);
+    setLoginStatus('');
     navigation.navigate("ForgotPassword");
   };
 
   const onSignUpPressed = () => {
+    setEmail('');
+    setPassword('');
+    setChecked(false);
+    setLoginStatus('');
     navigation.navigate("SignUp");
   };
 

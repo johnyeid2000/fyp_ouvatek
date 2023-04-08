@@ -11,26 +11,10 @@ import { useNavigation } from '@react-navigation/native';
 
 const ConfirmEmailPasswordScreen = ({ route }) => {
     const [code, setCode] = useState('');
-    const [isResendDisabled, setIsResendDisabled] = useState(true);
+    //const [isResendDisabled, setIsResendDisabled] = useState(true);
     const [confirmEmailStatus, setConfirmEmailStatus] = useState(null);
-    //const { id } = route.params;
+    const { id } = route.params;
     const navigation = useNavigation();
-
-    // useEffect(() => {
-    //     // Call the sendconfirmation endpoint when the component is loaded
-    //     axios.post('https://ouvatek.herokuapp.com/api/sendconfirmation', { id })
-    //         .then((response) => {
-    //             setIsResendDisabled(true);
-
-    //             setTimeout(() => {
-    //                 setIsResendDisabled(false);
-    //             }, 180000);
-
-    //         })
-    //         .catch((error) => {
-    //             console.log(error);
-    //         });
-    // }, []);
 
     useEffect(() => {
         const backHandler = BackHandler.addEventListener('hardwareBackPress', handleBackPress);
@@ -45,24 +29,20 @@ const ConfirmEmailPasswordScreen = ({ route }) => {
         return true;
     };
 
-
-    const onConfirmPressed = () => {
-        navigation.navigate("NewPassword");
+    const onConfirmPressed = async () => {
+        try {
+            const response = await axios.post('https://ouvatek.herokuapp.com/api/sendcode', { id, code },
+                {
+                    headers: { 'Content-Type': 'application/json' },
+                },
+            );
+            if (response.status === 200) {
+                navigation.navigate("NewPassword", { id: id });
+            }
+        } catch (error) {
+            setConfirmEmailStatus(error.response.data.message);
+        }
     };
-    // const onConfirmPressed = async () => {
-    //     try {
-    //         const response = await axios.post('https://ouvatek.herokuapp.com/api/sendcode', { id, code },
-    //             {
-    //                 headers: { 'Content-Type': 'application/json' },
-    //             },
-    //         );
-    //         if (response.status === 200) {
-    //             navigation.navigate("NewPassword");
-    //         }
-    //     } catch (error) {
-    //         setConfirmEmailStatus(error.response.data.message);
-    //     }
-    // };
 
 
     // const onResendPressed = () => {
@@ -77,9 +57,6 @@ const ConfirmEmailPasswordScreen = ({ route }) => {
     //             console.log(error);
     //         });
     // };
-
-    const onResendPressed = () => {
-    }
 
     return (
         <View style={styles.root}>
@@ -100,12 +77,12 @@ const ConfirmEmailPasswordScreen = ({ route }) => {
                 onPress={onConfirmPressed}
             />
 
-            <CustomButton
+            {/* <CustomButton
                 text="Resend Code"
                 onPress={onResendPressed}
                 type='Secondary'
                 disabled={isResendDisabled}
-            />
+            /> */}
 
         </View>
     );

@@ -72,7 +72,7 @@ const PatientProfileScreen = () => {
           <View style={{ marginLeft: 20 }}>
             <Title style={styles.title}>{userData.first_name} {userData.last_name}</Title>
             <Caption style={styles.caption}>{userData.email}</Caption>
-            <Caption style={styles.caption}>Date Of Birth: {specificData.birth_date}</Caption>
+            <Caption style={styles.caption}>Date Of Birth: {specificData.birthDate}</Caption>
           </View>
         </View>
       </View>
@@ -80,7 +80,7 @@ const PatientProfileScreen = () => {
       <View style={styles.userInfoSection}>
         <View style={styles.row}>
           <Icon name="map-marker-radius" color="#651B70" size={20} />
-          <Text style={styles.txtRow}>{userData.country}</Text>
+          <Text style={styles.txtRow}>{userData.country_name}</Text>
         </View>
 
         <View style={styles.row}>
@@ -90,27 +90,27 @@ const PatientProfileScreen = () => {
 
         <View style={styles.row}>
           <Icon name="calendar" color="#651B70" size={20} />
-          <Text style={styles.txtRow}>Week 6 in pregnancy</Text>
+          <Text style={styles.txtRow}>Week: {specificData.week}</Text>
         </View>
 
         <View style={styles.row}>
           <Icon name="human-pregnant" color="#651B70" size={20} />
-          <Text style={styles.txtRow}>First trimester</Text>
+          <Text style={styles.txtRow}>{specificData.trimester_name}</Text>
         </View>
 
         <View style={styles.row}>
           <Icon name="blood-bag" color="#651B70" size={20} />
-          <Text style={styles.txtRow}>{specificData.blood_type}</Text>
+          <Text style={styles.txtRow}>{specificData.type_name}</Text>
         </View>
 
         <View style={styles.row}>
           <Icon name="medical-bag" color="#651B70" size={20} />
-          <Text style={styles.txtRow}>{specificData.previous_surgeries}</Text>
+          <Text style={styles.txtRow}>{specificData.surgeries_name}</Text>
         </View>
 
         <View style={styles.row}>
           <Icon name="scissors-cutting" color="#651B70" size={20} />
-          <Text style={styles.txtRow}>{specificData.medication_taken}</Text>
+          <Text style={styles.txtRow}>{specificData.medication_name}</Text>
         </View>
 
         <View style={styles.row}>

@@ -23,9 +23,9 @@ const DoctorInformationScreen = ({ route }) => {
     const { id } = route.params;
 
     const optionsGender = [
-        { label: 'Male', value: 'M' },
-        { label: 'Female', value: 'F' },
-        { label: 'Prefer not to say', value: 'P' }
+        { label: 'Male', value: 'Male' },
+        { label: 'Female', value: 'Female' },
+        { label: 'Prefer not to say', value: 'Prefer not to say' }
     ];
 
     useEffect(() => {
