@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const con = require('./connectdb.js');
 async function validateUser(token){
     let result ={
         indicator: false,
@@ -55,6 +56,7 @@ function fixDate(givenDate){
     let formattedDate = year + "-" + month + "-" + day;
     return formattedDate;
 }
+
 exports.validateUser = validateUser;
 exports.getWeek = getWeek;
 exports.getTrimester = getTrimester;

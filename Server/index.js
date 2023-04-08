@@ -136,7 +136,7 @@ app.post('/api/commonsignup', (req, res) => {
 	if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
 		return res.status(400).send({ message: 'Invalid Email Format.' });
 	}
-	if(/^[078]\d{8}$/.test(phoneNumber)){
+	if(!(/^(03|70|71|76|78|79|81)\d{6}$/).test(phoneNumber)){
 		return res.status(400).send({ message: 'Invalid Phone Number Format.' });
 	}
 	if(password!=confPassword){
@@ -209,6 +209,8 @@ app.post('/api/doctorsignup', (req, res) => {
 	let experience = req.body.experience;
 	let biography = req.body.biography;
 	let sql = "";
+	speciality = speciality.trim();
+	biography = biography.trim();
 	const today = new Date();
 	const year = today.getFullYear();
 	const month = String(today.getMonth() + 1).padStart(2, '0'); // add leading zero if needed
@@ -218,7 +220,6 @@ app.post('/api/doctorsignup', (req, res) => {
 		sql = 'INSERT INTO `doctor` (user_id, oop_number, speciality, gender, created_on, experience, biography) VALUES (?, ?, ?, ?, ?, ?, ?)';
 		con.connection.query(sql, [userId, oopnum, speciality, gender, date, experience, biography], async function(error,result){
 			if(error){
-				console.log(error);
 				return res.status(404).send({ message: 'Doctor Signup Issue' });
 			}else{
 				return res.status(200).send({ message: 'Doctor Created.', doctorId: result.insertId, result })
@@ -235,12 +236,12 @@ app.post('/api/doctorlocation', (req, res) => {
 	let street = req.body.street;
 	let building = req.body.building;
 	let floor = req.body.floor;
+	let phone = req.body.phoneNumber;
 	let sql = "";
-	if(doctorId && country && city && street && building && floor){
-		sql = 'INSERT INTO `doctor_address`(`doctor_id` , `clinic_country`, `clinic_city`, `clinic_street`, `clinic_building`, `clinic_floor`) VALUES (?, ?, ?, ?, ?, ?)';
-		con.connection.query(sql, [doctorId, country, city, street, building, floor], async function(error,result){
+	if(doctorId && country && city && street && building && floor && phone){
+		sql = 'INSERT INTO `doctor_address`(`doctor_id` , `clinic_country`, `clinic_city`, `clinic_street`, `clinic_building`, `clinic_floor`, `clinic_number`) VALUES (?, ?, ?, ?, ?, ?, ?)';
+		con.connection.query(sql, [doctorId, country, city, street, building, floor, phone], async function(error,result){
 			if(error){
-				console.log(error);
 				return res.status(404).send({ message: 'Doctor Location Signup Issue' });
 			}else{
 				return res.status(200).send({ result })
@@ -257,33 +258,80 @@ app.post('/api/sendconfirmation', (req,res) => {
 		if(error){
 			return res.status(404).send({ message: 'Finding Email Issue.' });
 		}else{
-			let time = new Date();
-			const finalDate = time.toISOString().slice(0, 19).replace('T', ' ');
-			const code = Math.floor(Math.random() * 900000) + 100000;
-			let sql = "INSERT INTO `confirmation_code` (`user_id`, `confirmation_code`, `created_on`) VALUES (?, ?, ?)";
-			con.connection.query(sql, [userid, code, finalDate], async function(error){
-				if(error){
-					return res.status(404).send({ message: 'Adding verification to database Issue.' });
-				}
-			});
-			const mailOptions = {
-				from: process.env.MAIL,
-				to: rows[0].email,
-				subject: 'Email Confirmation',
-				text: `Thank you for registering with us.\n Your verification Number is: ${code}`
-			  };
-			  transporter.sendMail(mailOptions, (error, info) => {
-				if (error) {
-				  	console.log(error);
-				  	res.status(404).send('Sending Mail Error:' + error);
-				} else {
-				  	res.status(200).send('Email sent: ' + info.response);
-				}
-			  });
+			if(rows.length == 1){
+				let time = new Date();
+				const finalDate = time.toISOString().slice(0, 19).replace('T', ' ');
+				const code = Math.floor(Math.random() * 900000) + 100000;
+				let sql = "INSERT INTO `confirmation_code` (`user_id`, `confirmation_code`, `created_on`) VALUES (?, ?, ?)";
+				con.connection.query(sql, [userid, code, finalDate], async function(error){
+					if(error){
+						return res.status(404).send({ message: 'Adding verification to database Issue.' });
+					}
+				});
+				const mailOptions = {
+					from: process.env.MAIL,
+					to: rows[0].email,
+					subject: 'Email Confirmation',
+					text: `Thank you for registering with us.\n Your verification Number is: ${code}`
+				  };
+				  transporter.sendMail(mailOptions, (error, info) => {
+					if (error) {
+						  console.log(error);
+						  res.status(404).send('Sending Mail Error:' + error);
+					} else {
+						  res.status(200).send('Email sent: ' + info.response);
+					}
+				  });
+			}
+			else{
+				return res.status(404).send({ message: 'Email not found.' });
+			}
+			
 		}
 	});
 
 })
+app.post('/api/forgotpassmail', (req,res) => {
+	let email = req.body.email;
+	let sql = "SELECT id from `user` WHERE email = ?"
+	con.connection.query(sql, email, async function(error,rows){
+		if(error){
+			return res.status(404).send({ message: 'User Never Registered.' });
+		}else{
+			if(rows.length == 1){
+				let time = new Date();
+				const finalDate = time.toISOString().slice(0, 19).replace('T', ' ');
+				const code = Math.floor(Math.random() * 900000) + 100000;
+				let userid = rows[0].id;
+				let sql = "INSERT INTO `confirmation_code` (`user_id`, `confirmation_code`, `created_on`) VALUES (?, ?, ?)";
+				con.connection.query(sql, [userid, code, finalDate], async function(error){
+					if(error){
+						return res.status(404).send({ message: 'Adding verification to database Issue.' });
+					}
+				});
+				const mailOptions = {
+					from: process.env.MAIL,
+					to: email,
+					subject: 'Email Confirmation',
+					text: `You have requested a Password Change due to forgeting your password.\n
+If you did not do so, kindly disregard this email.\n
+Your verification Number is: ${code}`
+				  };
+				transporter.sendMail(mailOptions, (error, info) => {
+					if (error) {
+						  console.log(error);
+						  res.status(404).send({message: 'Sending Mail Error', reason: error});
+					} else {
+						  res.status(200).send({message: 'Email sent', userId: userid });
+					}
+				});
+			}else{
+				return res.status(404).send({ message: 'User Never Registered.' });
+			}
+		}
+	});
+
+});
 app.post('/api/sendcode', (req,res) => {
 	let userId = req.body.id;
 	let code = req.body.code;
@@ -293,27 +341,56 @@ app.post('/api/sendcode', (req,res) => {
 			if(error){
 				return res.status(404).send({ message: 'Verification Not Issued Or Expired.' });
 			}else{
-				let confirmationCode =rows[0].confirmation_code;
-				if(code == confirmationCode){
-					let sql = "DELETE FROM `confirmation_code` WHERE user_id = ?"
-					con.connection.query(sql, userId, async function(error, result){
-						if(error){
-							return res.status(404).send({ message: 'Removing verification from database Issue.' });
-						}else{
-							return res.status(200).send({ message: 'Account Verified. Proceed to Login'})
-						}
-					});
+				if(rows.length < 1){
+					return res.status(404).send({ message: 'Verification Code Wrong or Expired.' });
 				}
 				else{
-					res.status(401).send({ message: 'Verification Code Wrong or Expired'})
+					let confirmationCode =rows[0].confirmation_code;
+					if(code == confirmationCode){
+						let sql = "DELETE FROM `confirmation_code` WHERE user_id = ?"
+						con.connection.query(sql, userId, async function(error, result){
+							if(error){
+								return res.status(404).send({ message: 'Removing verification from database Issue.' });
+							}else{
+								return res.status(200).send({ message: 'Account Verified. You can proceed.'})
+							}
+						});
+					}
+					else{
+						res.status(401).send({ message: 'Verification Code Wrong or Expired'})
+					}
 				}
+
 			}
 		});
 	}
 	else{
 		res.status(401).send({ message: 'Verication Code Cant be null.'})
-		console.log("Test");
-
+	}
+});
+app.post('/api/changepass', (req,res) => {
+	let userId = req.body.id;
+	let password = req.body.password;
+	let confPassword = req.body.passwordRepeat;
+	if(confPassword && password && userId){
+		if(password!=confPassword){
+			return res.status(400).send({ message: 'Passwords Do Not Match.' });
+		}else{
+			(async() => {
+				let pass = await bcrypt.hashPassword(password);
+				let sql = 'UPDATE `user` SET password = ? WHERE id=?'
+				con.connection.query(sql, [pass, userId], function(error, rows){
+					if(error){
+						return res.status(404).send({ message: 'User not Found.' });
+					}
+					else{
+						return res.status(200).send({ message: 'Password Changed. Proceed to Login.'})
+					}
+			});
+			})();		
+		}
+	}else{
+		res.status(401).send({message: "Empty fields can not be empty."})
 	}
 });
 app.post('/api/login', (req,res) => {
@@ -363,46 +440,54 @@ app.get('/api/profile', (req,res) => {
 				if(error){
 					return res.status(404).send({message: "User Not Found. Login again.", reason: error.message})
 				}else{
-					let sql = "";
-					if(rows[0].user_type){
-						sql = "SELECT doctor.`dr_id`, doctor.`oop_number`, doctor.`speciality`, doctor.`gender`,\
-						doctor.`biography`, doctor.`experience`, experience.`exp_years`, doctor_address.* FROM `doctor`\
-						JOIN `experience` ON doctor.experience = experience.exp_id\
-						JOIN `doctor_address` ON doctor.dr_id = doctor_address.doctor_id\
-						WHERE user_id=?"
-						con.connection.query(sql, result.value.userId, function(error, rowsSpecific){
-							if(error){
-								return res.status(404).send({message: "User Not Found. Login again.", reason: error.message})
-							}else{
-								return res.status(200).send({userData: rows[0], specificData: rowsSpecific[0]})
-							}
-						});
-					}else{
-						sql = "SELECT patient.`birth_date`, patient.`first_pregnant_day`, patient.`trimester`,\
-						patient.`blood_type`, patient.`medication_taken`, patient.`previous_surgeries`, patient.`diabetes`,\
-						patient.`hypertension`, patient.`previous_pregnancies`, blood_type.`type_name`, medication.`medication_name`,\
-						surgeries.`surgeries_name`, trimester.`trimester_name` FROM `patient`\
-						JOIN `blood_type` ON patient.blood_type = blood_type.type_id\
-						JOIN `medication` ON patient.medication_taken = medication.medication_id\
-						JOIN `surgeries` ON patient.blood_type = surgeries.surgeries_id\
-						JOIN `trimester` ON patient.blood_type = trimester.trimester_id\
-						WHERE user_id=?"
-						con.connection.query(sql, result.value.userId, function(error, rowsSpecific){
-							if(error){
-								return res.status(404).send({message: "User Not Found. Login again.", reason: error.message})
-							}else{
+					if(rows.length == 1){
+						let sql = "";
+						if(rows[0].user_type){
+							sql = "SELECT doctor.`dr_id`, doctor.`oop_number`, doctor.`speciality`, doctor.`gender`,\
+							doctor.`biography`, doctor.`experience`, experience.`exp_years`, doctor_address.* , country.country_name FROM `doctor`\
+							JOIN `experience` ON doctor.experience = experience.exp_id\
+							JOIN `doctor_address` ON doctor.dr_id = doctor_address.doctor_id\
+							JOIN `country` ON doctor_address.clinic_country = country.country_id\
+							WHERE user_id=?"
+							con.connection.query(sql, result.value.userId, function(error, rowsSpecific){
+								if(error){
+									return res.status(404).send({message: "User Not Found. Login again.", reason: error.message})
+								}else{
+									return res.status(200).send({userData: rows[0], specificData: rowsSpecific[0]})
+								}
+							});
+						}else{
+							sql = "SELECT patient.`birth_date`, patient.`first_pregnant_day`, patient.`trimester`,\
+							patient.`blood_type`, patient.`medication_taken`, patient.`previous_surgeries`, patient.`diabetes`,\
+							patient.`hypertension`, patient.`previous_pregnancies`, blood_type.`type_name`, medication.`medication_name`,\
+							surgeries.`surgeries_name`, trimester.`trimester_name` FROM `patient`\
+							JOIN `blood_type` ON patient.blood_type = blood_type.type_id\
+							JOIN `medication` ON patient.medication_taken = medication.medication_id\
+							JOIN `surgeries` ON patient.blood_type = surgeries.surgeries_id\
+							JOIN `trimester` ON patient.blood_type = trimester.trimester_id\
+							WHERE user_id=?"
+							con.connection.query(sql, result.value.userId, function(error, rowsSpecific){
 								rowsSpecific[0].birthDate = helper.fixDate(rowsSpecific[0].birth_date);
-								return res.status(200).send({userData: rows[0], specificData: rowsSpecific[0]})
-							}
-						});
+								if(error){
+									return res.status(404).send({message: "User Not Found. Login again.", reason: error.message})
+								}else{
+									return res.status(200).send({userData: rows[0], specificData: rowsSpecific[0]})
+								}
+							});
+						}
 					}
-
+					else{
+						return res.status(401).send({ message: "You are not an authorized user." , reason: error})
+					}
 				}
 			});
 		}else{
 			return res.status(401).send({ message: "You are not an authorized user." , reason: result.value})
 		}
 	})();
+});
+app.post('/api/editcommon', (req, res) => {
+
 });
 //countries.getDataUsingAsyncAwaitGetCall();
 timer.cleanVerification(); //cleans the database from verification codes that have been there for more than 10 minutes
