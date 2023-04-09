@@ -11,6 +11,7 @@ import { useNavigation } from '@react-navigation/native';
 const DoctorProfileScreen = () => {
   const [userData, setUserData] = useState('');
   const [specificData, setSpecificData] = useState('');
+  const [clinics, setClinics] = useState([]);
 
   const navigation = useNavigation();
 
@@ -24,6 +25,7 @@ const DoctorProfileScreen = () => {
       });
       setUserData(response.data.userData);
       setSpecificData(response.data.specificData);
+      setClinics(response.data.address);
     } catch (error) {
       console.error(error);
     }
@@ -79,15 +81,15 @@ const DoctorProfileScreen = () => {
       </View>
 
       <View style={styles.userInfoSection}>
-        <View style={styles.row}>
-          <Icon name="hospital-building" color="#651B70" size={20} />
-          <Text style={styles.txtRow}>{specificData.country_name} - {specificData.clinic_city} -
-            Street {specificData.clinic_street} - Building {specificData.clinic_building} - Floor {specificData.clinic_floor}</Text>
-        </View>
-        <View style={styles.row}>
-          <Icon name="phone-classic" color="#651B70" size={20} />
-          <Text style={styles.txtRow}>{specificData.clinic_number}</Text>
-        </View>
+        {clinics.map((clinic, index) => (
+          <View key={index} style={styles.row}>
+            <Icon name="hospital-building" color="#651B70" size={20} />
+            <Text style={styles.txtRow}><Text style={{ fontWeight: 'bold' }}>Clinic {index + 1}:</Text> {clinic.country} - {clinic.city} -
+              Street {clinic.street} - Building {clinic.building} -
+              Floor {clinic.floor} -  <Icon name="phone-classic" color="#d1a4eb" size={20} />
+              {clinic.number}</Text>
+          </View>
+        ))}
 
         <View style={styles.row}>
           <Icon name="phone" color="#651B70" size={20} />
