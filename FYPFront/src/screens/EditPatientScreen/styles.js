@@ -2,19 +2,16 @@ import { StyleSheet } from 'react-native';
 
 
 const styles = StyleSheet.create({
-    container: {
-      alignItems:'center',
-      padding:20,
-    },
-      img:{
-        height: 100,
-        width: 100,
-        borderRadius:15
-    },
-
-
-   
-  });
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 40,
+  },
+  txt: {
+    marginBottom: 20
+  }
+});
 
 
 export default styles;
