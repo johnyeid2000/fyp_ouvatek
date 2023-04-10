@@ -231,7 +231,7 @@ app.post('/api/doctorsignup', (req, res) => {
 	const month = String(today.getMonth() + 1).padStart(2, '0'); // add leading zero if needed
 	const day = String(today.getDate()).padStart(2, '0'); // add leading zero if needed
 	const date = `${year}-${month}-${day}`;
-	if (userId && speciality && oopnum && gender) {
+	if (userId && speciality && oopnum && gender && experience) {
 		sql = 'INSERT INTO `doctor` (user_id, oop_number, speciality, gender, created_on, experience, biography) VALUES (?, ?, ?, ?, ?, ?, ?)';
 		con.connection.query(sql, [userId, oopnum, speciality, gender, date, experience, biography], async function(error,result){
 			if(error){
@@ -483,6 +483,7 @@ app.get('/api/profile', (req,res) => {
 										clinics.push(clinic);
 									});
 									let doctorData = {};
+									doctorData.dr_id = rowsSpecific[0].dr_id;
 									doctorData.oop_number = rowsSpecific[0].oop_number;
 									doctorData.speciality = rowsSpecific[0].speciality;
 									doctorData.gender = rowsSpecific[0].gender;
@@ -541,8 +542,121 @@ app.get('/api/profile', (req,res) => {
 	})();
 });
 app.post('/api/editcommon', (req, res) => {
+	let userId = req.body.id;
+	let oldMail = req.body.oldMail;
+	let firstName = req.body.fname;
+	let lastName = req.body.lname;
+	let email = req.body.email;
+	let country = req.body.selectedCountry;
+	let phoneNumber = req.body.phoneNb;
+	if(userId && oldMail && firstName && lastName && email && country && phoneNumber){
+		firstName = firstName.trim();
+		lastName = lastName.trim();
+		email = email.toLowerCase().trim();
+		if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
+			return res.status(400).send({ message: 'Invalid Email Format.' });
+		}
+		if(!(/^(03|70|71|76|78|79|81)\d{6}$/).test(phoneNumber)){
+			return res.status(400).send({ message: 'Invalid Phone Number Format.' });
+		}
+		let check = false;
+		if(oldMail == email){
+			check = true;
+		}
+		if(!check){
+			let sql = "SELECT email FROM `user` WHERE email =?";
+			con.connection.query(sql, email, function(error, rows){
+				if(error){
+					return res.status(400).send({ message: 'Error updating your data. Try again later.' });
+				}else{
+					if(rows.length > 0){
+						return res.status(400).send({ message: 'There is already an account for the chosen email.' });
+					}
+				}
+			})
+		}
+		sql = "UPDATE `user` SET first_name = ? , last_name = ?, email = ?, country = ?, phone_number =? WHERE id = ?"
+		con.connection.query(sql, [firstName, lastName, email, country, phoneNumber, userId], function(error, result){
+			if(error){
+				return res.status(400).send({ message: 'Error updating your data. Try again later.' });
+			}
+			else{
+				console.log(result);
+				return res.status(200).send({ message: 'Your information was successfully updated.' });
+			}
+		})
+
+	}
+	else{
+		return res.status(401).send({message: "All Fields Are Required."});
+	}
 
 });
+app.post('/api/editpatient', (req,res) =>{
+	let patientId = req.body.patientId;
+	let birthDate = req.body.birthDate;
+	let firstPregDay = req.body.firstPregnancyDay;
+	let medication = req.body.selectedMedication;
+	let diabetes = req.body.checkDiabetes;
+	let hypertension = req.body.checkHypertension;
+	let previousPregnancies = req.body.checkPrevPreg;
+	let previousSurgeries = req.body.selectedSurgeries;
+	if(patientId && birthDate && firstPregDay && medication!=null && diabetes!=null && hypertension!=null && previousPregnancies!=null && previousSurgeries!=null){
+		let trimester = helper.getTrimester(firstPregDay);
+		let sql = "";
+		if(diabetes == true || diabetes == "true"){
+			diabetes = 1;
+		}else{
+			diabetes = 0;
+		}
+		if(hypertension == true || hypertension == "true"){
+			hypertension = 1;
+		}else{
+			hypertension = 0;
+		}
+		if(previousPregnancies == true || previousPregnancies == "true"){
+			previousPregnancies = 1;
+		}else{
+			previousPregnancies = 0;
+		}
+		sql = 'UPDATE `patient` SET birth_date=?, first_pregnant_day =?, trimester = ?, medication_taken = ?, diabetes = ?, hypertension = ?, previous_pregnancies = ?, previous_surgeries = ? WHERE pat_id = ?';
+		con.connection.query(sql, [birthDate, firstPregDay, trimester, medication, diabetes, hypertension, previousPregnancies, previousSurgeries, patientId], async function(error,result){
+			if(error){
+				console.log(error);
+				return res.status(404).send({ message:'Error updating your data. Try again later.' });
+			}else{
+				return res.status(200).send({ message: 'Your information was successfully updated.', userId: result.insertId, result})
+			}
+		});
+	}
+	else{
+		return res.status(401).send({message: "All Fields Are Required."});
+	}
+})
+app.post('/api/editdoctor', (req, res) => {
+	const doctorId = req.body.doctorId;
+	let speciality = req.body.speciality;
+	let oopnum = req.body.oopnum;
+	let gender = req.body.gender;
+	let experience = req.body.experience;
+	let biography = req.body.biography;
+	let sql = "";
+	speciality = speciality.trim();
+	biography = biography.trim();
+	if (userId && speciality && oopnum && gender) {
+		sql = 'UPDATE `doctor` SET oop_number =?, speciality=?, gender=?, experience=?, biography=? WHERE dr_id = ?';
+		con.connection.query(sql, [oopnum, speciality, gender, experience, biography, doctorId], async function(error,result){
+			if(error){
+				console.log(error);
+				return res.status(404).send({ message:'Error updating your data. Try again later.' });
+			}else{
+				return res.status(200).send({ message: 'Your information was successfully updated.', userId: result.insertId, result})
+			}
+		});
+	}else{
+		return res.status(401).send({ message: 'All Fields Are Required.' });
+	}
+})
 app.post('/api/deleteuser', (req,res) => {
 	let email = req.body.email;
 	let sql = "SELECT `id`,`user_type` FROM user WHERE email = ?"
@@ -643,6 +757,7 @@ app.post('/api/deleteuser', (req,res) => {
 		}
 	});
 });
+
 //countries.getDataUsingAsyncAwaitGetCall();
 timer.cleanVerification(); //cleans the database from verification codes that have been there for more than 10 minutes
 // timer.updateTrimester();
