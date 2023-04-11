@@ -115,17 +115,17 @@ const PatientProfileScreen = () => {
 
         <View style={styles.row}>
           <Icon name="water" color="#651B70" size={20} />
-          <Text style={styles.txtRow}>{specificData.hypertension}</Text>
+          <Text style={styles.txtRow}>{specificData.hypertensionValue}</Text>
         </View>
 
         <View style={styles.row}>
           <Icon name="diabetes" color="#651B70" size={20} />
-          <Text style={styles.txtRow}>{specificData.diabetes}</Text>
+          <Text style={styles.txtRow}>{specificData.diabetesValue}</Text>
         </View>
 
         <View style={styles.row}>
           <Icon name="baby" color="#651B70" size={20} />
-          <Text style={styles.txtRow}>{specificData.previous_pregnancies}</Text>
+          <Text style={styles.txtRow}>{specificData.previous_pregnanciesValue}</Text>
         </View>
       </View>
 

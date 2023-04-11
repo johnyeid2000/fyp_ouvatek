@@ -1,67 +1,48 @@
-import React, {useState} from 'react';
-import { Image, View } from 'react-native';
-
-import CustomInput from '../../components/CustomInput';
+import React from 'react';
+import { Text, View } from 'react-native';
 import CustomButton from '../../components/CustomButton';
 
 import styles from './styles';
+import { useNavigation } from '@react-navigation/native';
+
 
 const EditDoctorScreen = () => {
-    const [username, setUsername] = useState('');
-    const [hospital, setHospital] = useState('');
-    const [location, setLocation] = useState('');
-    const [phoneNumber, setPhoneNumber] = useState('');
+    const navigation = useNavigation();
 
-    const onSubmitPressed = () => {
-        console.warn('submit');
+    const onGeneralInfoPressed = () => {
+        navigation.navigate('EditGeneral');
     }
 
-  return (
-    <View style={styles.container}>
-              <Image
-                source={require('../../assets/images/2.jpeg')}
-                style={styles.img} />
+    const onDoctorInfoPressed = () => {
+        navigation.navigate('EditDoctorInfo');
+    }
 
-        <CustomInput
-                label="Username"
-                IconName="account-outline"
-                placeholder="Enter Your Username"
-                value={username}
-                setValue={setUsername}
+    const onLocationPressed = () => {
+        navigation.navigate('EditLocation');
+    }
+
+    return (
+        <View style={styles.container}>
+
+            <Text style={styles.txt}>Press on the corresponding button to edit the information needed</Text>
+
+            <CustomButton
+                text="Edit General Information"
+                onPress={onGeneralInfoPressed}
             />
 
-            <CustomInput
-                label="Hospital"
-                IconName="hospital-building"
-                placeholder="Enter Your Hospital"
-                value={hospital}
-                setValue={setHospital}
+            <CustomButton
+                text="Edit Doctor Information"
+                onPress={onDoctorInfoPressed}
             />
 
-            <CustomInput
-                label="Location"
-                IconName="map-marker-radius"
-                placeholder="Enter Your Location"
-                value={location}
-                setValue={setLocation}
+            <CustomButton
+                text="Edit Clinics Information"
+                onPress={onLocationPressed}
             />
 
-            <CustomInput
-                label="Phone Number"
-                IconName="phone"
-                placeholder="Enter Your Phone Number"
-                value={phoneNumber}
-                setValue={setPhoneNumber}
-            />
-            
-
-    {/* for now submit pressed is seen when the submit button is clicked */}
-        <CustomButton
-                text="Submit"
-                onPress={onSubmitPressed}
-            />
-    </View>
-  );
+        </View>
+    );
 };
 
 export default EditDoctorScreen;
