@@ -54,7 +54,7 @@ const EditDoctorInfoScreen = () => {
             setSpeciality(response.data.specificData.speciality);
             setOopnum(response.data.specificData.oop_number);
             setGender(response.data.specificData.gender);
-            setExperience(response.data.specificData.exp_years);
+            setExperience(response.data.specificData.experience);
             setBiography(response.data.specificData.biography);
         } catch (error) {
             console.error(error);
@@ -68,10 +68,14 @@ const EditDoctorInfoScreen = () => {
 
     const editUser = async () => {
         try {
+            const token = await AsyncStorage.getItem('token');
             const response = await axios.post('https://ouvatek.herokuapp.com/api/editdoctor',
-                { token, speciality, oopnum, gender, experience, biography },
+                { speciality, oopnum, gender, experience, biography },
                 {
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
                 },
             );
             if (response.status === 200) {

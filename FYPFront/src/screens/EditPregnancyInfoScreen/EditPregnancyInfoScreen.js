@@ -77,10 +77,14 @@ const EditPregnancyInfoScreen = () => {
 
     const editUser = async () => {
         try {
+            const token = await AsyncStorage.getItem('token');
             const response = await axios.post('https://ouvatek.herokuapp.com/api/editpatient',
-                { token, birthDate, firstPregnancyDay, selectedMedication, checkDiabetes, checkHypertension, checkPrevPreg, selectedSurgeries },
+                { birthDate, firstPregnancyDay, selectedMedication, checkDiabetes, checkHypertension, checkPrevPreg, selectedSurgeries },
                 {
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
                 },
             );
             if (response.status === 200) {

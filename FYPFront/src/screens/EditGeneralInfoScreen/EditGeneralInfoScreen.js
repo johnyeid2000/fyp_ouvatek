@@ -60,19 +60,22 @@ const EditGeneralInfoScreen = () => {
         getProfileData();
     }, []);
 
-
     const editUser = async () => {
         try {
+            const token = await AsyncStorage.getItem('token');
             const response = await axios.post('https://ouvatek.herokuapp.com/api/editcommon',
-                { token, oldMail, fname, lname, email, selectedCountry, phoneNb },
+                { oldMail, fname, lname, email, selectedCountry, phoneNb },
                 {
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
                 },
             );
-            if (response.status === 200 && userData.user_type == 0) {
+            if (response.status === 200 && userData.user_type === 0) {
                 navigation.navigate('EditPatient');
             }
-            else if (response.status === 200 && userData.user_type == 1) {
+            else if (response.status === 200 && userData.user_type === 1) {
                 navigation.navigate('EditDoctor');
             }
         } catch (error) {
