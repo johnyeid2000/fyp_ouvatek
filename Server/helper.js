@@ -20,6 +20,7 @@ function getWeek(oldDate){
     const date = new Date(oldDate);
     const timeDiff = new Date() - date;
     const weeksDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24 * 7));
+    console.log(date, "=============", weeksDiff)
     return weeksDiff;
 }
 function getTrimester(oldDate) {
