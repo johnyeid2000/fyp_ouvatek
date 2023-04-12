@@ -479,6 +479,7 @@ app.get('/api/profile', (req,res) => {
 										let clinic = {};
 										clinic.clinic_id = line.clinic_id;
 										clinic.country = line.country_name;
+										clinic.country_id = line.clinic_country;
 										clinic.number = line.clinic_number;
 										clinic.floor = line.clinic_floor;
 										clinic.building = line.clinic_building;
