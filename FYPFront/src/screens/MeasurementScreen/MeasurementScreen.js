@@ -59,15 +59,18 @@ const MeasurementScreen = () => {
     navigation.navigate('Fetus');
   };
 
+  const WeightPressed = () => {
+    navigation.navigate('Weight');
+  };
+
   return (
     <View>
-      <View style={{ marginTop: '10%' }}>
-        <MeasurementButton
-          text="Heart rate & blood pressure"
-          onPress={HeartRatePressed}
-          IconName="heart-pulse"
-        />
-      </View>
+      <MeasurementButton
+        text="Heart rate & blood pressure"
+        onPress={HeartRatePressed}
+        IconName="heart-pulse"
+      />
+
       <MeasurementButton
         text="Temperature"
         onPress={TemperaturePressed}
@@ -90,6 +93,12 @@ const MeasurementScreen = () => {
         text="SpO2"
         onPress={SpO2Pressed}
         IconName="percent-outline"
+      />
+
+      <MeasurementButton
+        text="Weight"
+        onPress={WeightPressed}
+        IconName="scale-bathroom"
       />
 
       <MeasurementButton

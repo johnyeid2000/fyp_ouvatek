@@ -48,7 +48,6 @@ const EditPregnancyInfoScreen = () => {
             });
     }, []);
 
-
     const getProfileData = async () => {
         try {
             const token = await AsyncStorage.getItem('token');
@@ -73,7 +72,6 @@ const EditPregnancyInfoScreen = () => {
     useEffect(() => {
         getProfileData();
     }, []);
-
 
     const editUser = async () => {
         try {

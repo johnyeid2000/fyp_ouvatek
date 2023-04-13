@@ -32,9 +32,11 @@ const DoctorProfileScreen = () => {
   };
 
   useEffect(() => {
-    getProfileData();
-  }, []);
-
+    const unsubscribe = navigation.addListener('focus', () => {
+      getProfileData();
+    });
+    return unsubscribe;
+  }, [navigation]);
 
   const onEditAccountPressed = () => {
     navigation.navigate('EditDoctor');
