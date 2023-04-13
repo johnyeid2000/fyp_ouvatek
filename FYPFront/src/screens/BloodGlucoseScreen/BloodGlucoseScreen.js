@@ -57,10 +57,10 @@ const BloodGlucoseScreen = () => {
                     status={checked ? 'checked' : 'unchecked'}
                     onPress={() => {
                         setChecked(!checked);
-                        if (!glucose.trim()) {
-                            Alert.alert('You need to enter the Blood Glucose value');
-                            setChecked(false);
-                        }
+                        // if (!glucose.trim()) {
+                        //     Alert.alert('You need to enter the Blood Glucose value');
+                        //     setChecked(false);
+                        // }
                     }}
                     color='#651B70'
                 />

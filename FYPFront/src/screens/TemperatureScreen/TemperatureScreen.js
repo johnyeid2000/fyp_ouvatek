@@ -58,10 +58,10 @@ const TemperatureScreen = () => {
                     status={checked ? 'checked' : 'unchecked'}
                     onPress={() => {
                         setChecked(!checked);
-                        if (!temperature.trim()) {
-                            Alert.alert('You need to enter the temperature value');
-                            setChecked(false);
-                        }
+                        // if (!temperature.trim()) {
+                        //     Alert.alert('You need to enter the temperature value');
+                        //     setChecked(false);
+                        // }
                     }}
                     color='#651B70'
                 />

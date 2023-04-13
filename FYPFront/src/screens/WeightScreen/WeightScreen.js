@@ -58,10 +58,10 @@ const WeightScreen = () => {
                     status={checked ? 'checked' : 'unchecked'}
                     onPress={() => {
                         setChecked(!checked);
-                        if (!weight.trim()) {
-                            Alert.alert('You need to enter the weight value');
-                            setChecked(false);
-                        }
+                        // if (!weight.trim()) {
+                        //     Alert.alert('You need to enter the weight value');
+                        //     setChecked(false);
+                        // }
                     }}
                     color='#651B70'
                 />

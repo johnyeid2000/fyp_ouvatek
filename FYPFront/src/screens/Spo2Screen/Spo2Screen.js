@@ -59,10 +59,10 @@ const Spo2Screen = () => {
                     status={checked ? 'checked' : 'unchecked'}
                     onPress={() => {
                         setChecked(!checked);
-                        if (!spo2.trim()) {
-                            Alert.alert('You need to enter the SPO2 value');
-                            setChecked(false);
-                        }
+                        // if (!spo2.trim()) {
+                        //     Alert.alert('You need to enter the SPO2 value');
+                        //     setChecked(false);
+                        // }
                     }}
                     color='#651B70'
                 />

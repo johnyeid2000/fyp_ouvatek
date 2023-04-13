@@ -1,15 +1,15 @@
-import React , {useState} from 'react';
-import {View, Text, TextInput, Alert} from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, TextInput, Alert } from 'react-native';
 import { Checkbox } from 'react-native-paper';
 
 
 import CustomButton from "../../components/CustomButton/CustomButton";
 
-import Icon  from "react-native-vector-icons/MaterialCommunityIcons";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 import styles from './styles';
 
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 
 const HeartRateScreen = () => {
 
@@ -32,7 +32,7 @@ const HeartRateScreen = () => {
   return (
     <View style={styles.container}>
       <View style={styles.iconContainer}>
-        <Icon 
+        <Icon
           name="heart-pulse"
           style={styles.icon}
         />
@@ -44,7 +44,7 @@ const HeartRateScreen = () => {
           style={styles.helpIcon}
         />
       </View>
-      <View style={[styles.inputContainer,{marginBottom:20}]}>
+      <View style={[styles.inputContainer, { marginBottom: 20 }]}>
         <TextInput
           onChangeText={setPulse}
           value={pulse}
@@ -72,7 +72,7 @@ const HeartRateScreen = () => {
           style={styles.input}
         />
 
-        <Text style={{fontSize:35}}>/</Text>
+        <Text style={{ fontSize: 35 }}>/</Text>
 
         <TextInput
           onChangeText={setDiastolic}
@@ -84,41 +84,41 @@ const HeartRateScreen = () => {
         <Text style={styles.txt}>mmHg</Text>
       </View>
 
-      <View style={{flexDirection:'row', alignItems:'center', justifyContent:'center', marginTop:10}}>
-      <Checkbox
-      status={checked ? 'checked' : 'unchecked'}
-      onPress={() => {
-        setChecked(!checked);
-        if(!pulse.trim()){
-          Alert.alert('You need to enter the pulse value');
-          setChecked(false);
-        }
-        else if(!systolic.trim()){
-          Alert.alert('You need to enter systolic');
-          setChecked(false);
-        }
-        else if(!diastolic.trim()){
-          Alert.alert('You need to enter diastolic');
-          setChecked(false);
-        }
-      }}
-      color='#651B70'
-    />
-    <Text > Check Values</Text>
+      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginTop: 10 }}>
+        <Checkbox
+          status={checked ? 'checked' : 'unchecked'}
+          onPress={() => {
+            setChecked(!checked);
+            // if(!pulse.trim()){
+            //   Alert.alert('You need to enter the pulse value');
+            //   setChecked(false);
+            // }
+            // else if(!systolic.trim()){
+            //   Alert.alert('You need to enter systolic');
+            //   setChecked(false);
+            // }
+            // else if(!diastolic.trim()){
+            //   Alert.alert('You need to enter diastolic');
+            //   setChecked(false);
+            // }
+          }}
+          color='#651B70'
+        />
+        <Text > Check Values</Text>
       </View>
 
       <View style={styles.btnContainer}>
-      <CustomButton
-                text="See Graph"
-                onPress={onSeeGraphPressed}
-                type='Teritiary'
-      />
+        <CustomButton
+          text="See Graph"
+          onPress={onSeeGraphPressed}
+          type='Teritiary'
+        />
       </View>
       <CustomButton
-                text="Submit"
-                onPress={onSubmitPressed}
+        text="Submit"
+        onPress={onSubmitPressed}
       />
-      
+
 
     </View>
   );
