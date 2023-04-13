@@ -11,7 +11,6 @@ import { useNavigation } from '@react-navigation/native';
 
 const ConfirmEmailPasswordScreen = ({ route }) => {
     const [code, setCode] = useState('');
-    //const [isResendDisabled, setIsResendDisabled] = useState(true);
     const [confirmEmailStatus, setConfirmEmailStatus] = useState(null);
     const { id } = route.params;
     const navigation = useNavigation();
@@ -44,20 +43,6 @@ const ConfirmEmailPasswordScreen = ({ route }) => {
         }
     };
 
-
-    // const onResendPressed = () => {
-    //     // Call the sendconfirmation endpoint again to resend the confirmation code
-    //     axios.post('https://ouvatek.herokuapp.com/api/sendconfirmation', { id })
-    //         .then((response) => {
-    //             setIsResendDisabled(true);
-    //             // Set the resend button as enabled after 3 minutes
-    //             setTimeout(() => setIsResendDisabled(false), 180000);
-    //         })
-    //         .catch((error) => {
-    //             console.log(error);
-    //         });
-    // };
-
     return (
         <View style={styles.root}>
             <Text style={styles.title}>Confirm your account</Text>
@@ -76,13 +61,6 @@ const ConfirmEmailPasswordScreen = ({ route }) => {
                 text="Confirm"
                 onPress={onConfirmPressed}
             />
-
-            {/* <CustomButton
-                text="Resend Code"
-                onPress={onResendPressed}
-                type='Secondary'
-                disabled={isResendDisabled}
-            /> */}
 
         </View>
     );

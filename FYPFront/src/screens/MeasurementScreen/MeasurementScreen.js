@@ -4,11 +4,9 @@ import MeasurementButton from '../../components/MeasurementButton/MeasurementBut
 
 import { useNavigation } from '@react-navigation/native';
 
-
 const MeasurementScreen = () => {
 
   const navigation = useNavigation();
-
 
   useEffect(() => {
     const handleBackPress = () => {
@@ -58,7 +56,6 @@ const MeasurementScreen = () => {
   const FetusPressed = () => {
     navigation.navigate('Fetus');
   };
-
   const WeightPressed = () => {
     navigation.navigate('Weight');
   };

@@ -11,15 +11,15 @@ const EditDoctorScreen = () => {
 
     const onGeneralInfoPressed = () => {
         navigation.navigate('EditGeneral');
-    }
+    };
 
     const onDoctorInfoPressed = () => {
         navigation.navigate('EditDoctorInfo');
-    }
+    };
 
     const onLocationPressed = () => {
         navigation.navigate('EditLocation');
-    }
+    };
 
     return (
         <View style={styles.container}>

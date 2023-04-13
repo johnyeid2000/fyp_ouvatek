@@ -65,7 +65,6 @@ const EditDoctorInfoScreen = () => {
         getProfileData();
     }, []);
 
-
     const editUser = async () => {
         try {
             const token = await AsyncStorage.getItem('token');

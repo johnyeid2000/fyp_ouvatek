@@ -11,12 +11,7 @@ const ForgotPasswordScreen = () => {
     const [email, setEmail] = useState('');
     const [forgotPassStatus, setForgotPassStatus] = useState(null);
 
-
     const navigation = useNavigation();
-
-    // const onSendPressed = () => {
-    //     navigation.navigate("ConfirmEmailPassword");
-    // };
 
     const onSendPressed = async () => {
         try {
@@ -34,7 +29,6 @@ const ForgotPasswordScreen = () => {
             setForgotPassStatus(error.response.data.message);
         }
     };
-
 
     return (
         <View style={styles.root}>

@@ -12,11 +12,11 @@ const EditPatientScreen = () => {
 
     const onPatientInfoPressed = () => {
         navigation.navigate('EditGeneral');
-    }
+    };
 
     const onPregnancyPressed = () => {
         navigation.navigate('EditPregnancy');
-    }
+    };
 
     return (
         <View style={styles.container}>

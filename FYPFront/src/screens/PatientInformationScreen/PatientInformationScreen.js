@@ -195,7 +195,5 @@ const PatientInformationScreen = ({ route }) => {
   );
 };
 
-
-
 export default PatientInformationScreen
 

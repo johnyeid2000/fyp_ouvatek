@@ -36,7 +36,6 @@ const PatientProfileScreen = () => {
     return unsubscribe;
   }, [navigation]);
 
-
   const onEditAccountPressed = () => {
     navigation.navigate('EditPatient');
   }
@@ -52,7 +51,6 @@ const PatientProfileScreen = () => {
       { cancelable: false }
     );
   }
-
 
   return (
     <SafeAreaView style={styles.container}>

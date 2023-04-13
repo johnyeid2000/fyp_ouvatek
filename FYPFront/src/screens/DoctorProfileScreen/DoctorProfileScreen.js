@@ -54,7 +54,6 @@ const DoctorProfileScreen = () => {
     );
   }
 
-
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.editLogoutContainer}>

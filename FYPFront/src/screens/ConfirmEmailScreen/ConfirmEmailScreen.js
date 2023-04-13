@@ -61,10 +61,6 @@ const ConfirmEmailScreen = ({ route }) => {
         }
     };
 
-    // const onSignInPressed = () => {
-    //     navigation.navigate("SignIn");
-    // };
-
     const onResendPressed = () => {
         // Call the sendconfirmation endpoint again to resend the confirmation code
         axios.post('https://ouvatek.herokuapp.com/api/sendconfirmation', { id })
@@ -104,11 +100,6 @@ const ConfirmEmailScreen = ({ route }) => {
                 disabled={isResendDisabled}
             />
 
-            {/* <CustomButton
-                text="Back to Sign In"
-                onPress={onSignInPressed}
-                type='Teritiary'
-            /> */}
         </View>
     );
 };

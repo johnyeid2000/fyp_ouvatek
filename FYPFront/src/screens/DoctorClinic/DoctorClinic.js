@@ -63,7 +63,6 @@ const DoctorClinic = ({ route }) => {
     }
   };
 
-
   const insertAnotherDoctorClinic = async () => {
     try {
       const response = await axios.post('https://ouvatek.herokuapp.com/api/doctorlocation',
