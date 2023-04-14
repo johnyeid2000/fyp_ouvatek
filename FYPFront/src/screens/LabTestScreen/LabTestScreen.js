@@ -15,19 +15,9 @@ const LabTestScreen = () => {
 
     const navigation = useNavigation();
 
-    const onSeeGraphPressed = () => {
-        navigation.navigate('Graph');
-    };
-
     const onSubmitPressed = () => {
         console.warn('submit pressed');
     };
-
-    const [pulse, setPulse] = useState('');
-    const [systolic, setSystolic] = useState('');
-    const [diastolic, setDiastolic] = useState('');
-
-    const [checked, setChecked] = useState(false);
 
     return (
         <View style={styles.container}>
