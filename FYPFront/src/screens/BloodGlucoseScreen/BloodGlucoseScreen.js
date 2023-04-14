@@ -1,30 +1,48 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Alert } from 'react-native';
 import { Checkbox } from 'react-native-paper';
-
 import CustomButton from "../../components/CustomButton/CustomButton";
-
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-
 import styles from './styles';
-
+import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from '@react-navigation/native';
 
 const BloodGlucoseScreen = () => {
 
     const navigation = useNavigation();
+    const [glucose, setGlucose] = useState('');
+    const [checked, setChecked] = useState(false);
+    const [error, setError] = useState(null);
+
+    // const addBloodGlucose = async () => {
+    //     try {
+    //         const token = await AsyncStorage.getItem('token');
+    //         const response = await axios.post('https://ouvatek.herokuapp.com/api/...',
+    //             { glucose },
+    //             {
+    //                 headers: {
+    //                     'Content-Type': 'application/json',
+    //                     'Authorization': `Bearer ${token}`
+    //                 },
+    //             },
+    //         );
+    //         if (response.status === 200) {
+    //             navigation.navigate('Measurement');
+    //         }
+    //     } catch (error) {
+    //         setError(error.response.data.message);
+    //     }
+    // };
+
+    const onSubmitPressed = () => {
+        navigation.navigate('Measurement');
+        //addBloodGlucose();
+    };
 
     const onSeeGraphPressed = () => {
         navigation.navigate('Graph');
     };
-
-    const onSubmitPressed = () => {
-        console.warn('submit pressed');
-    };
-
-    const [glucose, setGlucose] = useState('');
-
-    const [checked, setChecked] = useState(false);
 
     return (
         <View style={styles.container}>
@@ -33,6 +51,7 @@ const BloodGlucoseScreen = () => {
                     name="diabetes"
                     style={styles.icon}
                 />
+                <Text style={styles.error}>{error}</Text>
             </View>
             <View style={styles.titleContainer}>
                 <Text style={styles.txtTitle}>Please Enter Your Blood Glucose Value</Text>

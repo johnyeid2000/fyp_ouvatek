@@ -7,13 +7,15 @@ const styles = StyleSheet.create({
 
     iconContainer: {
         alignItems: 'center',
-        marginBottom: 10
     },
     icon: {
         fontSize: 130,
         color: '#651B70',
     },
-
+    error: {
+        fontSize: 16,
+        color: 'red',
+    },
     titleContainer: {
         flexDirection: 'row',
         alignItems: 'center',

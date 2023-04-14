@@ -1,33 +1,50 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Alert } from 'react-native';
 import { Checkbox } from 'react-native-paper';
-
-
+import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import CustomButton from "../../components/CustomButton/CustomButton";
-
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-
 import styles from './styles';
-
 import { useNavigation } from '@react-navigation/native';
 
 const HeartRateScreen = () => {
 
   const navigation = useNavigation();
+  const [pulse, setPulse] = useState('');
+  const [systolic, setSystolic] = useState('');
+  const [diastolic, setDiastolic] = useState('');
+  const [checked, setChecked] = useState(false);
+  const [error, setError] = useState(null);
+
+  // const addHRandBP = async () => {
+  //     try {
+  //         const token = await AsyncStorage.getItem('token');
+  //         const response = await axios.post('https://ouvatek.herokuapp.com/api/...',
+  //             { pulse,  systolic, diastolic},
+  //             {
+  //                 headers: {
+  //                     'Content-Type': 'application/json',
+  //                     'Authorization': `Bearer ${token}`
+  //                 },
+  //             },
+  //         );
+  //         if (response.status === 200) {
+  //             navigation.navigate('Measurement');
+  //         }
+  //     } catch (error) {
+  //         setError(error.response.data.message);
+  //     }
+  // };
 
   const onSeeGraphPressed = () => {
     navigation.navigate('Graph');
   };
 
   const onSubmitPressed = () => {
-    console.warn('submit pressed');
+    navigation.navigate('Measurement');
+    //addHRandBP();
   };
-
-  const [pulse, setPulse] = useState('');
-  const [systolic, setSystolic] = useState('');
-  const [diastolic, setDiastolic] = useState('');
-
-  const [checked, setChecked] = useState(false);
 
   return (
     <View style={styles.container}>
@@ -36,6 +53,7 @@ const HeartRateScreen = () => {
           name="heart-pulse"
           style={styles.icon}
         />
+        <Text style={styles.error}>{error}</Text>
       </View>
       <View style={styles.titleContainer}>
         <Text style={styles.txtTitle}>Please Enter Your Heart Rate</Text>
