@@ -35,16 +35,26 @@ updateTrimester = () =>{
             if(rows.length < 1){
                 console.log("Trimesters Updated!");
             }else{
-                await rows.forEach(async row => {
+                let candidant = [];
+                rows.forEach(async (row,index) => {
                     let date = row.first_pregnant_day;
                     let trimester = await helper.getTrimester(date);
-                    let sql = 'UPDATE `patient` SET trimester= ? WHERE pat_id= ?'
-                    con.connection.query(sql, [trimester, row.pat_id], function(error, result){
-                        if(error){
-                            console.log(error.message);
-                        }
-                    });
-                    
+                    candidant.push(trimester);
+                    if(candidant.length >= 8){
+                        console.log("Too Many Trimesters to fix")
+                        return "Delayed"
+                    }
+                    if(candidant[index]!=row.trimester){
+                        let sql = 'UPDATE `patient` SET trimester= ? WHERE pat_id= ?'
+                        con.connection.query(sql, [candidant[index], row.pat_id], function(error, result){
+                            if(error){
+                                console.log(error.message);
+                            }
+                            else{
+                                console.log("Trimesters Fixed: ", result.affectedRows)
+                            }
+                        });
+                    }
                 });
             }
             return "Success";
