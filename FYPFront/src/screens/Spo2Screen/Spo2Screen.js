@@ -19,7 +19,7 @@ const Spo2Screen = () => {
     //     try {
     //         const token = await AsyncStorage.getItem('token');
     //         const response = await axios.post('https://ouvatek.herokuapp.com/api/...',
-    //             { spo2 },
+    //             {checked,  spo2 },
     //             {
     //                 headers: {
     //                     'Content-Type': 'application/json',
@@ -27,7 +27,10 @@ const Spo2Screen = () => {
     //                 },
     //             },
     //         );
-    //         if (response.status === 200) {
+    //         if (response.status === 200 && checked == true) {
+    //             navigation.navigate('Spo2');
+    //         }
+    //         else if (response.status === 200 && checked == false) {
     //             navigation.navigate('Measurement');
     //         }
     //     } catch (error) {
@@ -35,7 +38,14 @@ const Spo2Screen = () => {
     //     }
     // };
 
+    const onCheckValuePressed = () => {
+        setChecked(true);
+        navigation.navigate('Spo2');
+        //addSPO2();
+    };
+
     const onSubmitPressed = () => {
+        setChecked(false);
         navigation.navigate('Measurement');
         //addSPO2();
     };
@@ -43,7 +53,6 @@ const Spo2Screen = () => {
     const onSeeGraphPressed = () => {
         navigation.navigate('Graph');
     };
-
 
     return (
         <View style={styles.container}>
@@ -72,27 +81,19 @@ const Spo2Screen = () => {
                 <Text style={styles.txt}>%</Text>
             </View>
 
-
-            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginTop: 10 }}>
-                <Checkbox
-                    status={checked ? 'checked' : 'unchecked'}
-                    onPress={() => {
-                        setChecked(!checked);
-                        // if (!spo2.trim()) {
-                        //     Alert.alert('You need to enter the SPO2 value');
-                        //     setChecked(false);
-                        // }
-                    }}
-                    color='#651B70'
+            <View style={styles.btnContainer}>
+                <CustomButton
+                    text="Check Values"
+                    onPress={onCheckValuePressed}
+                    type='Teritiary'
                 />
-                <Text > Check Values</Text>
             </View>
 
             <View style={styles.btnContainer}>
                 <CustomButton
                     text="See Graph"
                     onPress={onSeeGraphPressed}
-                    type='Teritiary'
+                    type='Secondary'
                 />
             </View>
             <CustomButton

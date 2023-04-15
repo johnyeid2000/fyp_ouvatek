@@ -53,7 +53,6 @@ const styles = StyleSheet.create({
 
     btnContainer: {
         marginTop: 10,
-        marginBottom: 20
     }
 
 });

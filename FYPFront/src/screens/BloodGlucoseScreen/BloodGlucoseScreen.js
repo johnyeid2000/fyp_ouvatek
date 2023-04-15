@@ -19,7 +19,7 @@ const BloodGlucoseScreen = () => {
     //     try {
     //         const token = await AsyncStorage.getItem('token');
     //         const response = await axios.post('https://ouvatek.herokuapp.com/api/...',
-    //             { glucose },
+    //             {checked,  glucose },
     //             {
     //                 headers: {
     //                     'Content-Type': 'application/json',
@@ -27,7 +27,10 @@ const BloodGlucoseScreen = () => {
     //                 },
     //             },
     //         );
-    //         if (response.status === 200) {
+    //         if (response.status === 200 && checked == true) {
+    //             navigation.navigate('BloodGlucose');
+    //         }
+    //         else if (response.status === 200 && checked == false) {
     //             navigation.navigate('Measurement');
     //         }
     //     } catch (error) {
@@ -35,7 +38,14 @@ const BloodGlucoseScreen = () => {
     //     }
     // };
 
+    const onCheckValuePressed = () => {
+        setChecked(true);
+        navigation.navigate('BloodGlucose');
+        //addBloodGlucose();
+    };
+
     const onSubmitPressed = () => {
+        setChecked(false);
         navigation.navigate('Measurement');
         //addBloodGlucose();
     };
@@ -71,26 +81,19 @@ const BloodGlucoseScreen = () => {
                 <Text style={styles.txt}>mg/dL</Text>
             </View>
 
-            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginTop: 10 }}>
-                <Checkbox
-                    status={checked ? 'checked' : 'unchecked'}
-                    onPress={() => {
-                        setChecked(!checked);
-                        // if (!glucose.trim()) {
-                        //     Alert.alert('You need to enter the Blood Glucose value');
-                        //     setChecked(false);
-                        // }
-                    }}
-                    color='#651B70'
+            <View style={styles.btnContainer}>
+                <CustomButton
+                    text="Check Values"
+                    onPress={onCheckValuePressed}
+                    type='Teritiary'
                 />
-                <Text > Check Values</Text>
             </View>
 
             <View style={styles.btnContainer}>
                 <CustomButton
                     text="See Graph"
                     onPress={onSeeGraphPressed}
-                    type='Teritiary'
+                    type='Secondary'
                 />
             </View>
             <CustomButton
