@@ -21,7 +21,7 @@ const HeartRateScreen = () => {
   //     try {
   //         const token = await AsyncStorage.getItem('token');
   //         const response = await axios.post('https://ouvatek.herokuapp.com/api/...',
-  //             { pulse,  systolic, diastolic},
+  //             {checked, pulse,  systolic, diastolic },
   //             {
   //                 headers: {
   //                     'Content-Type': 'application/json',
@@ -29,21 +29,31 @@ const HeartRateScreen = () => {
   //                 },
   //             },
   //         );
-  //         if (response.status === 200) {
-  //             navigation.navigate('Measurement');
+  //         if (response.status === 200 && checked == true) {
+  //             navigation.navigate('HeartRate');
+  //         }
+  //         else if (response.status === 200 && checked == false) {
+  //           navigation.navigate('Measurement');
   //         }
   //     } catch (error) {
   //         setError(error.response.data.message);
   //     }
   // };
 
-  const onSeeGraphPressed = () => {
-    navigation.navigate('Graph');
+  const onCheckValuePressed = () => {
+    setChecked(true);
+    navigation.navigate('HeartRate');
+    //addHRandBP();
   };
 
   const onSubmitPressed = () => {
+    setChecked(false);
     navigation.navigate('Measurement');
     //addHRandBP();
+  };
+
+  const onSeeGraphPressed = () => {
+    navigation.navigate('Graph');
   };
 
   return (
@@ -102,34 +112,19 @@ const HeartRateScreen = () => {
         <Text style={styles.txt}>mmHg</Text>
       </View>
 
-      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginTop: 10 }}>
-        <Checkbox
-          status={checked ? 'checked' : 'unchecked'}
-          onPress={() => {
-            setChecked(!checked);
-            // if(!pulse.trim()){
-            //   Alert.alert('You need to enter the pulse value');
-            //   setChecked(false);
-            // }
-            // else if(!systolic.trim()){
-            //   Alert.alert('You need to enter systolic');
-            //   setChecked(false);
-            // }
-            // else if(!diastolic.trim()){
-            //   Alert.alert('You need to enter diastolic');
-            //   setChecked(false);
-            // }
-          }}
-          color='#651B70'
+      <View style={styles.btnContainer}>
+        <CustomButton
+          text="Check Values"
+          onPress={onCheckValuePressed}
+          type='Teritiary'
         />
-        <Text > Check Values</Text>
       </View>
 
       <View style={styles.btnContainer}>
         <CustomButton
           text="See Graph"
           onPress={onSeeGraphPressed}
-          type='Teritiary'
+          type='Secondary'
         />
       </View>
       <CustomButton

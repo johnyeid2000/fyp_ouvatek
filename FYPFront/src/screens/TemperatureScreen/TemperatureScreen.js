@@ -19,7 +19,7 @@ const TemperatureScreen = () => {
     //     try {
     //         const token = await AsyncStorage.getItem('token');
     //         const response = await axios.post('https://ouvatek.herokuapp.com/api/...',
-    //             { temperature },
+    //             {checked,  temperature },
     //             {
     //                 headers: {
     //                     'Content-Type': 'application/json',
@@ -27,7 +27,10 @@ const TemperatureScreen = () => {
     //                 },
     //             },
     //         );
-    //         if (response.status === 200) {
+    //         if (response.status === 200 && checked == true) {
+    //             navigation.navigate('Temperature');
+    //         }
+    //         else if (response.status === 200 && checked == false) {
     //             navigation.navigate('Measurement');
     //         }
     //     } catch (error) {
@@ -35,7 +38,14 @@ const TemperatureScreen = () => {
     //     }
     // };
 
+    const onCheckValuePressed = () => {
+        setChecked(true);
+        navigation.navigate('Temperature');
+        //addTemperature();
+    };
+
     const onSubmitPressed = () => {
+        setChecked(false);
         navigation.navigate('Measurement');
         //addTemperature();
     };
@@ -71,27 +81,19 @@ const TemperatureScreen = () => {
                 <Text style={styles.txt}>°C</Text>
             </View>
 
-
-            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginTop: 10 }}>
-                <Checkbox
-                    status={checked ? 'checked' : 'unchecked'}
-                    onPress={() => {
-                        setChecked(!checked);
-                        // if (!temperature.trim()) {
-                        //     Alert.alert('You need to enter the temperature value');
-                        //     setChecked(false);
-                        // }
-                    }}
-                    color='#651B70'
+            <View style={styles.btnContainer}>
+                <CustomButton
+                    text="Check Values"
+                    onPress={onCheckValuePressed}
+                    type='Teritiary'
                 />
-                <Text > Check Values</Text>
             </View>
 
             <View style={styles.btnContainer}>
                 <CustomButton
                     text="See Graph"
                     onPress={onSeeGraphPressed}
-                    type='Teritiary'
+                    type='Secondary'
                 />
             </View>
             <CustomButton
