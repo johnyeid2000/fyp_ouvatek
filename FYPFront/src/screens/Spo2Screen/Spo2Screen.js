@@ -12,42 +12,34 @@ const Spo2Screen = () => {
 
     const navigation = useNavigation();
     const [spo2, setSpo2] = useState('');
-    const [checked, setChecked] = useState(false);
     const [error, setError] = useState(null);
 
-    // const addSPO2 = async () => {
-    //     try {
-    //         const token = await AsyncStorage.getItem('token');
-    //         const response = await axios.post('https://ouvatek.herokuapp.com/api/...',
-    //             {checked,  spo2 },
-    //             {
-    //                 headers: {
-    //                     'Content-Type': 'application/json',
-    //                     'Authorization': `Bearer ${token}`
-    //                 },
-    //             },
-    //         );
-    //         if (response.status === 200 && checked == true) {
-    //             navigation.navigate('Spo2');
-    //         }
-    //         else if (response.status === 200 && checked == false) {
-    //             navigation.navigate('Measurement');
-    //         }
-    //     } catch (error) {
-    //         setError(error.response.data.message);
-    //     }
-    // };
+    const addSPO2 = async (isChecked) => {
+        try {
+            const token = await AsyncStorage.getItem('token');
+            const response = await axios.post('https://ouvatek.herokuapp.com/api/spo2',
+                { checked: isChecked, spo2 },
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                },
+            );
+            if (response.status === 200) {
+                isChecked ? navigation.navigate('Spo2') : navigation.navigate('Measurement');
+            }
+        } catch (error) {
+            setError(error.response.data.message);
+        }
+    };
 
     const onCheckValuePressed = () => {
-        setChecked(true);
-        navigation.navigate('Spo2');
-        //addSPO2();
+        addSPO2(true);
     };
 
     const onSubmitPressed = () => {
-        setChecked(false);
-        navigation.navigate('Measurement');
-        //addSPO2();
+        addSPO2(false);
     };
 
     const onSeeGraphPressed = () => {

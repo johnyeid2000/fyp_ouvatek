@@ -12,42 +12,34 @@ const BloodGlucoseScreen = () => {
 
     const navigation = useNavigation();
     const [glucose, setGlucose] = useState('');
-    const [checked, setChecked] = useState(false);
     const [error, setError] = useState(null);
 
-    // const addBloodGlucose = async () => {
-    //     try {
-    //         const token = await AsyncStorage.getItem('token');
-    //         const response = await axios.post('https://ouvatek.herokuapp.com/api/...',
-    //             {checked,  glucose },
-    //             {
-    //                 headers: {
-    //                     'Content-Type': 'application/json',
-    //                     'Authorization': `Bearer ${token}`
-    //                 },
-    //             },
-    //         );
-    //         if (response.status === 200 && checked == true) {
-    //             navigation.navigate('BloodGlucose');
-    //         }
-    //         else if (response.status === 200 && checked == false) {
-    //             navigation.navigate('Measurement');
-    //         }
-    //     } catch (error) {
-    //         setError(error.response.data.message);
-    //     }
-    // };
+    const addBloodGlucose = async (isChecked) => {
+        try {
+            const token = await AsyncStorage.getItem('token');
+            const response = await axios.post('https://ouvatek.herokuapp.com/api/glucose',
+                { checked: isChecked, glucose },
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                },
+            );
+            if (response.status === 200) {
+                isChecked ? navigation.navigate('BloodGlucose') : navigation.navigate('Measurement');
+            }
+        } catch (error) {
+            setError(error.response.data.message);
+        }
+    };
 
     const onCheckValuePressed = () => {
-        setChecked(true);
-        navigation.navigate('BloodGlucose');
-        //addBloodGlucose();
+        addBloodGlucose(true);
     };
 
     const onSubmitPressed = () => {
-        setChecked(false);
-        navigation.navigate('Measurement');
-        //addBloodGlucose();
+        addBloodGlucose(false);
     };
 
     const onSeeGraphPressed = () => {

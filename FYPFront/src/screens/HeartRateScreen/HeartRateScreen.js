@@ -14,42 +14,34 @@ const HeartRateScreen = () => {
   const [pulse, setPulse] = useState('');
   const [systolic, setSystolic] = useState('');
   const [diastolic, setDiastolic] = useState('');
-  const [checked, setChecked] = useState(false);
   const [error, setError] = useState(null);
 
-  // const addHRandBP = async () => {
-  //     try {
-  //         const token = await AsyncStorage.getItem('token');
-  //         const response = await axios.post('https://ouvatek.herokuapp.com/api/...',
-  //             {checked, pulse,  systolic, diastolic },
-  //             {
-  //                 headers: {
-  //                     'Content-Type': 'application/json',
-  //                     'Authorization': `Bearer ${token}`
-  //                 },
-  //             },
-  //         );
-  //         if (response.status === 200 && checked == true) {
-  //             navigation.navigate('HeartRate');
-  //         }
-  //         else if (response.status === 200 && checked == false) {
-  //           navigation.navigate('Measurement');
-  //         }
-  //     } catch (error) {
-  //         setError(error.response.data.message);
-  //     }
-  // };
+  const addHRandBP = async (isChecked) => {
+    try {
+      const token = await AsyncStorage.getItem('token');
+      const response = await axios.post('https://ouvatek.herokuapp.com/api/heartrate',
+        { checked: isChecked, pulse, systolic, diastolic },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+        },
+      );
+      if (response.status === 200) {
+        isChecked ? navigation.navigate('HeartRate') : navigation.navigate('Measurement');
+      }
+    } catch (error) {
+      setError(error.response.data.message);
+    }
+  };
 
   const onCheckValuePressed = () => {
-    setChecked(true);
-    navigation.navigate('HeartRate');
-    //addHRandBP();
+    addHRandBP(true);
   };
 
   const onSubmitPressed = () => {
-    setChecked(false);
-    navigation.navigate('Measurement');
-    //addHRandBP();
+    addHRandBP(false);
   };
 
   const onSeeGraphPressed = () => {

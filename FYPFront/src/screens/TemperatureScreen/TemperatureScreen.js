@@ -12,42 +12,34 @@ const TemperatureScreen = () => {
 
     const navigation = useNavigation();
     const [temperature, setTemperature] = useState('');
-    const [checked, setChecked] = useState(false);
     const [error, setError] = useState(null);
 
-    // const addTemperature = async () => {
-    //     try {
-    //         const token = await AsyncStorage.getItem('token');
-    //         const response = await axios.post('https://ouvatek.herokuapp.com/api/...',
-    //             {checked,  temperature },
-    //             {
-    //                 headers: {
-    //                     'Content-Type': 'application/json',
-    //                     'Authorization': `Bearer ${token}`
-    //                 },
-    //             },
-    //         );
-    //         if (response.status === 200 && checked == true) {
-    //             navigation.navigate('Temperature');
-    //         }
-    //         else if (response.status === 200 && checked == false) {
-    //             navigation.navigate('Measurement');
-    //         }
-    //     } catch (error) {
-    //         setError(error.response.data.message);
-    //     }
-    // };
+    const addTemperature = async (isChecked) => {
+        try {
+            const token = await AsyncStorage.getItem('token');
+            const response = await axios.post('https://ouvatek.herokuapp.com/api/temperature',
+                { checked: isChecked, temperature },
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                },
+            );
+            if (response.status === 200) {
+                isChecked ? navigation.navigate('Temperature') : navigation.navigate('Measurement');
+            }
+        } catch (error) {
+            setError(error.response.data.message);
+        }
+    };
 
     const onCheckValuePressed = () => {
-        setChecked(true);
-        navigation.navigate('Temperature');
-        //addTemperature();
+        addTemperature(true);
     };
 
     const onSubmitPressed = () => {
-        setChecked(false);
-        navigation.navigate('Measurement');
-        //addTemperature();
+        addTemperature(false);
     };
 
     const onSeeGraphPressed = () => {

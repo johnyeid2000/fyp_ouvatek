@@ -12,42 +12,34 @@ const WeightScreen = () => {
 
     const navigation = useNavigation();
     const [weight, setWeight] = useState('');
-    const [checked, setChecked] = useState(false);
     const [error, setError] = useState(null);
 
-    // const addWeight = async () => {
-    //     try {
-    //         const token = await AsyncStorage.getItem('token');
-    //         const response = await axios.post('https://ouvatek.herokuapp.com/api/...',
-    //             {checked,  weight },
-    //             {
-    //                 headers: {
-    //                     'Content-Type': 'application/json',
-    //                     'Authorization': `Bearer ${token}`
-    //                 },
-    //             },
-    //         );
-    //         if (response.status === 200 && checked == true) {
-    //             navigation.navigate('Weight');
-    //         }
-    //         else if (response.status === 200 && checked == false) {
-    //             navigation.navigate('Measurement');
-    //         }
-    //     } catch (error) {
-    //         setError(error.response.data.message);
-    //     }
-    // };
+    const addWeight = async (isChecked) => {
+        try {
+            const token = await AsyncStorage.getItem('token');
+            const response = await axios.post('https://ouvatek.herokuapp.com/api/weight',
+                { checked: isChecked, weight },
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                },
+            );
+            if (response.status === 200) {
+                isChecked ? navigation.navigate('Weight') : navigation.navigate('Measurement');
+            }
+        } catch (error) {
+            setError(error.response.data.message);
+        }
+    };
 
     const onCheckValuePressed = () => {
-        setChecked(true);
-        navigation.navigate('Weight');
-        //addWeight();
+        addWeight(true);
     };
 
     const onSubmitPressed = () => {
-        setChecked(false);
-        navigation.navigate('Measurement');
-        //addWeight();
+        addWeight(false);
     };
 
     const onSeeGraphPressed = () => {
