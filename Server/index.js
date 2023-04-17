@@ -811,14 +811,38 @@ app.post('/api/deleteuser', (req,res) => {
 								});
 							}else{
 								let sql = "DELETE FROM confirmation_code WHERE user_id=?";
-								con.connection.query(sql, rows[0].user_id);
-								sql = "DELETE FROM doctor_address WHERE doctor_id=?";
-								con.connection.query(sql, rows[0].dr_id);
-								sql = "DELETE FROM doctor WHERE dr_id=?"
-								con.connection.query(sql, rows[0].dr_id);
-								sql = "DELETE FROM user WHERE id=?"
-								con.connection.query(sql, rows[0].user_id);
-								return res.status(200).send({message: "Doctor Deleted Successfully"});
+								con.connection.query(sql, rows[0].user_id, function(error, result){
+									if(error){
+										console.log(error);
+									}
+									else{
+										sql = "DELETE FROM doctor_address WHERE doctor_id=?";
+										con.connection.query(sql, rows[0].dr_id, function(error, result){
+										if(error){
+											console.log(error);
+										}
+										else{
+											sql = "DELETE FROM doctor WHERE dr_id=?"
+											con.connection.query(sql, rows[0].dr_id, function(error, result){
+												if(error){
+													console.log(error);
+												}
+												else{
+													sql = "DELETE FROM user WHERE id=?"
+													con.connection.query(sql, rows[0].user_id, function(error, result){
+													if(error){
+														console.log(error);
+													}
+													else{
+														return res.status(200).send({message: "Doctor Deleted Successfully"});
+													}
+													});										
+												}
+											});	
+										}
+										});
+									}
+								});
 							}
 						}
 					});
@@ -876,12 +900,16 @@ app.post('/api/temperature', (req,res) => {
 					return res.status(200).send({message: "VALIDATION SUCCESS"});
 				}
 				else{
-					let sql = "SELECT pat_id FROM `patient` where user_id"
+					console.log(result.value.userId);
+					let sql = "SELECT pat_id FROM `patient` where user_id=?"
 					con.connection.query(sql, result.value.userId, function(error, rows){
 						if(error){
 							return res.status(404).send({message: "There was an Error adding your body temperature."});			
 						}
 						else{
+							console.log(rows);
+							console.log("=========");
+							console.log(rows[0])
 							const today = new Date();
 							const date = fixDate(today);
 							const hours = today.getHours().toString().padStart(2, '0');
@@ -892,6 +920,9 @@ app.post('/api/temperature', (req,res) => {
 							con.connection.query(sql, [rows[0].pat_id, temperature, date, time], function(error, result){
 								if(error){
 									return res.status(404).send({message: "There was an Error adding your body temperature."});
+								}
+								else{
+									return res.status(200).send({message: "Data successfully submited."});
 								}
 							});
 						}
@@ -921,7 +952,7 @@ app.post('/api/weight', (req,res) => {
 					return res.status(200).send({message: "VALIDATION SUCCESS"});
 				}
 				else{
-					let sql = "SELECT pat_id FROM `patient` where user_id"
+					let sql = "SELECT pat_id FROM `patient` where user_id=?"
 					con.connection.query(sql, result.value.userId, function(error, rows){
 						if(error){
 							return res.status(404).send({message: "There was an Error adding your body weight."});			
@@ -937,6 +968,9 @@ app.post('/api/weight', (req,res) => {
 							con.connection.query(sql, [rows[0].pat_id, weight, date, time], function(error, result){
 								if(error){
 									return res.status(404).send({message: "There was an Error adding your body weight."});
+								}
+								else{
+									return res.status(200).send({message: "Data successfully submited."});
 								}
 							});
 						}
@@ -966,7 +1000,7 @@ app.post('/api/spo2', (req,res) => {
 					return res.status(200).send({message: "VALIDATION SUCCESS"});
 				}
 				else{
-					let sql = "SELECT pat_id FROM `patient` where user_id"
+					let sql = "SELECT pat_id FROM `patient` where user_id=?"
 					con.connection.query(sql, result.value.userId, function(error, rows){
 						if(error){
 							return res.status(404).send({message: "There was an Error adding your SPO2 values."});			
@@ -982,6 +1016,9 @@ app.post('/api/spo2', (req,res) => {
 							con.connection.query(sql, [rows[0].pat_id, spo2, date, time], function(error, result){
 								if(error){
 									return res.status(404).send({message: "There was an Error adding your SPO2 values."});
+								}
+								else{
+									return res.status(200).send({message: "Data successfully submited."});
 								}
 							});
 						}
@@ -1013,7 +1050,7 @@ app.post('/api/glucose', (req,res) => {
 					return res.status(200).send({message: "VALIDATION SUCCESS"});
 				}
 				else{
-					let sql = "SELECT pat_id FROM `patient` where user_id"
+					let sql = "SELECT pat_id FROM `patient` where user_id=?"
 					con.connection.query(sql, result.value.userId, function(error, rows){
 						if(error){
 							return res.status(404).send({message: "There was an Error adding your glucose values."});			
@@ -1029,6 +1066,9 @@ app.post('/api/glucose', (req,res) => {
 							con.connection.query(sql, [rows[0].pat_id, glucose, date, time], function(error, result){
 								if(error){
 									return res.status(404).send({message: "There was an Error adding your glucose values."});
+								}
+								else{
+									return res.status(200).send({message: "Data successfully submited."});
 								}
 							});
 						}
