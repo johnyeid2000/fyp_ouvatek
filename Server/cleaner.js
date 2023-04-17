@@ -49,6 +49,7 @@ updateTrimester = () =>{
                         con.connection.query(sql, [candidant[index], row.pat_id], function(error, result){
                             if(error){
                                 console.log(error.message);
+                                console.log(result);
                             }
                             else{
                                 console.log("Trimesters Fixed: ", result.affectedRows)

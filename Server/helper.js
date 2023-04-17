@@ -37,6 +37,7 @@ function getTrimester(oldDate) {
     let result = "null";
     // Check which range the date falls into
     if (date < nineMonthsAgo) {
+        result = 3;
         return result;
     } else if (date < sixMonthsAgo) {
         result = 3;
