@@ -27,6 +27,7 @@ const WeightScreen = () => {
                 },
             );
             if (response.status === 200) {
+                setError(response.data.message);
                 isChecked ? navigation.navigate('Weight') : navigation.navigate('Measurement');
             }
         } catch (error) {
