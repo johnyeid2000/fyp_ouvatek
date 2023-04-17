@@ -10,82 +10,82 @@ const app = express();
 const port = process.env.PORT || 3000;
 var bodyParser = require('body-parser');
 const { fixDate } = require('./helper.js');
-app.use(bodyParser.json({type: 'application/json'}));
-app.use(bodyParser.urlencoded({extended:true}));
+app.use(bodyParser.json({ type: 'application/json' }));
+app.use(bodyParser.urlencoded({ extended: true }));
 const transporter = nodemailer.createTransport({
 	service: 'hotmail',
 	auth: {
-	  user: process.env.MAIL,
-	  pass: process.env.PASS
+		user: process.env.MAIL,
+		pass: process.env.PASS
 	}
 });
 app.listen(port, () => {
 	console.log(`Backend - 404`)
 })
 app.get('/', (req, res) => {
-  res.send('Backend - 404')
+	res.send('Backend - 404')
 })
 
 // -------------------------Shared Information------------------------------- //
-app.get('/api/patient', (req,res) => {
-	con.connection.query(`select * from patient`, function(error,rows,fields){
-		if(error) console.log(error);
-		else{ console.log(rows); res.send(rows)};
+app.get('/api/patient', (req, res) => {
+	con.connection.query(`select * from patient`, function (error, rows, fields) {
+		if (error) console.log(error);
+		else { console.log(rows); res.send(rows) };
 	});
 })
-app.get('/api/doctor', (req,res) => {
-	con.connection.query(`select * from doctor`, function(error,rows,fields){
-		if(error) console.log(error);
-		else{ console.log(rows); res.send(rows)};
+app.get('/api/doctor', (req, res) => {
+	con.connection.query(`select * from doctor`, function (error, rows, fields) {
+		if (error) console.log(error);
+		else { console.log(rows); res.send(rows) };
 	});
 })
 app.get('/api/countries', (req, res) => {
 	sql = "SELECT * FROM `country`";
-	con.connection.query(sql, function(error,rows,fields){
-		if(error){
+	con.connection.query(sql, function (error, rows, fields) {
+		if (error) {
 			return res.status(404).send({ message: 'Countries Not Found' });
-		}else{
-			return res.status(200).send({rows});
+		} else {
+			return res.status(200).send({ rows });
 		};
 	});
 });
 app.get('/api/medication', (req, res) => {
 	sql = "SELECT * FROM `medication`";
-	con.connection.query(sql, function(error,rows,fields){
-		if(error){
+	con.connection.query(sql, function (error, rows, fields) {
+		if (error) {
 			return res.status(404).send({ message: 'Medications Not Found' });
-		}else{
-			return res.status(200).send({rows});
+		} else {
+			return res.status(200).send({ rows });
 		};
 	});
 });
 app.get('/api/bloodtype', (req, res) => {
 	sql = "SELECT * FROM `blood_type`";
-	con.connection.query(sql, function(error,rows,fields){
-		if(error){
+	con.connection.query(sql, function (error, rows, fields) {
+		if (error) {
 			return res.status(404).send({ message: 'Blood Types Not Found' });
-		}else{
-			return res.status(200).send({rows});
+		} else {
+			return res.status(200).send({ rows });
 		};
 	});
 });
 app.get('/api/surgeries', (req, res) => {
 	sql = "SELECT * FROM `surgeries`";
-	con.connection.query(sql, function(error,rows,fields){
-		if(error){
+	con.connection.query(sql, function (error, rows, fields) {
+		if (error) {
 			return res.status(404).send({ message: 'Surgeries Not Found' });
-		}else{
-			return res.status(200).send({rows});
+		} else {
+			return res.status(200).send({ rows });
 		};
 	});
 });
 app.get('/api/experience', (req, res) => {
 	sql = "SELECT * FROM `experience`";
-	con.connection.query(sql, function(error,rows,fields){
-		if(error){
+	con.connection.query(sql, function (error, rows, fields) {
+		if (error) {
 			return res.status(404).send({ message: 'Surgeries Not Found' });
-		}else{
-			return res.status(200).send({rows});
+		} else {
+			return res.status(200).send({ rows });
 		};
 	});
 });
@@ -100,28 +100,28 @@ app.post('/api/commonsignup', (req, res) => {
 	let password = req.body.password;
 	let confPassword = req.body.passwordRepeat;
 	let isDoctor = req.body.userType;
-	if(!firstName){
+	if (!firstName) {
 		return res.status(400).send({ message: 'Missing First Name.' });
-	}else{
-		if(!lastName){
+	} else {
+		if (!lastName) {
 			return res.status(400).send({ message: 'Missing Last Name.' });
-		}else{
-			if(!email){
+		} else {
+			if (!email) {
 				return res.status(400).send({ message: 'Missing Email.' });
-			}else{
-				if(!country){
+			} else {
+				if (!country) {
 					return res.status(400).send({ message: 'Please Select your Country.' });
-				}else{
-					if(!phoneNumber){
+				} else {
+					if (!phoneNumber) {
 						return res.status(400).send({ message: 'Missing Phone Number.' });
-					}else{
-						if(!password){
+					} else {
+						if (!password) {
 							return res.status(400).send({ message: 'Missing Password.' });
-						}else{
-							if(!confPassword){
+						} else {
+							if (!confPassword) {
 								return res.status(400).send({ message: 'Missing Password Confirmation.' });
-							}else{
-								if(isDoctor == null){
+							} else {
+								if (isDoctor == null) {
 									return res.status(400).send({ message: 'Missing Type of User Sign up.' });
 								}
 							}
@@ -137,33 +137,33 @@ app.post('/api/commonsignup', (req, res) => {
 	if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
 		return res.status(400).send({ message: 'Invalid Email Format.' });
 	}
-	if(!(/^(03|70|71|76|78|79|81)\d{6}$/).test(phoneNumber)){
+	if (!(/^(03|70|71|76|78|79|81)\d{6}$/).test(phoneNumber)) {
 		return res.status(400).send({ message: 'Invalid Phone Number Format.' });
 	}
-	if(password!=confPassword){
+	if (password != confPassword) {
 		return res.status(400).send({ message: 'Passwords Do Not Match.' });
 	}
 	let sql = "SELECT `id` FROM `user` WHERE email=(?)";
-	con.connection.query(sql, email, async function(error,rows,fields){
-		if(error){
+	con.connection.query(sql, email, async function (error, rows, fields) {
+		if (error) {
 			return res.status(404).send({ message: 'Duplicate Email' });
-		}else{
-			if(rows.length > 0){
+		} else {
+			if (rows.length > 0) {
 				return res.status(403).send({ message: 'This email has already a Registered Account.' });
 			}
-			else{
+			else {
 				let hashpass = await bcrypt.hashPassword(password);
 				const today = new Date();
 				const year = today.getFullYear();
 				const month = String(today.getMonth() + 1).padStart(2, '0'); // add leading zero if needed
 				const day = String(today.getDate()).padStart(2, '0'); // add leading zero if needed
 				const date = `${year}-${month}-${day}`;
-				let	sql = "INSERT INTO `user`(`first_name`, `last_name`, `email`, `password`, `country`, `phone_number`, `user_type`, `created_on`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-				con.connection.query(sql, [firstName, lastName, email, hashpass, country, phoneNumber, isDoctor ,date], function(error, result){
-					if(error){
+				let sql = "INSERT INTO `user`(`first_name`, `last_name`, `email`, `password`, `country`, `phone_number`, `user_type`, `created_on`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+				con.connection.query(sql, [firstName, lastName, email, hashpass, country, phoneNumber, isDoctor, date], function (error, result) {
+					if (error) {
 						console.log(error);
 						return res.status(403).send({ message: 'Cannot Insert Data - Sign up' });
-					}else{
+					} else {
 						return res.status(200).send({ message: 'User Created.', userId: result.insertId, isDoctor: isDoctor })
 					}
 				})
@@ -182,19 +182,19 @@ app.post('/api/patientsignup', (req, res) => {
 	let previousPregnancies = req.body.checkPrevPreg;
 	let previousSurgeries = req.body.selectedSurgeries;
 	let sql = "";
-	if(diabetes == true || diabetes == "true"){
+	if (diabetes == true || diabetes == "true") {
 		diabetes = 1;
-	}else{
+	} else {
 		diabetes = 0;
 	}
-	if(hypertension == true || hypertension == "true"){
+	if (hypertension == true || hypertension == "true") {
 		hypertension = 1;
-	}else{
+	} else {
 		hypertension = 0;
 	}
-	if(previousPregnancies == true || previousPregnancies == "true"){
+	if (previousPregnancies == true || previousPregnancies == "true") {
 		previousPregnancies = 1;
-	}else{
+	} else {
 		previousPregnancies = 0;
 	}
 	const today = new Date();
@@ -203,17 +203,17 @@ app.post('/api/patientsignup', (req, res) => {
 	const day = String(today.getDate()).padStart(2, '0'); // add leading zero if needed
 	const date = `${year}-${month}-${day}`;
 	let trimester = helper.getTrimester(firstPregDay);
-	if (userId && birthDate && bloodType && firstPregDay && medication!=null && diabetes!=null && hypertension!=null && previousPregnancies!=null && previousSurgeries!=null) {
+	if (userId && birthDate && bloodType && firstPregDay && medication != null && diabetes != null && hypertension != null && previousPregnancies != null && previousSurgeries != null) {
 		sql = 'INSERT INTO `patient` (user_id, birth_date, blood_type, first_pregnant_day, trimester, medication_taken, diabetes, hypertension, previous_pregnancies, previous_surgeries, created_on) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
-		con.connection.query(sql, [userId, birthDate, bloodType, firstPregDay, trimester, medication, diabetes, hypertension, previousPregnancies, previousSurgeries, date], async function(error,result){
-			if(error){
+		con.connection.query(sql, [userId, birthDate, bloodType, firstPregDay, trimester, medication, diabetes, hypertension, previousPregnancies, previousSurgeries, date], async function (error, result) {
+			if (error) {
 				console.log(error);
 				return res.status(404).send({ message: 'Patient Signup Issue' });
-			}else{
-				return res.status(200).send({ message: 'Patient Created.', userId: result.insertId, result})
+			} else {
+				return res.status(200).send({ message: 'Patient Created.', userId: result.insertId, result })
 			}
 		});
-	}else{
+	} else {
 		return res.status(401).send({ message: 'All Fields Are Required.' });
 	}
 });
@@ -234,14 +234,14 @@ app.post('/api/doctorsignup', (req, res) => {
 	const date = `${year}-${month}-${day}`;
 	if (userId && speciality && oopnum && gender && experience) {
 		sql = 'INSERT INTO `doctor` (user_id, oop_number, speciality, gender, created_on, experience, biography) VALUES (?, ?, ?, ?, ?, ?, ?)';
-		con.connection.query(sql, [userId, oopnum, speciality, gender, date, experience, biography], async function(error,result){
-			if(error){
+		con.connection.query(sql, [userId, oopnum, speciality, gender, date, experience, biography], async function (error, result) {
+			if (error) {
 				return res.status(404).send({ message: 'Doctor Signup Issue' });
-			}else{
+			} else {
 				return res.status(200).send({ message: 'Doctor Created.', doctorId: result.insertId, result })
 			}
 		});
-	}else{
+	} else {
 		return res.status(401).send({ message: 'All Fields Are Required.' });
 	}
 });
@@ -253,37 +253,37 @@ app.post('/api/doctorlocation', (req, res) => {
 	let building = req.body.building;
 	let floor = req.body.floor;
 	let phone = req.body.phoneNumber;
-	if(!(/^(03|70|71|76|78|79|81)\d{6}$/).test(phone)){
+	if (!(/^(03|70|71|76|78|79|81)\d{6}$/).test(phone)) {
 		return res.status(400).send({ message: 'Invalid Phone Number Format.' });
 	}
 	let sql = "";
-	if(doctorId && country && city && street && building && floor && phone){
+	if (doctorId && country && city && street && building && floor && phone) {
 		sql = 'INSERT INTO `doctor_address`(`doctor_id` , `clinic_country`, `clinic_city`, `clinic_street`, `clinic_building`, `clinic_floor`, `clinic_number`) VALUES (?, ?, ?, ?, ?, ?, ?)';
-		con.connection.query(sql, [doctorId, country, city, street, building, floor, phone], async function(error,result){
-			if(error){
+		con.connection.query(sql, [doctorId, country, city, street, building, floor, phone], async function (error, result) {
+			if (error) {
 				return res.status(404).send({ message: 'Doctor Location Signup Issue' });
-			}else{
+			} else {
 				return res.status(200).send({ result })
 			}
 		});
-	}else{
-		return res.status(401).send({ message: 'Missing Required Fields.'})
+	} else {
+		return res.status(401).send({ message: 'Missing Required Fields.' })
 	}
 });
-app.post('/api/sendconfirmation', (req,res) => {
+app.post('/api/sendconfirmation', (req, res) => {
 	let userid = req.body.id;
 	let sql = "SELECT email from `user` WHERE id = ?"
-	con.connection.query(sql, userid, async function(error,rows){
-		if(error){
+	con.connection.query(sql, userid, async function (error, rows) {
+		if (error) {
 			return res.status(404).send({ message: 'Finding Email Issue.' });
-		}else{
-			if(rows.length == 1){
+		} else {
+			if (rows.length == 1) {
 				let time = new Date();
 				const finalDate = time.toISOString().slice(0, 19).replace('T', ' ');
 				const code = Math.floor(Math.random() * 900000) + 100000;
 				let sql = "INSERT INTO `confirmation_code` (`user_id`, `confirmation_code`, `created_on`) VALUES (?, ?, ?)";
-				con.connection.query(sql, [userid, code, finalDate], async function(error){
-					if(error){
+				con.connection.query(sql, [userid, code, finalDate], async function (error) {
+					if (error) {
 						return res.status(404).send({ message: 'Adding verification to database Issue.' });
 					}
 				});
@@ -292,39 +292,39 @@ app.post('/api/sendconfirmation', (req,res) => {
 					to: rows[0].email,
 					subject: 'Email Confirmation',
 					text: `Thank you for registering with us.\n Your verification Number is: ${code}`
-				  };
-				  transporter.sendMail(mailOptions, (error, info) => {
+				};
+				transporter.sendMail(mailOptions, (error, info) => {
 					if (error) {
-						  console.log(error);
-						  res.status(404).send('Sending Mail Error:' + error);
+						console.log(error);
+						res.status(404).send('Sending Mail Error:' + error);
 					} else {
-						  res.status(200).send('Email sent: ' + info.response);
+						res.status(200).send('Email sent: ' + info.response);
 					}
-				  });
+				});
 			}
-			else{
+			else {
 				return res.status(404).send({ message: 'Email not found.' });
 			}
-			
+
 		}
 	});
 
 })
-app.post('/api/forgotpassmail', (req,res) => {
+app.post('/api/forgotpassmail', (req, res) => {
 	let email = req.body.email;
 	let sql = "SELECT id from `user` WHERE email = ?"
-	con.connection.query(sql, email, async function(error,rows){
-		if(error){
+	con.connection.query(sql, email, async function (error, rows) {
+		if (error) {
 			return res.status(404).send({ message: 'User Never Registered.' });
-		}else{
-			if(rows.length == 1){
+		} else {
+			if (rows.length == 1) {
 				let time = new Date();
 				const finalDate = time.toISOString().slice(0, 19).replace('T', ' ');
 				const code = Math.floor(Math.random() * 900000) + 100000;
 				let userid = rows[0].id;
 				let sql = "INSERT INTO `confirmation_code` (`user_id`, `confirmation_code`, `created_on`) VALUES (?, ?, ?)";
-				con.connection.query(sql, [userid, code, finalDate], async function(error){
-					if(error){
+				con.connection.query(sql, [userid, code, finalDate], async function (error) {
+					if (error) {
 						return res.status(404).send({ message: 'Adding verification to database Issue.' });
 					}
 				});
@@ -335,88 +335,88 @@ app.post('/api/forgotpassmail', (req,res) => {
 					text: `You have requested a Password Change due to forgeting your password.\n
 If you did not do so, kindly disregard this email.\n
 Your verification Number is: ${code}`
-				  };
+				};
 				transporter.sendMail(mailOptions, (error, info) => {
 					if (error) {
-						  console.log(error);
-						  res.status(404).send({message: 'Sending Mail Error', reason: error});
+						console.log(error);
+						res.status(404).send({ message: 'Sending Mail Error', reason: error });
 					} else {
-						  res.status(200).send({message: 'Email sent', userId: userid });
+						res.status(200).send({ message: 'Email sent', userId: userid });
 					}
 				});
-			}else{
+			} else {
 				return res.status(404).send({ message: 'User Never Registered.' });
 			}
 		}
 	});
 
 });
-app.post('/api/sendcode', (req,res) => {
+app.post('/api/sendcode', (req, res) => {
 	let userId = req.body.id;
 	let code = req.body.code;
-	if(userId && code){
+	if (userId && code) {
 		let sql = "SELECT * FROM `confirmation_code` WHERE user_id = ? ORDER BY `created_on` DESC";
-		con.connection.query(sql, userId, async function(error,rows, fields){
-			if(error){
+		con.connection.query(sql, userId, async function (error, rows, fields) {
+			if (error) {
 				return res.status(404).send({ message: 'Verification Not Issued Or Expired.' });
-			}else{
-				if(rows.length < 1){
+			} else {
+				if (rows.length < 1) {
 					return res.status(404).send({ message: 'Verification Code Wrong or Expired.' });
 				}
-				else{
-					let confirmationCode =rows[0].confirmation_code;
-					if(code == confirmationCode){
+				else {
+					let confirmationCode = rows[0].confirmation_code;
+					if (code == confirmationCode) {
 						let sql = "DELETE FROM `confirmation_code` WHERE user_id = ?"
-						con.connection.query(sql, userId, async function(error, result){
-							if(error){
+						con.connection.query(sql, userId, async function (error, result) {
+							if (error) {
 								return res.status(404).send({ message: 'Removing verification from database Issue.' });
-							}else{
-								return res.status(200).send({ message: 'Account Verified. You can proceed.'})
+							} else {
+								return res.status(200).send({ message: 'Account Verified. You can proceed.' })
 							}
 						});
 					}
-					else{
-						res.status(401).send({ message: 'Verification Code Wrong or Expired'})
+					else {
+						res.status(401).send({ message: 'Verification Code Wrong or Expired' })
 					}
 				}
 
 			}
 		});
 	}
-	else{
-		res.status(401).send({ message: 'Verication Code Cant be null.'})
+	else {
+		res.status(401).send({ message: 'Verication Code Cant be null.' })
 	}
 });
-app.post('/api/changepass', (req,res) => {
+app.post('/api/changepass', (req, res) => {
 	let userId = req.body.id;
 	let password = req.body.password;
 	let confPassword = req.body.passwordRepeat;
-	if(confPassword && password && userId){
-		if(password!=confPassword){
+	if (confPassword && password && userId) {
+		if (password != confPassword) {
 			return res.status(400).send({ message: 'Passwords Do Not Match.' });
-		}else{
-			(async() => {
+		} else {
+			(async () => {
 				console.log(password);
 				console.log(userId);
 				let pass = await bcrypt.hashPassword(password);
 				let sql = 'UPDATE `user` SET password = ? WHERE id=?'
-				con.connection.query(sql, [pass, userId], function(error, result){
-					if(error){
+				con.connection.query(sql, [pass, userId], function (error, result) {
+					if (error) {
 						return res.status(404).send({ message: 'User not Found.' });
 					}
-					else{
+					else {
 						console.log(result);
-						return res.status(200).send({ message: 'Password Changed. Proceed to Login.'})
+						return res.status(200).send({ message: 'Password Changed. Proceed to Login.' })
 					}
-			});
-			})();		
+				});
+			})();
 		}
-	}else{
-		res.status(401).send({message: "Empty fields can not be empty."})
+	} else {
+		res.status(401).send({ message: "Empty fields can not be empty." })
 	}
 });
-app.post('/api/login', (req,res) => {
-	const email = req.body.email.toLowerCase().trim(); 
+app.post('/api/login', (req, res) => {
+	const email = req.body.email.toLowerCase().trim();
 	const password = req.body.password.trim();
 	const checkDoctor = req.body.checked;
 	if (!email || !password) {
@@ -426,55 +426,55 @@ app.post('/api/login', (req,res) => {
 	if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
 		return res.status(400).send({ message: 'Invalid Email Format.' });
 	}
-	let	sql = "SELECT `id`, `email`, `password`, `user_type` FROM `user` WHERE email=(?)";
-	con.connection.query(sql, email, function(error,rows,fields){
-		if(error){
+	let sql = "SELECT `id`, `email`, `password`, `user_type` FROM `user` WHERE email=(?)";
+	con.connection.query(sql, email, function (error, rows, fields) {
+		if (error) {
 			return res.status(404).send({ message: 'User Not Found.' });
-		}else{
-			if(rows.length == 1){
-				if(rows[0].user_type == checkDoctor){
+		} else {
+			if (rows.length == 1) {
+				if (rows[0].user_type == checkDoctor) {
 					(async () => {
 						let result = await bcrypt.comparePassword(password, rows[0].password);
-						if(result == true){
+						if (result == true) {
 							let userId = rows[0].id;
 							const token = jwt.sign({ userId }, process.env.SECRET, { expiresIn: '1h' });
 							return res.status(200).send({ message: 'Sign In Successful.', token: token });
-						}else{
+						} else {
 							return res.status(401).send({ message: 'Incorrect Username Or Password.' })
 						}
-					})();	
-				}else{
+					})();
+				} else {
 					return res.status(404).send({ message: 'User Not Found.' });
 				}
-			}else{
+			} else {
 				return res.status(403).send({ message: 'Something Went Wrong.' });
 			}
 		};
 	});
 });
-app.get('/api/profile', (req,res) => {
+app.get('/api/profile', (req, res) => {
 	(async () => {
 		const token = req.headers.authorization.split(' ')[1];
 		let result = await helper.validateUser(token);
-		if(result.indicator){
+		if (result.indicator) {
 			let sql = 'SELECT user.`first_name`, user.`last_name`, user.`email`, user.`phone_number`, user.`country`, user.`user_type`, country.country_name FROM `user` JOIN `country` ON user.country = country.country_id  WHERE id=?';
-			con.connection.query(sql, result.value.userId, function(error, rows){
-				if(error){
-					return res.status(404).send({message: "User Not Found. Login again.", reason: error.message})
-				}else{
-					if(rows.length == 1){
+			con.connection.query(sql, result.value.userId, function (error, rows) {
+				if (error) {
+					return res.status(404).send({ message: "User Not Found. Login again.", reason: error.message })
+				} else {
+					if (rows.length == 1) {
 						let sql = "";
-						if(rows[0].user_type){
+						if (rows[0].user_type) {
 							sql = "SELECT doctor.`dr_id`, doctor.`oop_number`, doctor.`speciality`, doctor.`gender`,\
 							doctor.`biography`, doctor.`experience`, experience.`exp_years`, doctor_address.* , country.country_name FROM `doctor`\
 							JOIN `experience` ON doctor.experience = experience.exp_id\
 							JOIN `doctor_address` ON doctor.dr_id = doctor_address.doctor_id\
 							JOIN `country` ON doctor_address.clinic_country = country.country_id\
 							WHERE user_id=?"
-							con.connection.query(sql, result.value.userId, function(error, rowsSpecific){
-								if(error){
-									return res.status(404).send({message: "User Not Found. Login again.", reason: error.message})
-								}else{
+							con.connection.query(sql, result.value.userId, function (error, rowsSpecific) {
+								if (error) {
+									return res.status(404).send({ message: "User Not Found. Login again.", reason: error.message })
+								} else {
 									let clinics = [];
 									rowsSpecific.forEach(line => {
 										let clinic = {};
@@ -496,10 +496,10 @@ app.get('/api/profile', (req,res) => {
 									doctorData.biography = rowsSpecific[0].biography;
 									doctorData.experience = rowsSpecific[0].experience;
 									doctorData.exp_years = rowsSpecific[0].exp_years;
-									return res.status(200).send({userData: rows[0], specificData: doctorData, address: clinics})
+									return res.status(200).send({ userData: rows[0], specificData: doctorData, address: clinics })
 								}
 							});
-						}else{
+						} else {
 							sql = "SELECT patient.`birth_date`, patient.`first_pregnant_day`, patient.`trimester`,\
 							patient.`blood_type`, patient.`medication_taken`, patient.`previous_surgeries`, patient.`diabetes`,\
 							patient.`hypertension`, patient.`previous_pregnancies`, blood_type.`type_name`, medication.`medication_name`,\
@@ -509,44 +509,44 @@ app.get('/api/profile', (req,res) => {
 							JOIN `surgeries` ON patient.previous_surgeries = surgeries.surgeries_id\
 							JOIN `trimester` ON patient.trimester = trimester.trimester_id\
 							WHERE user_id=?"
-							con.connection.query(sql, result.value.userId, function(error, rowsSpecific){
-								if(rowsSpecific[0].previous_pregnancies){
+							con.connection.query(sql, result.value.userId, function (error, rowsSpecific) {
+								if (rowsSpecific[0].previous_pregnancies) {
 									rowsSpecific[0].previous_pregnanciesValue = "Had previous pregnancies";
 								}
-								else{
+								else {
 									rowsSpecific[0].previous_pregnanciesValue = "No previous pregnancies";
 								}
-								if(rowsSpecific[0].diabetes){
+								if (rowsSpecific[0].diabetes) {
 									rowsSpecific[0].diabetesValue = "Diabetic";
 								}
-								else{
+								else {
 									rowsSpecific[0].diabetesValue = "Not Diabetic";
 								}
-								if(rowsSpecific[0].hypertension){
+								if (rowsSpecific[0].hypertension) {
 									rowsSpecific[0].hypertensionValue = "Hypertensive";
 								}
-								else{
+								else {
 									rowsSpecific[0].hypertensionValue = "Not Hypertensive";
 								}
 								rowsSpecific[0].birthDate = helper.fixDate(rowsSpecific[0].birth_date);
 								rowsSpecific[0].week = helper.getWeek(rowsSpecific[0].first_pregnant_day);
 								console.log(rowsSpecific[0].week);
 								rowsSpecific[0].first_pregnant_day = helper.fixDate(rowsSpecific[0].first_pregnant_day);
-								if(error){
-									return res.status(404).send({message: "User Not Found. Login again.", reason: error.message})
-								}else{
-									return res.status(200).send({userData: rows[0], specificData: rowsSpecific[0]})
+								if (error) {
+									return res.status(404).send({ message: "User Not Found. Login again.", reason: error.message })
+								} else {
+									return res.status(200).send({ userData: rows[0], specificData: rowsSpecific[0] })
 								}
 							});
 						}
 					}
-					else{
-						return res.status(401).send({ message: "You are not an authorized user." , reason: error})
+					else {
+						return res.status(401).send({ message: "You are not an authorized user.", reason: error })
 					}
 				}
 			});
-		}else{
-			return res.status(401).send({ message: "You are not an authorized user." , reason: result.value})
+		} else {
+			return res.status(401).send({ message: "You are not an authorized user.", reason: result.value })
 		}
 	})();
 });
@@ -554,7 +554,7 @@ app.post('/api/editcommon', (req, res) => {
 	(async () => {
 		const token = req.headers.authorization.split(' ')[1];
 		let result = await helper.validateUser(token);
-		if(result.indicator){
+		if (result.indicator) {
 			let userId = result.value.userId;
 			let oldMail = req.body.oldMail;
 			let firstName = req.body.fname;
@@ -562,72 +562,72 @@ app.post('/api/editcommon', (req, res) => {
 			let email = req.body.email;
 			let country = req.body.selectedCountry;
 			let phoneNumber = req.body.phoneNb;
-			if(userId && oldMail && firstName && lastName && email && country && phoneNumber){
+			if (userId && oldMail && firstName && lastName && email && country && phoneNumber) {
 				firstName = firstName.trim();
 				lastName = lastName.trim();
 				email = email.toLowerCase().trim();
 				if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
 					return res.status(400).send({ message: 'Invalid Email Format.' });
 				}
-				if(!(/^(03|70|71|76|78|79|81)\d{6}$/).test(phoneNumber)){
+				if (!(/^(03|70|71|76|78|79|81)\d{6}$/).test(phoneNumber)) {
 					return res.status(400).send({ message: 'Invalid Phone Number Format.' });
 				}
 				let check = false;
-				if(oldMail == email){
+				if (oldMail == email) {
 					check = true;
 				}
-				if(!check){
+				if (!check) {
 					let sql = "SELECT email FROM `user` WHERE email =?";
-					con.connection.query(sql, email, function(error, rows){
-						if(error){
+					con.connection.query(sql, email, function (error, rows) {
+						if (error) {
 							return res.status(400).send({ message: 'Error updating your data. Try again later.' });
-						}else{
-							if(rows.length > 0){
+						} else {
+							if (rows.length > 0) {
 								return res.status(400).send({ message: 'There is already an account for the chosen email.' });
 							}
-							else{
+							else {
 								sql = "UPDATE `user` SET first_name = ? , last_name = ?, email = ?, country = ?, phone_number =? WHERE id = ?"
-								con.connection.query(sql, [firstName, lastName, email, country, phoneNumber, userId], function(error, result){
-									if(error){
+								con.connection.query(sql, [firstName, lastName, email, country, phoneNumber, userId], function (error, result) {
+									if (error) {
 										return res.status(400).send({ message: 'Error updating your data. Try again later.' });
 									}
-									else{
+									else {
 										return res.status(200).send({ message: 'Your information was successfully updated.' });
 									}
-								})	
+								})
 							}
 						}
 					})
 				}
-				else{
+				else {
 					sql = "UPDATE `user` SET first_name = ? , last_name = ?, email = ?, country = ?, phone_number =? WHERE id = ?"
-					con.connection.query(sql, [firstName, lastName, email, country, phoneNumber, userId], function(error, result){
+					con.connection.query(sql, [firstName, lastName, email, country, phoneNumber, userId], function (error, result) {
 						console.log("test3");
 						console.log(error);
 						console.log(result);
-						if(error){
+						if (error) {
 							return res.status(400).send({ message: 'Error updating your data. Try again later.' });
 						}
-						else{
+						else {
 							return res.status(200).send({ message: 'Your information was successfully updated.' });
 						}
-					})	
+					})
 				}
 			}
-			else{
-				return res.status(401).send({message: "All Fields Are Required."});
+			else {
+				return res.status(401).send({ message: "All Fields Are Required." });
 			}
 		}
-		else{
-			return res.status(401).send({ message: "You are not an authorized user." , reason: result.value})
+		else {
+			return res.status(401).send({ message: "You are not an authorized user.", reason: result.value })
 		}
 	})();
 });
-app.post('/api/editpatient', (req,res) =>{
+app.post('/api/editpatient', (req, res) => {
 	(async () => {
 		const token = req.headers.authorization.split(' ')[1];
 		let result = await helper.validateUser(token);
-		if(result.indicator){
+		if (result.indicator) {
 			let userId = result.value.userId;
 			let birthDate = req.body.birthDate;
 			let firstPregDay = req.body.firstPregnancyDay;
@@ -637,49 +637,49 @@ app.post('/api/editpatient', (req,res) =>{
 			let previousPregnancies = req.body.checkPrevPreg;
 			let previousSurgeries = req.body.selectedSurgeries;
 			let sql = "SELECT pat_id FROM `patient` WHERE user_id=?";
-			con.connection.query(sql, userId, function(error, rows){
-				if(error){
-					return res.status(401).send({ message: "There is an error editing updating your data." , reason: result.value})
+			con.connection.query(sql, userId, function (error, rows) {
+				if (error) {
+					return res.status(401).send({ message: "There is an error editing updating your data.", reason: result.value })
 				}
-				else{
+				else {
 					let patientId = rows[0].pat_id;
-					if(patientId && birthDate && firstPregDay && medication!=null && diabetes!=null && hypertension!=null && previousPregnancies!=null && previousSurgeries!=null){
+					if (patientId && birthDate && firstPregDay && medication != null && diabetes != null && hypertension != null && previousPregnancies != null && previousSurgeries != null) {
 						let trimester = helper.getTrimester(firstPregDay);
 						sql = "";
-						if(diabetes == true || diabetes == "true"){
+						if (diabetes == true || diabetes == "true") {
 							diabetes = 1;
-						}else{
+						} else {
 							diabetes = 0;
 						}
-						if(hypertension == true || hypertension == "true"){
+						if (hypertension == true || hypertension == "true") {
 							hypertension = 1;
-						}else{
+						} else {
 							hypertension = 0;
 						}
-						if(previousPregnancies == true || previousPregnancies == "true"){
+						if (previousPregnancies == true || previousPregnancies == "true") {
 							previousPregnancies = 1;
-						}else{
+						} else {
 							previousPregnancies = 0;
 						}
 						sql = 'UPDATE `patient` SET birth_date=?, first_pregnant_day =?, trimester = ?, medication_taken = ?, diabetes = ?, hypertension = ?, previous_pregnancies = ?, previous_surgeries = ? WHERE pat_id = ?';
-						con.connection.query(sql, [birthDate, firstPregDay, trimester, medication, diabetes, hypertension, previousPregnancies, previousSurgeries, patientId], async function(error,result){
-							if(error){
+						con.connection.query(sql, [birthDate, firstPregDay, trimester, medication, diabetes, hypertension, previousPregnancies, previousSurgeries, patientId], async function (error, result) {
+							if (error) {
 								console.log(error);
-								return res.status(404).send({ message:'Error updating your data. Try again later.' });
-							}else{
-								return res.status(200).send({ message: 'Your information was successfully updated.', userId: result.insertId, result})
+								return res.status(404).send({ message: 'Error updating your data. Try again later.' });
+							} else {
+								return res.status(200).send({ message: 'Your information was successfully updated.', userId: result.insertId, result })
 							}
 						});
 					}
-					else{
-						return res.status(401).send({message: "All Fields Are Required."});
+					else {
+						return res.status(401).send({ message: "All Fields Are Required." });
 					}
 				}
 			})
 
 		}
-		else{
-			return res.status(401).send({ message: "You are not an authorized user." , reason: result.value})
+		else {
+			return res.status(401).send({ message: "You are not an authorized user.", reason: result.value })
 		}
 	})();
 });
@@ -687,7 +687,7 @@ app.post('/api/editdoctor', (req, res) => {
 	(async () => {
 		const token = req.headers.authorization.split(' ')[1];
 		let result = await helper.validateUser(token);
-		if(result.indicator){
+		if (result.indicator) {
 			let userId = result.value.userId;
 			let speciality = req.body.speciality;
 			let oopnum = req.body.oopnum;
@@ -697,30 +697,30 @@ app.post('/api/editdoctor', (req, res) => {
 			speciality = speciality.trim();
 			biography = biography.trim();
 			let sql = "SELECT dr_id FROM `doctor` WHERE user_id=?";
-			con.connection.query(sql, userId, function(error, rows){
-				if(error){
-					return res.status(401).send({ message: "There is an error updating your data." , reason: result.value})
+			con.connection.query(sql, userId, function (error, rows) {
+				if (error) {
+					return res.status(401).send({ message: "There is an error updating your data.", reason: result.value })
 				}
-				else{
+				else {
 					let doctorId = rows[0].dr_id;
 					if (userId && doctorId && speciality && oopnum && gender && experience) {
 						sql = 'UPDATE `doctor` SET oop_number =?, speciality=?, gender=?, experience=?, biography=? WHERE dr_id = ?';
-						con.connection.query(sql, [oopnum, speciality, gender, experience, biography, doctorId], async function(error,result){
-							if(error){
+						con.connection.query(sql, [oopnum, speciality, gender, experience, biography, doctorId], async function (error, result) {
+							if (error) {
 								console.log(error);
-								return res.status(404).send({ message:'Error updating your data. Try again later.' });
-							}else{
-								return res.status(200).send({ message: 'Your information was successfully updated.', userId: result.insertId, result})
+								return res.status(404).send({ message: 'Error updating your data. Try again later.' });
+							} else {
+								return res.status(200).send({ message: 'Your information was successfully updated.', userId: result.insertId, result })
 							}
 						});
-					}else{
+					} else {
 						return res.status(401).send({ message: 'All Fields Are Required.' });
 					}
 				}
-			});	
+			});
 		}
-		else{
-			return res.status(401).send({ message: "You are not an authorized user." , reason: result.value})
+		else {
+			return res.status(401).send({ message: "You are not an authorized user.", reason: result.value })
 		}
 	})();
 });
@@ -728,7 +728,7 @@ app.post('/api/editlocation', (req, res) => {
 	(async () => {
 		const token = req.headers.authorization.split(' ')[1];
 		let result = await helper.validateUser(token);
-		if(result.indicator){
+		if (result.indicator) {
 			let location = req.body.locationId;
 			let country = req.body.selectedCountry;
 			let phoneNumber = req.body.phoneNumber;
@@ -736,27 +736,27 @@ app.post('/api/editlocation', (req, res) => {
 			let building = req.body.building;
 			let street = req.body.street;
 			let city = req.body.city;
-			if(location && country && phoneNumber && floor && building && street && city){
-				if(!(/^(03|70|71|76|78|79|81)\d{6}$/).test(phoneNumber)){
+			if (location && country && phoneNumber && floor && building && street && city) {
+				if (!(/^(03|70|71|76|78|79|81)\d{6}$/).test(phoneNumber)) {
 					return res.status(400).send({ message: 'Invalid Phone Number Format.' });
 				}
 				let sql = "UPDATE `doctor_address` SET clinic_country=?, clinic_city=?, clinic_street=?,\
 				clinic_building=?, clinic_floor=?, clinic_number=? WHERE clinic_id =?";
-				con.connection.query(sql, [country, city, street, building, floor, phoneNumber, location], function(error, result){
-					if(error){
-						return res.status(401).send({ message: "There is an error editing updating your data." , reason: result.value})
+				con.connection.query(sql, [country, city, street, building, floor, phoneNumber, location], function (error, result) {
+					if (error) {
+						return res.status(401).send({ message: "There is an error editing updating your data.", reason: result.value })
 					}
-					else{
-						return res.status(200).send({ message: "Location Edited successfully."})
+					else {
+						return res.status(200).send({ message: "Location Edited successfully." })
 					}
 				})
 			}
-			else{
+			else {
 				return res.status(401).send({ message: 'All Fields Are Required.' });
 			}
 		}
-		else{
-			return res.status(401).send({ message: "You are not an authorized user." , reason: result.value})
+		else {
+			return res.status(401).send({ message: "You are not an authorized user.", reason: result.value })
 		}
 	})();
 });
@@ -764,102 +764,102 @@ app.post('/api/deletelocation', (req, res) => {
 	(async () => {
 		const token = req.headers.authorization.split(' ')[1];
 		let result = await helper.validateUser(token);
-		if(result.indicator){
+		if (result.indicator) {
 			let location = req.body.locationId;
 			let sql = "DELETE FROM `doctor_address` WHERE clinic_id =?";
-			con.connection.query(sql, location, function(error, result){
-				if(error){
-					return res.status(401).send({ message: "There is an error updating your data." , reason: result.value})
+			con.connection.query(sql, location, function (error, result) {
+				if (error) {
+					return res.status(401).send({ message: "There is an error updating your data.", reason: result.value })
 				}
-				else{
-					if(result.affectedRows == 1){
-						return res.status(200).send({ message: "Location Deleted successfully."})
+				else {
+					if (result.affectedRows == 1) {
+						return res.status(200).send({ message: "Location Deleted successfully." })
 					}
-					else{
-						return res.status(401).send({ message: "Your clinic does not exist." , reason: result.value})
+					else {
+						return res.status(401).send({ message: "Your clinic does not exist.", reason: result.value })
 					}
 				}
-			});	
+			});
 		}
-		else{
-			return res.status(401).send({ message: "You are not an authorized user." , reason: result.value})
+		else {
+			return res.status(401).send({ message: "You are not an authorized user.", reason: result.value })
 		}
 	})();
 })
-app.post('/api/deleteuser', (req,res) => {
+app.post('/api/deleteuser', (req, res) => {
 	let email = req.body.email;
 	let sql = "SELECT `id`,`user_type` FROM user WHERE email = ?"
-	con.connection.query(sql, email, function(error, rows){
-		if(error){
+	con.connection.query(sql, email, function (error, rows) {
+		if (error) {
 			return res.status(404).send(error);
-		}else{
-			if(rows.length !=1){
+		} else {
+			if (rows.length != 1) {
 				return res.status(404).send("Invalid");
-			}else{
-				if(rows[0].user_type){
+			} else {
+				if (rows[0].user_type) {
 					let sql = "SELECT `dr_id`, `user_id` FROM doctor WHERE user_id=?"
-					con.connection.query(sql, rows[0].id, function(error, rows){
-						if(error){
+					con.connection.query(sql, rows[0].id, function (error, rows) {
+						if (error) {
 							return res.status(404).send(error);
-						}else{
-							if(rows.length < 1){
+						} else {
+							if (rows.length < 1) {
 								let sql = "DELETE FROM user WHERE email=?"
-								con.connection.query(sql, email, function(error, result){
-										console.log(error)
-										console.log(result);
-										return res.status(200).send({message: "Doctor Deleted Successfully"});
+								con.connection.query(sql, email, function (error, result) {
+									console.log(error)
+									console.log(result);
+									return res.status(200).send({ message: "Doctor Deleted Successfully" });
 								});
-							}else{
+							} else {
 								let sql = "DELETE FROM confirmation_code WHERE user_id=?";
-								con.connection.query(sql, rows[0].user_id, function(error, result){
-									if(error){
+								con.connection.query(sql, rows[0].user_id, function (error, result) {
+									if (error) {
 										console.log(error);
 									}
-									else{
+									else {
 										sql = "DELETE FROM doctor_address WHERE doctor_id=?";
-										con.connection.query(sql, rows[0].dr_id, function(error, result){
-										if(error){
-											console.log(error);
-										}
-										else{
-											sql = "DELETE FROM doctor WHERE dr_id=?"
-											con.connection.query(sql, rows[0].dr_id, function(error, result){
-												if(error){
-													console.log(error);
-												}
-												else{
-													sql = "DELETE FROM user WHERE id=?"
-													con.connection.query(sql, rows[0].user_id, function(error, result){
-													if(error){
+										con.connection.query(sql, rows[0].dr_id, function (error, result) {
+											if (error) {
+												console.log(error);
+											}
+											else {
+												sql = "DELETE FROM doctor WHERE dr_id=?"
+												con.connection.query(sql, rows[0].dr_id, function (error, result) {
+													if (error) {
 														console.log(error);
 													}
-													else{
-														return res.status(200).send({message: "Doctor Deleted Successfully"});
+													else {
+														sql = "DELETE FROM user WHERE id=?"
+														con.connection.query(sql, rows[0].user_id, function (error, result) {
+															if (error) {
+																console.log(error);
+															}
+															else {
+																return res.status(200).send({ message: "Doctor Deleted Successfully" });
+															}
+														});
 													}
-													});										
-												}
-											});	
-										}
+												});
+											}
 										});
 									}
 								});
 							}
 						}
 					});
-				}else{
+				} else {
 					let sql = "SELECT `pat_id`, `user_id` FROM patient WHERE user_id=?"
-					con.connection.query(sql, rows[0].id, function(error, rows){
-						if(error){
+					con.connection.query(sql, rows[0].id, function (error, rows) {
+						if (error) {
 							return res.status(404).send(error);
-						}else{
-							if(rows.length < 1){
+						} else {
+							if (rows.length < 1) {
 								let sql = "DELETE FROM user WHERE email=?"
-								con.connection.query(sql, email, function(error, result){
-										console.log(error)
-										console.log(result);
-										return res.status(200).send({message: "Patient Deleted Successfully"});
+								con.connection.query(sql, email, function (error, result) {
+									console.log(error)
+									console.log(result);
+									return res.status(200).send({ message: "Patient Deleted Successfully" });
 								});
-							}else{
+							} else {
 								let sql = "DELETE FROM confirmation_code WHERE user_id=?";
 								con.connection.query(sql, rows[0].user_id);
 								sql = "DELETE FROM `fetal_measurements` WHERE patient_id=?"
@@ -876,7 +876,7 @@ app.post('/api/deleteuser', (req,res) => {
 								con.connection.query(sql, rows[0].pat_id);
 								sql = "DELETE FROM `user` WHERE id=?"
 								con.connection.query(sql, rows[0].user_id);
-								return res.status(200).send({message: "Patient Deleted Successfully"});
+								return res.status(200).send({ message: "Patient Deleted Successfully" });
 							}
 						}
 					});
@@ -886,27 +886,27 @@ app.post('/api/deleteuser', (req,res) => {
 		}
 	});
 });
-app.post('/api/temperature', (req,res) => {
+app.post('/api/temperature', (req, res) => {
 	(async () => {
 		const token = req.headers.authorization.split(' ')[1];
 		let result = await helper.validateUser(token);
-		if(result.indicator){
+		if (result.indicator) {
 			let temperature = req.body.temperature;
 			let checkValue = req.body.checked;
-			if(temperature){
+			if (temperature) {
 				console.log("Test");
-				if(checkValue){
+				if (checkValue) {
 					console.log("test");
-					return res.status(200).send({message: "VALIDATION SUCCESS"});
+					return res.status(200).send({ message: "VALIDATION SUCCESS" });
 				}
-				else{
+				else {
 					console.log(result.value.userId);
 					let sql = "SELECT pat_id FROM `patient` where user_id=?"
-					con.connection.query(sql, result.value.userId, function(error, rows){
-						if(error){
-							return res.status(404).send({message: "There was an Error adding your body temperature."});			
+					con.connection.query(sql, result.value.userId, function (error, rows) {
+						if (error) {
+							return res.status(404).send({ message: "There was an Error adding your body temperature." });
 						}
-						else{
+						else {
 							console.log(rows);
 							console.log("=========");
 							console.log(rows[0])
@@ -915,172 +915,172 @@ app.post('/api/temperature', (req,res) => {
 							const hours = today.getHours().toString().padStart(2, '0');
 							const minutes = today.getMinutes().toString().padStart(2, '0');
 							const seconds = today.getSeconds().toString().padStart(2, '0');
-							let time =  `${hours}:${minutes}:${seconds}`;
+							let time = `${hours}:${minutes}:${seconds}`;
 							sql = "INSERT INTO `temperature` (pat_id, temp_val, temp_date, temp_time) VALUES(?,?,?,?)";
-							con.connection.query(sql, [rows[0].pat_id, temperature, date, time], function(error, result){
-								if(error){
-									return res.status(404).send({message: "There was an Error adding your body temperature."});
+							con.connection.query(sql, [rows[0].pat_id, temperature, date, time], function (error, result) {
+								if (error) {
+									return res.status(404).send({ message: "There was an Error adding your body temperature." });
 								}
-								else{
-									return res.status(200).send({message: "Data successfully submited."});
+								else {
+									return res.status(200).send({ message: "Data successfully submited." });
 								}
 							});
 						}
 					});
 				}
 			}
-			else{
-				return res.status(404).send({message: "Kindly input your body temperature"});
+			else {
+				return res.status(404).send({ message: "Kindly input your body temperature" });
 			}
 		}
-		else{
-			return res.status(401).send({ message: "You are not an authorized user." , reason: result.value})
+		else {
+			return res.status(401).send({ message: "You are not an authorized user.", reason: result.value })
 		}
 	})();
 });
-app.post('/api/weight', (req,res) => {
+app.post('/api/weight', (req, res) => {
 	(async () => {
 		const token = req.headers.authorization.split(' ')[1];
 		let result = await helper.validateUser(token);
-		if(result.indicator){
+		if (result.indicator) {
 			let weight = req.body.weight;
 			let checkValue = req.body.checked;
-			if(weight){
+			if (weight) {
 				console.log("Test");
-				if(checkValue){
+				if (checkValue) {
 					console.log("test");
-					return res.status(200).send({message: "VALIDATION SUCCESS"});
+					return res.status(200).send({ message: "VALIDATION SUCCESS" });
 				}
-				else{
+				else {
 					let sql = "SELECT pat_id FROM `patient` where user_id=?"
-					con.connection.query(sql, result.value.userId, function(error, rows){
-						if(error){
-							return res.status(404).send({message: "There was an Error adding your body weight."});			
+					con.connection.query(sql, result.value.userId, function (error, rows) {
+						if (error) {
+							return res.status(404).send({ message: "There was an Error adding your body weight." });
 						}
-						else{
+						else {
 							const today = new Date();
 							const date = fixDate(today);
 							const hours = today.getHours().toString().padStart(2, '0');
 							const minutes = today.getMinutes().toString().padStart(2, '0');
 							const seconds = today.getSeconds().toString().padStart(2, '0');
-							let time =  `${hours}:${minutes}:${seconds}`;
+							let time = `${hours}:${minutes}:${seconds}`;
 							sql = "INSERT INTO `weight` (pat_id, weight_val, weight_date, weight_time) VALUES (?,?,?,?)";
-							con.connection.query(sql, [rows[0].pat_id, weight, date, time], function(error, result){
-								if(error){
-									return res.status(404).send({message: "There was an Error adding your body weight."});
+							con.connection.query(sql, [rows[0].pat_id, weight, date, time], function (error, result) {
+								if (error) {
+									return res.status(404).send({ message: "There was an Error adding your body weight." });
 								}
-								else{
-									return res.status(200).send({message: "Data successfully submited."});
+								else {
+									return res.status(200).send({ message: "Data successfully submited." });
 								}
 							});
 						}
 					});
 				}
 			}
-			else{
-				return res.status(404).send({message: "Kindly input your body weight"});
+			else {
+				return res.status(404).send({ message: "Kindly input your body weight" });
 			}
 		}
-		else{
-			return res.status(401).send({ message: "You are not an authorized user." , reason: result.value})
+		else {
+			return res.status(401).send({ message: "You are not an authorized user.", reason: result.value })
 		}
 	})();
 });
-app.post('/api/spo2', (req,res) => {
+app.post('/api/spo2', (req, res) => {
 	(async () => {
 		const token = req.headers.authorization.split(' ')[1];
 		let result = await helper.validateUser(token);
-		if(result.indicator){
-			let spo2 = req.body.glucose;
+		if (result.indicator) {
+			let spo2 = req.body.spo2;
 			let checkValue = req.body.checked;
-			if(weight){
+			if (spo2) {
 				console.log("Test");
-				if(checkValue){
+				if (checkValue) {
 					console.log("test");
-					return res.status(200).send({message: "VALIDATION SUCCESS"});
+					return res.status(200).send({ message: "VALIDATION SUCCESS" });
 				}
-				else{
+				else {
 					let sql = "SELECT pat_id FROM `patient` where user_id=?"
-					con.connection.query(sql, result.value.userId, function(error, rows){
-						if(error){
-							return res.status(404).send({message: "There was an Error adding your SPO2 values."});			
+					con.connection.query(sql, result.value.userId, function (error, rows) {
+						if (error) {
+							return res.status(404).send({ message: "There was an Error adding your SPO2 values." });
 						}
-						else{
+						else {
 							const today = new Date();
 							const date = fixDate(today);
 							const hours = today.getHours().toString().padStart(2, '0');
 							const minutes = today.getMinutes().toString().padStart(2, '0');
 							const seconds = today.getSeconds().toString().padStart(2, '0');
-							let time =  `${hours}:${minutes}:${seconds}`;
+							let time = `${hours}:${minutes}:${seconds}`;
 							sql = "INSERT INTO `spo2` (pat_id, spo2_val, spo2_date, spo2_time) VALUES (?,?,?,?)";
-							con.connection.query(sql, [rows[0].pat_id, spo2, date, time], function(error, result){
-								if(error){
-									return res.status(404).send({message: "There was an Error adding your SPO2 values."});
+							con.connection.query(sql, [rows[0].pat_id, spo2, date, time], function (error, result) {
+								if (error) {
+									return res.status(404).send({ message: "There was an Error adding your SPO2 values." });
 								}
-								else{
-									return res.status(200).send({message: "Data successfully submited."});
+								else {
+									return res.status(200).send({ message: "Data successfully submited." });
 								}
 							});
 						}
 					});
 				}
 			}
-			else{
-				return res.status(404).send({message: "Kindly input your SPO2 values."});
+			else {
+				return res.status(404).send({ message: "Kindly input your SPO2 values." });
 			}
 		}
-		else{
-			return res.status(401).send({ message: "You are not an authorized user." , reason: result.value})
+		else {
+			return res.status(401).send({ message: "You are not an authorized user.", reason: result.value })
 		}
 	})();
 });
-app.post('/api/heartrate', (req,res) => {
+app.post('/api/heartrate', (req, res) => {
 });
-app.post('/api/glucose', (req,res) => {
+app.post('/api/glucose', (req, res) => {
 	(async () => {
 		const token = req.headers.authorization.split(' ')[1];
 		let result = await helper.validateUser(token);
-		if(result.indicator){
+		if (result.indicator) {
 			let glucose = req.body.glucose;
 			let checkValue = req.body.checked;
-			if(weight){
+			if (glucose) {
 				console.log("Test");
-				if(checkValue){
+				if (checkValue) {
 					console.log("test");
-					return res.status(200).send({message: "VALIDATION SUCCESS"});
+					return res.status(200).send({ message: "VALIDATION SUCCESS" });
 				}
-				else{
+				else {
 					let sql = "SELECT pat_id FROM `patient` where user_id=?"
-					con.connection.query(sql, result.value.userId, function(error, rows){
-						if(error){
-							return res.status(404).send({message: "There was an Error adding your glucose values."});			
+					con.connection.query(sql, result.value.userId, function (error, rows) {
+						if (error) {
+							return res.status(404).send({ message: "There was an Error adding your glucose values." });
 						}
-						else{
+						else {
 							const today = new Date();
 							const date = fixDate(today);
 							const hours = today.getHours().toString().padStart(2, '0');
 							const minutes = today.getMinutes().toString().padStart(2, '0');
 							const seconds = today.getSeconds().toString().padStart(2, '0');
-							let time =  `${hours}:${minutes}:${seconds}`;
+							let time = `${hours}:${minutes}:${seconds}`;
 							sql = "INSERT INTO `glucose` (pat_id, glucose_val, gluc_date, gluc_time) VALUES (?,?,?,?)";
-							con.connection.query(sql, [rows[0].pat_id, glucose, date, time], function(error, result){
-								if(error){
-									return res.status(404).send({message: "There was an Error adding your glucose values."});
+							con.connection.query(sql, [rows[0].pat_id, glucose, date, time], function (error, result) {
+								if (error) {
+									return res.status(404).send({ message: "There was an Error adding your glucose values." });
 								}
-								else{
-									return res.status(200).send({message: "Data successfully submited."});
+								else {
+									return res.status(200).send({ message: "Data successfully submited." });
 								}
 							});
 						}
 					});
 				}
 			}
-			else{
-				return res.status(404).send({message: "Kindly input your glucose values."});
+			else {
+				return res.status(404).send({ message: "Kindly input your glucose values." });
 			}
 		}
-		else{
-			return res.status(401).send({ message: "You are not an authorized user." , reason: result.value})
+		else {
+			return res.status(401).send({ message: "You are not an authorized user.", reason: result.value })
 		}
 	})();
 });
