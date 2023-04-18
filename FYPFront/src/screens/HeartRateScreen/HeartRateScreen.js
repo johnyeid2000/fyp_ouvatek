@@ -124,7 +124,11 @@ const HeartRateScreen = () => {
         onPress={onSubmitPressed}
       />
 
-
+      <CustomButton
+        text="Go back"
+        onPress={() => navigation.goBack()}
+        type='Teritiary'
+      />
     </View>
   );
 };

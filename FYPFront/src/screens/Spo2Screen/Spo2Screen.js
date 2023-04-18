@@ -92,7 +92,11 @@ const Spo2Screen = () => {
                 text="Submit"
                 onPress={onSubmitPressed}
             />
-
+            <CustomButton
+                text="Go back"
+                onPress={() => navigation.goBack()}
+                type='Teritiary'
+            />
 
         </View>
     );
