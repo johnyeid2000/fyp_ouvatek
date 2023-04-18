@@ -860,28 +860,75 @@ app.post('/api/deleteuser', (req, res) => {
 									return res.status(200).send({ message: "Patient Deleted Successfully" });
 								});
 							} else {
-								let sql = "DELETE FROM confirmation_code WHERE user_id=?";
-								con.connection.query(sql, rows[0].user_id);
-								sql = "DELETE FROM `fetal_measurements` WHERE patient_id=?"
-								con.connection.query(sql, rows[0].pat_id);
-								sql = "DELETE FROM `glucose` WHERE pat_id=?"
-								con.connection.query(sql, rows[0].pat_id);
-								sql = "DELETE FROM `heart_rate` WHERE pat_id=?"
-								con.connection.query(sql, rows[0].pat_id);
-								sql = "DELETE FROM `spo2` WHERE pat_id=?"
-								con.connection.query(sql, rows[0].pat_id);
-								sql = "DELETE FROM `temperature` WHERE pat_id=?"
-								con.connection.query(sql, rows[0].pat_id);
-								sql = "DELETE FROM `patient` WHERE pat_id=?"
-								con.connection.query(sql, rows[0].pat_id);
-								sql = "DELETE FROM `user` WHERE id=?"
-								con.connection.query(sql, rows[0].user_id);
-								return res.status(200).send({ message: "Patient Deleted Successfully" });
+								let sql = "DELETE FROM `fetal_measurements` WHERE patient_id=?"
+								con.connection.query(sql, rows[0].pat_id, function (error, result) {
+									if (error) {
+										console.log(error);
+									}
+									else {
+										sql = "DELETE FROM `glucose` WHERE pat_id=?"
+										con.connection.query(sql, rows[0].pat_id, function (error, result) {
+											if (error) {
+												console.log(error);
+											}
+											else {
+												sql = "DELETE FROM `heart_rate` WHERE pat_id=?"
+												con.connection.query(sql, rows[0].pat_id, function (error, result) {
+													if (error) {
+														console.log(error);
+													}
+													else {
+														sql = "DELETE FROM `spo2` WHERE pat_id=?"
+														con.connection.query(sql, rows[0].pat_id, function (error, result) {
+															if (error) {
+																console.log(error);
+															}
+															else {
+																sql = "DELETE FROM `temperature` WHERE pat_id=?"
+																con.connection.query(sql, rows[0].pat_id, function (error, result) {
+																	if (error) {
+																		console.log(error);
+																	}
+																	else {
+																		sql = "DELETE FROM confirmation_code WHERE user_id=?";
+																		con.connection.query(sql, rows[0].user_id, function (error, result) {
+																			if (error) {
+																				console.log(error);
+																			}
+																			else {
+																				sql = "DELETE FROM `patient` WHERE pat_id=?"
+																				con.connection.query(sql, rows[0].pat_id, function (error, result) {
+																					if (error) {
+																						console.log(error);
+																					}
+																					else {
+																						sql = "DELETE FROM `user` WHERE id=?"
+																						con.connection.query(sql, rows[0].user_id, function (error, result) {
+																							if (error) {
+																								console.log(error);
+																							}
+																							else {
+																								return res.status(200).send({ message: "Patient Deleted Successfully" });
+																							}
+																						});
+																					}
+																				});
+																			}
+																		});
+																	}
+																});
+															}
+														});	
+													}
+												});
+											}
+										});
+									}
+								});								
 							}
 						}
 					});
 				}
-
 			}
 		}
 	});
@@ -1034,8 +1081,6 @@ app.post('/api/spo2', (req, res) => {
 		}
 	})();
 });
-app.post('/api/heartrate', (req, res) => {
-});
 app.post('/api/glucose', (req, res) => {
 	(async () => {
 		const token = req.headers.authorization.split(' ')[1];
@@ -1084,7 +1129,9 @@ app.post('/api/glucose', (req, res) => {
 		}
 	})();
 });
+app.post('/api/heartrate', (req, res) => {
+});
 
-//countries.getDataUsingAsyncAwaitGetCall();
+//countries.getDataUsingAsyncAwaitGetCall(); //Do not remove the comment unless you want to fill the countries tables again.
 timer.cleanVerification(); //cleans the database from verification codes that have been there for more than 10 minutes
-timer.updateTrimester();
+timer.updateTrimester(); //Runs at midnight to update the trimester of every patient that needs updating. 
