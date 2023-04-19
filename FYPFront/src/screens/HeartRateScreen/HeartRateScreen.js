@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Alert } from 'react-native';
-import { Checkbox } from 'react-native-paper';
+import { View, Text, TextInput, ScrollView } from 'react-native';
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import CustomButton from "../../components/CustomButton/CustomButton";
@@ -49,87 +48,89 @@ const HeartRateScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.iconContainer}>
-        <Icon
-          name="heart-pulse"
-          style={styles.icon}
-        />
-        <Text style={styles.error}>{error}</Text>
-      </View>
-      <View style={styles.titleContainer}>
-        <Text style={styles.txtTitle}>Please Enter Your Heart Rate</Text>
-        <Icon
-          name='help-circle-outline'
-          style={styles.helpIcon}
-        />
-      </View>
-      <View style={[styles.inputContainer, { marginBottom: 20 }]}>
-        <TextInput
-          onChangeText={setPulse}
-          value={pulse}
-          placeholder="70"
-          keyboardType="numeric"
-          style={styles.input}
-        />
-        <Text style={styles.txt}>BPM</Text>
-      </View>
+    <ScrollView keyboardShouldPersistTaps='handled'>
+      <View style={styles.container}>
+        <View style={styles.iconContainer}>
+          <Icon
+            name="heart-pulse"
+            style={styles.icon}
+          />
+          <Text style={styles.error}>{error}</Text>
+        </View>
+        <View style={styles.titleContainer}>
+          <Text style={styles.txtTitle}>Please Enter Your Heart Rate</Text>
+          <Icon
+            name='help-circle-outline'
+            style={styles.helpIcon}
+          />
+        </View>
+        <View style={[styles.inputContainer, { marginBottom: 20 }]}>
+          <TextInput
+            onChangeText={setPulse}
+            value={pulse}
+            placeholder="70"
+            keyboardType="numeric"
+            style={styles.input}
+          />
+          <Text style={styles.txt}>BPM</Text>
+        </View>
 
 
-      <View style={styles.titleContainer}>
-        <Text style={styles.txtTitle}>Please Enter Your Blood Pressure</Text>
-        <Icon
-          name='help-circle-outline'
-          style={styles.helpIcon}
-        />
-      </View>
-      <View style={styles.inputContainer}>
-        <TextInput
-          onChangeText={setSystolic}
-          value={systolic}
-          placeholder="120"
-          keyboardType="numeric"
-          style={styles.input}
-        />
+        <View style={styles.titleContainer}>
+          <Text style={styles.txtTitle}>Please Enter Your Blood Pressure</Text>
+          <Icon
+            name='help-circle-outline'
+            style={styles.helpIcon}
+          />
+        </View>
+        <View style={styles.inputContainer}>
+          <TextInput
+            onChangeText={setSystolic}
+            value={systolic}
+            placeholder="120"
+            keyboardType="numeric"
+            style={styles.input}
+          />
 
-        <Text style={{ fontSize: 35 }}>/</Text>
+          <Text style={{ fontSize: 35 }}>/</Text>
 
-        <TextInput
-          onChangeText={setDiastolic}
-          value={diastolic}
-          placeholder="80"
-          keyboardType="numeric"
-          style={styles.input}
-        />
-        <Text style={styles.txt}>mmHg</Text>
-      </View>
+          <TextInput
+            onChangeText={setDiastolic}
+            value={diastolic}
+            placeholder="80"
+            keyboardType="numeric"
+            style={styles.input}
+          />
+          <Text style={styles.txt}>mmHg</Text>
+        </View>
 
-      <View style={styles.btnContainer}>
+        <View style={styles.btnContainer}>
+          <CustomButton
+            text="Check Values"
+            onPress={onCheckValuePressed}
+            type='Teritiary'
+          />
+        </View>
+
+        <View style={styles.btnContainer}>
+          <CustomButton
+            text="See Graph"
+            onPress={onSeeGraphPressed}
+            type='Secondary'
+          />
+        </View>
         <CustomButton
-          text="Check Values"
-          onPress={onCheckValuePressed}
+          text="Submit"
+          onPress={onSubmitPressed}
+        />
+
+        <CustomButton
+          text="Go back"
+          onPress={() => navigation.goBack()}
           type='Teritiary'
         />
       </View>
-
-      <View style={styles.btnContainer}>
-        <CustomButton
-          text="See Graph"
-          onPress={onSeeGraphPressed}
-          type='Secondary'
-        />
-      </View>
-      <CustomButton
-        text="Submit"
-        onPress={onSubmitPressed}
-      />
-
-      <CustomButton
-        text="Go back"
-        onPress={() => navigation.goBack()}
-        type='Teritiary'
-      />
-    </View>
+    </ScrollView>
   );
 };
 
