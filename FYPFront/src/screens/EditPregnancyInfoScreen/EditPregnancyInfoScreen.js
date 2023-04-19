@@ -98,7 +98,7 @@ const EditPregnancyInfoScreen = () => {
     };
 
     return (
-        <ScrollView>
+        <ScrollView keyboardShouldPersistTaps='handled'>
             <View style={styles.root}>
                 <Text style={styles.title}>Edit Your Pregnancy information</Text>
 

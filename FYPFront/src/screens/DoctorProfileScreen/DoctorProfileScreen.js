@@ -68,8 +68,10 @@ const DoctorProfileScreen = () => {
       <View style={styles.userInfoSection}>
         <View style={{ flexDirection: 'row' }}>
           <Avatar.Image
-            source={require('../../assets/images/doctor.jpg')}
+            source={{ uri: 'https://dub01pap003files.storage.live.com/y4mMx07s_SWkpClEZrtYUCuO2jDtBi2Pnel1GavSyn1jCbU7P6KRZlEbmR3si4ZpJfEM8UOMbpqtquo3FY_VO4RtFPnnEZf4vn2Dk_NUtt6iqZh8gPDONgJ6OwsVIP1TWEOcr1aTtIx5sjaAuJmgRbOZqK9tY9NaGQlbdHGWuWzTRRpMic5i6win3FockxVWP8l?width=388&height=250&cropmode=none' }}
+            //source={require('../../assets/images/doctor.jpg')}
             size={80}
+            style={{ backgroundColor: 'white' }}
           />
           <View style={{ marginLeft: 20 }}>
             <Title style={[styles.title, {

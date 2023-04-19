@@ -67,7 +67,7 @@ const SignUpScreen = () => {
     };
 
     return (
-        <ScrollView>
+        <ScrollView keyboardShouldPersistTaps='handled'>
             <View style={styles.root}>
                 <Text style={styles.title}>Create an account</Text>
 

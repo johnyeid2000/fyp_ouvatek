@@ -87,7 +87,7 @@ const DoctorInformationScreen = ({ route }) => {
     };
 
     return (
-        <ScrollView>
+        <ScrollView keyboardShouldPersistTaps='handled'>
             <View style={styles.root}>
                 <Text style={styles.title}>Please fill all the information to complete your file</Text>
                 <Text style={styles.error}>{doctorInfoStatus}</Text>
