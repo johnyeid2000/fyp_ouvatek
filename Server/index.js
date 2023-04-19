@@ -1163,7 +1163,7 @@ app.post('/api/heartrate', (req, res) => {
 							const minutes = today.getMinutes().toString().padStart(2, '0');
 							const seconds = today.getSeconds().toString().padStart(2, '0');
 							let time = `${hours}:${minutes}:${seconds}`;
-							sql = "INSERT INTO `glucose` (pat_id, HR_val, Sys_val, Dias_val, hr_date, hr_time) VALUES (?,?,?,?)";
+							sql = "INSERT INTO `heart_rate` (pat_id, HR_val, Sys_val, Dias_val, hr_date, hr_time) VALUES (?,?,?,?)";
 							con.connection.query(sql, [rows[0].pat_id, pulse, systolic, diastolic, date, time], function (error, result) {
 								if (error) {
 									return res.status(404).send({ message: "There was an Error adding your Heart Rate values." });
