@@ -1200,7 +1200,7 @@ app.get('/api/temperaturevalue', (req,res) => {
 				}
 				else {
 					if(rows.length == 1){
-						sql = "SELECT temp_val, temp_date, temp_time FROM `temperature` where pat_id=?"
+						sql = "SELECT temp_id, temp_val, temp_date, temp_time FROM `temperature` where pat_id=? ORDER BY temp_id ASC";
 						con.connection.query(sql, rows[0].pat_id, function (error, rows) {
 							if (error) {
 								return res.status(404).send({ message: "There was an Error fetching your body temperature." });
@@ -1233,7 +1233,7 @@ app.get('/api/weightvalue', (req,res) => {
 				}
 				else {
 					if(rows.length == 1){
-						sql = "SELECT weight_value, weight_date, weight_time FROM `weight` where pat_id=?"
+						sql = "SELECT weight_id, weight_value, weight_date, weight_time FROM `weight` where pat_id=? ORDER BY weight_id ASC"
 						con.connection.query(sql, rows[0].pat_id, function (error, rows) {
 							if (error) {
 								return res.status(404).send({ message: "There was an Error fetching your weight." });
@@ -1266,7 +1266,7 @@ app.get('/api/spo2value', (req,res) => {
 				}
 				else {
 					if(rows.length == 1){
-						sql = "SELECT spo2_val, spo2_date, spo2_time FROM `spo2` where pat_id=?"
+						sql = "SELECT spo2_id, spo2_val, spo2_date, spo2_time FROM `spo2` where pat_id=? ORDER BY spo2 ASC"
 						con.connection.query(sql, rows[0].pat_id, function (error, rows) {
 							if (error) {
 								return res.status(404).send({ message: "There was an Error fetching your SPO2 Values." });
@@ -1299,7 +1299,7 @@ app.get('/api/glucosevalue', (req,res) => {
 				}
 				else {
 					if(rows.length == 1){
-						sql = "SELECT glucose_val, gluc_date, gluc_time FROM `glucose` where pat_id=?"
+						sql = "SELECT glucose_id, glucose_val, gluc_date, gluc_time FROM `glucose` where pat_id=? ORDER BY glucose_id ASC"
 						con.connection.query(sql, rows[0].pat_id, function (error, rows) {
 							if (error) {
 								return res.status(404).send({ message: "There was an Error fetching your Glucose values." });
@@ -1332,7 +1332,7 @@ app.get('/api/heartratevalue', (req,res) => {
 				}
 				else {
 					if(rows.length == 1){
-						sql = "SELECT HR_val, Sys_val, Dias_val, hr_date, hr_time FROM `heart_rate` where pat_id=?"
+						sql = "SELECT hr_id, HR_val, Sys_val, Dias_val, hr_date, hr_time FROM `heart_rate` where pat_id=? ORDER BY hr_id ASC"
 						con.connection.query(sql, rows[0].pat_id, function (error, rows) {
 							if (error) {
 								return res.status(404).send({ message: "There was an Error fetching your heart rate." });
