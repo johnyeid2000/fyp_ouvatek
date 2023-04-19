@@ -91,6 +91,7 @@ app.get('/api/experience', (req, res) => {
 });
 // -------------------------Shared Information------------------------------- //
 
+// -------------------------Functionalities------------------------------- //
 app.post('/api/commonsignup', (req, res) => {
 	let firstName = req.body.fname;
 	let lastName = req.body.lname;
@@ -385,7 +386,6 @@ app.post('/api/sendcode', (req, res) => {
 						return res.status(401).send({ message: 'Verification Code Wrong or Expired' })
 					}
 				}
-
 			}
 		});
 	}
@@ -1136,8 +1136,225 @@ app.post('/api/glucose', (req, res) => {
 	})();
 });
 app.post('/api/heartrate', (req, res) => {
-
+	(async () => {
+		const token = req.headers.authorization.split(' ')[1];
+		let result = await helper.validateUser(token);
+		if (result.indicator) {
+			let pulse = req.body.pulse;
+			let systolic = req.body.systolic;
+			let diastolic = req.body.diastolic;
+			let checkValue = req.body.checked;
+			if (pulse, systolic, diastolic) {
+				console.log("Test");
+				if (checkValue) {
+					console.log("test");
+					return res.status(200).send({ message: "VALIDATION SUCCESS" });
+				}
+				else {
+					let sql = "SELECT pat_id FROM `patient` where user_id=?"
+					con.connection.query(sql, result.value.userId, function (error, rows) {
+						if (error) {
+							return res.status(404).send({ message: "There was an Error adding your glucose values." });
+						}
+						else {
+							const today = new Date();
+							const date = fixDate(today);
+							const hours = today.getHours().toString().padStart(2, '0');
+							const minutes = today.getMinutes().toString().padStart(2, '0');
+							const seconds = today.getSeconds().toString().padStart(2, '0');
+							let time = `${hours}:${minutes}:${seconds}`;
+							sql = "INSERT INTO `glucose` (pat_id, HR_val, Sys_val, Dias_val, hr_date, hr_time) VALUES (?,?,?,?)";
+							con.connection.query(sql, [rows[0].pat_id, pulse, systolic, diastolic, date, time], function (error, result) {
+								if (error) {
+									return res.status(404).send({ message: "There was an Error adding your Heart Rate values." });
+								}
+								else {
+									return res.status(200).send({ message: "Data successfully submited." });
+								}
+							});
+						}
+					});
+				}
+			}
+			else {
+				return res.status(404).send({ message: "Kindly input your Heart Rate values." });
+			}
+		}
+		else {
+			return res.status(401).send({ message: "You are not an authorized user.", reason: result.value })
+		}
+	})();
 });
+// -------------------------Functionalities------------------------------- //
+
+// -------------------------Access Patient Measurements------------------------------- //
+app.get('/api/temperaturevalue', (req,res) => {
+	(async () => {
+		const token = req.headers.authorization.split(' ')[1];
+		let result = await helper.validateUser(token);
+		if (result.indicator) {
+			let sql = "SELECT pat_id FROM `patient` where user_id=?"
+			con.connection.query(sql, result.value.userId, function (error, rows) {
+				if (error) {
+					return res.status(404).send({ message: "You are not a valid patient." });
+				}
+				else {
+					if(rows.length == 1){
+						sql = "SELECT temp_val, temp_date, temp_time FROM `temperature` where pat_id=?"
+						con.connection.query(sql, rows[0].pat_id, function (error, rows) {
+							if (error) {
+								return res.status(404).send({ message: "There was an Error fetching your body temperature." });
+							}
+							else {
+								return res.status(200).send({ data: rows })
+							}
+						});
+					}
+					else{
+						return res.status(401).send({ message: "You are not an authorized user."});
+					}
+				}
+			});	
+		}
+		else {
+			return res.status(401).send({ message: "You are not an authorized user.", reason: result.value });
+		}
+	})()
+});
+app.get('/api/weightvalue', (req,res) => {
+	(async () => {
+		const token = req.headers.authorization.split(' ')[1];
+		let result = await helper.validateUser(token);
+		if (result.indicator) {
+			let sql = "SELECT pat_id FROM `patient` where user_id=?"
+			con.connection.query(sql, result.value.userId, function (error, rows) {
+				if (error) {
+					return res.status(404).send({ message: "You are not a valid patient." });
+				}
+				else {
+					if(rows.length == 1){
+						sql = "SELECT weight_value, weight_date, weight_time FROM `weight` where pat_id=?"
+						con.connection.query(sql, rows[0].pat_id, function (error, rows) {
+							if (error) {
+								return res.status(404).send({ message: "There was an Error fetching your weight." });
+							}
+							else {
+								return res.status(200).send({ data: rows })
+							}
+						});
+					}
+					else{
+						return res.status(401).send({ message: "You are not an authorized user."});
+					}
+				}
+			});	
+		}
+		else {
+			return res.status(401).send({ message: "You are not an authorized user.", reason: result.value });
+		}
+	})()
+});
+app.get('/api/spo2value', (req,res) => {
+	(async () => {
+		const token = req.headers.authorization.split(' ')[1];
+		let result = await helper.validateUser(token);
+		if (result.indicator) {
+			let sql = "SELECT pat_id FROM `patient` where user_id=?"
+			con.connection.query(sql, result.value.userId, function (error, rows) {
+				if (error) {
+					return res.status(404).send({ message: "You are not a valid patient." });
+				}
+				else {
+					if(rows.length == 1){
+						sql = "SELECT spo2_val, spo2_date, spo2_time FROM `spo2` where pat_id=?"
+						con.connection.query(sql, rows[0].pat_id, function (error, rows) {
+							if (error) {
+								return res.status(404).send({ message: "There was an Error fetching your SPO2 Values." });
+							}
+							else {
+								return res.status(200).send({ data: rows })
+							}
+						});
+					}
+					else{
+						return res.status(401).send({ message: "You are not an authorized user."});
+					}
+				}
+			});	
+		}
+		else {
+			return res.status(401).send({ message: "You are not an authorized user.", reason: result.value });
+		}
+	})()
+});
+app.get('/api/glucosevalue', (req,res) => {
+	(async () => {
+		const token = req.headers.authorization.split(' ')[1];
+		let result = await helper.validateUser(token);
+		if (result.indicator) {
+			let sql = "SELECT pat_id FROM `patient` where user_id=?"
+			con.connection.query(sql, result.value.userId, function (error, rows) {
+				if (error) {
+					return res.status(404).send({ message: "You are not a valid patient." });
+				}
+				else {
+					if(rows.length == 1){
+						sql = "SELECT glucose_val, gluc_date, gluc_time FROM `glucose` where pat_id=?"
+						con.connection.query(sql, rows[0].pat_id, function (error, rows) {
+							if (error) {
+								return res.status(404).send({ message: "There was an Error fetching your Glucose values." });
+							}
+							else {
+								return res.status(200).send({ data: rows })
+							}
+						});
+					}
+					else{
+						return res.status(401).send({ message: "You are not an authorized user."});
+					}
+				}
+			});	
+		}
+		else {
+			return res.status(401).send({ message: "You are not an authorized user.", reason: result.value });
+		}
+	})()
+});
+app.get('/api/heartratevalue', (req,res) => {
+	(async () => {
+		const token = req.headers.authorization.split(' ')[1];
+		let result = await helper.validateUser(token);
+		if (result.indicator) {
+			let sql = "SELECT pat_id FROM `patient` where user_id=?"
+			con.connection.query(sql, result.value.userId, function (error, rows) {
+				if (error) {
+					return res.status(404).send({ message: "You are not a valid patient." });
+				}
+				else {
+					if(rows.length == 1){
+						sql = "SELECT HR_val, Sys_val, Dias_val, hr_date, hr_time FROM `heart_rate` where pat_id=?"
+						con.connection.query(sql, rows[0].pat_id, function (error, rows) {
+							if (error) {
+								return res.status(404).send({ message: "There was an Error fetching your heart rate." });
+							}
+							else {
+								return res.status(200).send({ data: rows })
+							}
+						});
+					}
+					else{
+						return res.status(401).send({ message: "You are not an authorized user."});
+					}
+				}
+			});	
+		}
+		else {
+			return res.status(401).send({ message: "You are not an authorized user.", reason: result.value });
+		}
+	})()
+});
+// -------------------------Access Patient Measurements------------------------------- //
+
 
 //countries.getDataUsingAsyncAwaitGetCall(); //Do not remove the comment unless you want to fill the countries tables again.
 timer.cleanVerification(); //cleans the database from verification codes that have been there for more than 10 minutes
