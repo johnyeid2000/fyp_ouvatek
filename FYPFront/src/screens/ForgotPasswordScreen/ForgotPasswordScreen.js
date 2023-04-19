@@ -23,7 +23,7 @@ const ForgotPasswordScreen = () => {
             );
             const id = response.data.userId;
             if (response.status === 200) {
-                navigation.navigate("ConfirmEmailPassword", { id: id });
+                navigation.navigate("ConfirmEmailPassword", { id: id, email: email });
             }
         } catch (error) {
             setForgotPassStatus(error.response.data.message);
