@@ -5,7 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import axios from 'axios';
 
-import Logo from '../../assets/images/OuvatekLogo.png';
+//import Logo from '../../assets/images/OuvatekLogo.png';
 import CustomInput from '../../components/CustomInput';
 import CustomButton from "../../components/CustomButton/CustomButton";
 import styles from './styles';
@@ -101,10 +101,10 @@ const SignInScreen = () => {
   }, [navigation]);
 
   return (
-    <ScrollView>
+    <ScrollView keyboardShouldPersistTaps='handled'>
       <View style={styles.root}>
         <Image
-          source={Logo}
+          source={{ uri: 'https://dub01pap003files.storage.live.com/y4msy5Pq6s7gnYTlXL9bRQaz6VL8RA5aQ8Dps8AoCYWQ0MWmnL27n1zvwfRruzURydk0j7dKWBoUBe_W4tqb0Dn7JA8CII5sllB16Hme4uG8DKYixDSbt-t57XlHgGbAVwnxYi2zwE19wuc0DSAbCg2TSkB2LyEWHGl7qrSAW0kIWlMFB1Bfm7LkdSQA3Kxgztk?width=736&height=438&cropmode=none' }}
           style={[styles.logo, { height: height * 0.3 }]}
           resizeMode='contain'
         />

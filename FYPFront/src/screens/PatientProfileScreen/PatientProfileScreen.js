@@ -67,7 +67,8 @@ const PatientProfileScreen = () => {
       <View style={styles.userInfoSection}>
         <View style={{ flexDirection: 'row', marginTop: 15 }}>
           <Avatar.Image
-            source={require('../../assets/images/pregWoman.png')}
+            source={{ uri: 'https://dub01pap003files.storage.live.com/y4m0SSC9fzPryBlevyPGjBpQlVmCD52-SGGPDA-Hk8H2ps-cfOXNJ_Jt_G7wR64SL0IwM9SyZz7ocmciHVwZ52Ij1OrTg1MS2IQogTINfsqc7KU2eFR2Z2zXB0BmAbDAE0_cmbOEtQfuA13NUuitrJ3KQr0YHT4hgjwqAUGU2iG5iNfenB95VV2l3JT6vKPQ-6u?width=200&height=200&cropmode=none' }}
+            //source={require('../../assets/images/pregWoman.png')}
             size={80}
             style={{ backgroundColor: 'white' }}
           />

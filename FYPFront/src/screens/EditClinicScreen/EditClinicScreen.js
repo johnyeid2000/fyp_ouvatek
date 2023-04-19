@@ -89,7 +89,7 @@ const EditClinicScreen = ({ route }) => {
 
 
     return (
-        <ScrollView>
+        <ScrollView keyboardShouldPersistTaps='handled'>
             <View style={styles.root}>
                 <Text style={styles.title}>Edit your clinic information</Text>
                 <Text style={styles.error}>{doctorClinicStatus}</Text>

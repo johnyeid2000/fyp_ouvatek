@@ -99,7 +99,7 @@ const DoctorClinic = ({ route }) => {
   };
 
   return (
-    <ScrollView>
+    <ScrollView keyboardShouldPersistTaps='handled'>
       <View style={styles.root}>
         <Text style={styles.title}>Enter your clinic location</Text>
         <Text style={styles.error}>{doctorClinicStatus}</Text>

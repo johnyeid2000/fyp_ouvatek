@@ -90,7 +90,7 @@ const EditDoctorInfoScreen = () => {
     };
 
     return (
-        <ScrollView>
+        <ScrollView keyboardShouldPersistTaps='handled'>
             <View style={styles.root}>
                 <Text style={styles.title}>Edit Your information</Text>
 

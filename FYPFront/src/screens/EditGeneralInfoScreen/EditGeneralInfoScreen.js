@@ -88,7 +88,7 @@ const EditGeneralInfoScreen = () => {
     }
 
     return (
-        <ScrollView>
+        <ScrollView keyboardShouldPersistTaps='handled'>
             <View style={styles.root}>
                 <Text style={styles.title}>Edit Your account</Text>
 
