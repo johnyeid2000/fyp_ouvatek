@@ -43,7 +43,11 @@ const FetusScreen = () => {
                 text="Submit"
                 onPress={onSubmitPressed}
             />
-
+            <CustomButton
+                text="Go back"
+                onPress={() => navigation.goBack()}
+                type='Teritiary'
+            />
 
         </View>
     );

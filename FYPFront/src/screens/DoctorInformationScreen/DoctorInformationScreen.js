@@ -28,6 +28,14 @@ const DoctorInformationScreen = ({ route }) => {
         { label: 'Prefer not to say', value: 'Prefer not to say' }
     ];
 
+    const optionsSpeciality = [
+        { label: 'Gynecologist', value: 'Gynecologist' },
+        { label: 'Midwife', value: 'Midwife' },
+        { label: 'Psychologist', value: 'Psychologist' },
+        { label: 'Psychotherapist', value: 'Psychotherapist' },
+        { label: 'Physical education', value: 'Physical education' },
+    ];
+
     useEffect(() => {
         axios.get('https://ouvatek.herokuapp.com/api/experience')
             .then(response => {
@@ -83,13 +91,12 @@ const DoctorInformationScreen = ({ route }) => {
             <View style={styles.root}>
                 <Text style={styles.title}>Please fill all the information to complete your file</Text>
                 <Text style={styles.error}>{doctorInfoStatus}</Text>
-
-                <CustomInput
+                <CustomPicker
                     label="Speciality"
                     IconName="certificate-outline"
-                    placeholder="Enter Your Speciality"
-                    value={speciality}
-                    setValue={setSpeciality}
+                    selOption={speciality}
+                    setSelOption={setSpeciality}
+                    opt={optionsSpeciality}
                 />
 
                 <CustomInput
