@@ -1206,6 +1206,9 @@ app.get('/api/temperaturevalue', (req,res) => {
 								return res.status(404).send({ message: "There was an Error fetching your body temperature." });
 							}
 							else {
+								rows.forEach(element => {
+									element.temp_date = helper.fixDate(element.temp_date);
+								});
 								return res.status(200).send({ data: rows })
 							}
 						});
