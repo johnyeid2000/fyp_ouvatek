@@ -1242,6 +1242,9 @@ app.get('/api/weightvalue', (req,res) => {
 								return res.status(404).send({ message: "There was an Error fetching your weight." });
 							}
 							else {
+								rows.forEach(element => {
+									element.weight_date = helper.fixDate(element.weight_date);
+								});
 								return res.status(200).send({ data: rows })
 							}
 						});
@@ -1275,6 +1278,9 @@ app.get('/api/spo2value', (req,res) => {
 								return res.status(404).send({ message: "There was an Error fetching your SPO2 Values." });
 							}
 							else {
+								rows.forEach(element => {
+									element.spo2_date = helper.fixDate(element.spo2_date);
+								});
 								return res.status(200).send({ data: rows })
 							}
 						});
@@ -1308,6 +1314,9 @@ app.get('/api/glucosevalue', (req,res) => {
 								return res.status(404).send({ message: "There was an Error fetching your Glucose values." });
 							}
 							else {
+								rows.forEach(element => {
+									element.gluc_date = helper.fixDate(element.gluc_date);
+								});
 								return res.status(200).send({ data: rows })
 							}
 						});
@@ -1341,6 +1350,9 @@ app.get('/api/heartratevalue', (req,res) => {
 								return res.status(404).send({ message: "There was an Error fetching your heart rate." });
 							}
 							else {
+								rows.forEach(element => {
+									element.hr_date = helper.fixDate(element.hr_date);
+								});
 								return res.status(200).send({ data: rows })
 							}
 						});
