@@ -12,8 +12,19 @@ import { useNavigation } from '@react-navigation/native';
 const ConfirmEmailPasswordScreen = ({ route }) => {
     const [code, setCode] = useState('');
     const [confirmEmailStatus, setConfirmEmailStatus] = useState(null);
-    const { id } = route.params;
+    const { id, email } = route.params;
     const navigation = useNavigation();
+
+    useEffect(() => {
+        // Call the sendconfirmation endpoint when the component is loaded
+        axios.post('https://ouvatek.herokuapp.com/api/forgetpasswordsendemail', { id, email })
+            .then((response) => {
+                setConfirmEmailStatus(response.data.message);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    }, []);
 
     useEffect(() => {
         const backHandler = BackHandler.addEventListener('hardwareBackPress', handleBackPress);
