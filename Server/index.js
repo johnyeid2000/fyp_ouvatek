@@ -317,40 +317,46 @@ app.post('/api/forgotpassmail', (req, res) => {
 		if (error) {
 			return res.status(404).send({ message: 'User Never Registered.' });
 		} else {
+			userid = rows[0].id;
 			if (rows.length == 1) {
-				let time = new Date();
-				const finalDate = time.toISOString().slice(0, 19).replace('T', ' ');
-				const code = Math.floor(Math.random() * 900000) + 100000;
-				let userid = rows[0].id;
-				let sql = "INSERT INTO `confirmation_code` (`user_id`, `confirmation_code`, `created_on`) VALUES (?, ?, ?)";
-				con.connection.query(sql, [userid, code, finalDate], async function (error) {
-					if (error) {
-						return res.status(404).send({ message: 'Adding verification to database Issue.' });
-					}
-				});
-				const mailOptions = {
-					from: process.env.MAIL,
-					to: email,
-					subject: 'Email Confirmation',
-					text: `You have requested a Password Change due to forgeting your password.\n
-If you did not do so, kindly disregard this email.\n
-Your verification Number is: ${code}`
-				};
-				transporter.sendMail(mailOptions, (error, info) => {
-					if (error) {
-						console.log(error);
-						res.status(404).send({ message: 'Sending Mail Error', reason: error });
-					} else {
-						res.status(200).send({ message: 'Email sent', userId: userid });
-					}
-				});
+				return res.status(200).send({ message: 'User Verified', userId: userid });
 			} else {
 				return res.status(404).send({ message: 'User Never Registered.' });
 			}
 		}
 	});
-
 });
+app.post('/api/forgetpasswordsendemail', (req, res) =>{
+	let email = req.body.email;
+	let userid = req.body.id;
+	let time = new Date();
+	const finalDate = time.toISOString().slice(0, 19).replace('T', ' ');
+	const code = Math.floor(Math.random() * 900000) + 100000;
+	let sql = "INSERT INTO `confirmation_code` (`user_id`, `confirmation_code`, `created_on`) VALUES (?, ?, ?)";
+	con.connection.query(sql, [userid, code, finalDate], async function (error) {
+		if (error) {
+			return res.status(404).send({ message: 'Adding verification to database Issue.' });
+		}
+		else{
+			const mailOptions = {
+				from: process.env.MAIL,
+				to: email,
+				subject: 'Email Confirmation',
+				text: `You have requested a Password Change due to forgeting your password.\n
+If you did not do so, kindly disregard this email.\n
+Your verification Number is: ${code}`
+			};
+			transporter.sendMail(mailOptions, (error, info) => {
+				if (error) {
+					console.log(error);
+					return res.status(404).send({ message: 'Sending Mail Error', reason: error });
+				} else {
+					return res.status(200).send({ message: 'Email sent'});
+				}
+			});
+		}
+	});
+})
 app.post('/api/sendcode', (req, res) => {
 	let userId = req.body.id;
 	let code = req.body.code;
@@ -376,7 +382,7 @@ app.post('/api/sendcode', (req, res) => {
 						});
 					}
 					else {
-						res.status(401).send({ message: 'Verification Code Wrong or Expired' })
+						return res.status(401).send({ message: 'Verification Code Wrong or Expired' })
 					}
 				}
 
@@ -384,7 +390,7 @@ app.post('/api/sendcode', (req, res) => {
 		});
 	}
 	else {
-		res.status(401).send({ message: 'Verication Code Cant be null.' })
+		return res.status(401).send({ message: 'Verication Code Cant be null.' })
 	}
 });
 app.post('/api/changepass', (req, res) => {
@@ -1130,6 +1136,7 @@ app.post('/api/glucose', (req, res) => {
 	})();
 });
 app.post('/api/heartrate', (req, res) => {
+
 });
 
 //countries.getDataUsingAsyncAwaitGetCall(); //Do not remove the comment unless you want to fill the countries tables again.
