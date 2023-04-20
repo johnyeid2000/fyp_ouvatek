@@ -9,6 +9,7 @@ import Spo2Screen from '../screens/Spo2Screen';
 import FetusScreen from '../screens/FetusScreen';
 import WeightScreen from '../screens/WeightScreen';
 import GraphScreen from '../screens/GraphScreen';
+import ChooseGraphScreen from '../screens/ChooseGraphScreen';
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
@@ -61,6 +62,11 @@ const MeasurementNavigator = () => {
             <Stack.Screen
                 name='Graph'
                 component={GraphScreen}
+            />
+
+            <Stack.Screen
+                name='ChooseGraph'
+                component={ChooseGraphScreen}
             />
         </Stack.Navigator>
     )

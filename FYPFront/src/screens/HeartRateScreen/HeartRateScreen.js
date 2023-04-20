@@ -44,7 +44,7 @@ const HeartRateScreen = () => {
   };
 
   const onSeeGraphPressed = () => {
-    navigation.navigate('Graph');
+    navigation.navigate('ChooseGraph');
   };
 
   return (
