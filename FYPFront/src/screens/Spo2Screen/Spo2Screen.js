@@ -52,11 +52,9 @@ const Spo2Screen = () => {
                     'Authorization': `Bearer ${token}`
                 }
             });
-            console.log(response.data.data);
             const dates = [];
             const times = [];
             const values = [];
-            console.log(response.data.data);
             response.data.data.forEach((d) => {
                 dates.push(d.spo2_date);
                 times.push(d.spo2_time);
