@@ -327,7 +327,7 @@ app.post('/api/forgotpassmail', (req, res) => {
 		}
 	});
 });
-app.post('/api/forgetpasswordsendemail', (req, res) =>{
+app.post('/api/forgetpasswordsendemail', (req, res) => {
 	let email = req.body.email;
 	let userid = req.body.id;
 	let time = new Date();
@@ -338,7 +338,7 @@ app.post('/api/forgetpasswordsendemail', (req, res) =>{
 		if (error) {
 			return res.status(404).send({ message: 'Adding verification to database Issue.' });
 		}
-		else{
+		else {
 			const mailOptions = {
 				from: process.env.MAIL,
 				to: email,
@@ -352,7 +352,7 @@ Your verification Number is: ${code}`
 					console.log(error);
 					return res.status(404).send({ message: 'Sending Mail Error', reason: error });
 				} else {
-					return res.status(200).send({ message: 'Email sent'});
+					return res.status(200).send({ message: 'Email sent' });
 				}
 			});
 		}
@@ -924,13 +924,13 @@ app.post('/api/deleteuser', (req, res) => {
 																	}
 																});
 															}
-														});	
+														});
 													}
 												});
 											}
 										});
 									}
-								});								
+								});
 							}
 						}
 					});
@@ -1188,7 +1188,7 @@ app.post('/api/heartrate', (req, res) => {
 // -------------------------Functionalities------------------------------- //
 
 // -------------------------Access Patient Measurements------------------------------- //
-app.get('/api/temperaturevalue', (req,res) => {
+app.get('/api/temperaturevalue', (req, res) => {
 	(async () => {
 		const token = req.headers.authorization.split(' ')[1];
 		let result = await helper.validateUser(token);
@@ -1199,7 +1199,7 @@ app.get('/api/temperaturevalue', (req,res) => {
 					return res.status(404).send({ message: "You are not a valid patient." });
 				}
 				else {
-					if(rows.length == 1){
+					if (rows.length == 1) {
 						sql = "SELECT temp_id, temp_val, temp_date, temp_time FROM `temperature` where pat_id=? ORDER BY temp_id ASC";
 						con.connection.query(sql, rows[0].pat_id, function (error, rows) {
 							if (error) {
@@ -1213,18 +1213,18 @@ app.get('/api/temperaturevalue', (req,res) => {
 							}
 						});
 					}
-					else{
-						return res.status(401).send({ message: "You are not an authorized user."});
+					else {
+						return res.status(401).send({ message: "You are not an authorized user." });
 					}
 				}
-			});	
+			});
 		}
 		else {
 			return res.status(401).send({ message: "You are not an authorized user.", reason: result.value });
 		}
 	})()
 });
-app.get('/api/weightvalue', (req,res) => {
+app.get('/api/weightvalue', (req, res) => {
 	(async () => {
 		const token = req.headers.authorization.split(' ')[1];
 		let result = await helper.validateUser(token);
@@ -1235,7 +1235,7 @@ app.get('/api/weightvalue', (req,res) => {
 					return res.status(404).send({ message: "You are not a valid patient." });
 				}
 				else {
-					if(rows.length == 1){
+					if (rows.length == 1) {
 						sql = "SELECT weight_id, weight_value, weight_date, weight_time FROM `weight` where pat_id=? ORDER BY weight_id ASC"
 						con.connection.query(sql, rows[0].pat_id, function (error, rows) {
 							if (error) {
@@ -1249,18 +1249,18 @@ app.get('/api/weightvalue', (req,res) => {
 							}
 						});
 					}
-					else{
-						return res.status(401).send({ message: "You are not an authorized user."});
+					else {
+						return res.status(401).send({ message: "You are not an authorized user." });
 					}
 				}
-			});	
+			});
 		}
 		else {
 			return res.status(401).send({ message: "You are not an authorized user.", reason: result.value });
 		}
 	})()
 });
-app.get('/api/spo2value', (req,res) => {
+app.get('/api/spo2value', (req, res) => {
 	(async () => {
 		const token = req.headers.authorization.split(' ')[1];
 		let result = await helper.validateUser(token);
@@ -1271,8 +1271,8 @@ app.get('/api/spo2value', (req,res) => {
 					return res.status(404).send({ message: "You are not a valid patient." });
 				}
 				else {
-					if(rows.length == 1){
-						sql = "SELECT spo2_id, spo2_val, spo2_date, spo2_time FROM `spo2` where pat_id=? ORDER BY spo2 ASC"
+					if (rows.length == 1) {
+						sql = "SELECT spo2_id, spo2_val, spo2_date, spo2_time FROM `spo2` where pat_id=? ORDER BY spo2_id ASC"
 						con.connection.query(sql, rows[0].pat_id, function (error, rows) {
 							if (error) {
 								return res.status(404).send({ message: "There was an Error fetching your SPO2 Values." });
@@ -1285,18 +1285,18 @@ app.get('/api/spo2value', (req,res) => {
 							}
 						});
 					}
-					else{
-						return res.status(401).send({ message: "You are not an authorized user."});
+					else {
+						return res.status(401).send({ message: "You are not an authorized user." });
 					}
 				}
-			});	
+			});
 		}
 		else {
 			return res.status(401).send({ message: "You are not an authorized user.", reason: result.value });
 		}
 	})()
 });
-app.get('/api/glucosevalue', (req,res) => {
+app.get('/api/glucosevalue', (req, res) => {
 	(async () => {
 		const token = req.headers.authorization.split(' ')[1];
 		let result = await helper.validateUser(token);
@@ -1307,7 +1307,7 @@ app.get('/api/glucosevalue', (req,res) => {
 					return res.status(404).send({ message: "You are not a valid patient." });
 				}
 				else {
-					if(rows.length == 1){
+					if (rows.length == 1) {
 						sql = "SELECT glucose_id, glucose_val, gluc_date, gluc_time FROM `glucose` where pat_id=? ORDER BY glucose_id ASC"
 						con.connection.query(sql, rows[0].pat_id, function (error, rows) {
 							if (error) {
@@ -1321,18 +1321,18 @@ app.get('/api/glucosevalue', (req,res) => {
 							}
 						});
 					}
-					else{
-						return res.status(401).send({ message: "You are not an authorized user."});
+					else {
+						return res.status(401).send({ message: "You are not an authorized user." });
 					}
 				}
-			});	
+			});
 		}
 		else {
 			return res.status(401).send({ message: "You are not an authorized user.", reason: result.value });
 		}
 	})()
 });
-app.get('/api/heartratevalue', (req,res) => {
+app.get('/api/heartratevalue', (req, res) => {
 	(async () => {
 		const token = req.headers.authorization.split(' ')[1];
 		let result = await helper.validateUser(token);
@@ -1343,7 +1343,7 @@ app.get('/api/heartratevalue', (req,res) => {
 					return res.status(404).send({ message: "You are not a valid patient." });
 				}
 				else {
-					if(rows.length == 1){
+					if (rows.length == 1) {
 						sql = "SELECT hr_id, HR_val, Sys_val, Dias_val, hr_date, hr_time FROM `heart_rate` where pat_id=? ORDER BY hr_id ASC"
 						con.connection.query(sql, rows[0].pat_id, function (error, rows) {
 							if (error) {
@@ -1357,11 +1357,11 @@ app.get('/api/heartratevalue', (req,res) => {
 							}
 						});
 					}
-					else{
-						return res.status(401).send({ message: "You are not an authorized user."});
+					else {
+						return res.status(401).send({ message: "You are not an authorized user." });
 					}
 				}
-			});	
+			});
 		}
 		else {
 			return res.status(401).send({ message: "You are not an authorized user.", reason: result.value });
