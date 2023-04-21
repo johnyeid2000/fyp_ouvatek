@@ -58,7 +58,6 @@ function fixDate(givenDate){
     let formattedDate = year + "-" + month + "-" + day;
     return formattedDate;
 }
-
 exports.validateUser = validateUser;
 exports.getWeek = getWeek;
 exports.getTrimester = getTrimester;

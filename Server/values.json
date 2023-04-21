@@ -1,0 +1,49 @@
+{
+    "temperature": {
+        "low": {
+            "high": 35
+        },
+        "normal": {
+            "first": {
+                "low": 35,
+                "high": 37.5
+            },
+            "second":  {
+                "low": 35,
+                "high": 37.5
+            },
+            "third":  {
+                "low": 35,
+                "high": 37.5
+            }
+        },
+        "high": {
+            "light": {
+                "low": 37.5
+            },
+            "high":  {
+                "low": 38.2
+            }
+        }
+    },
+    "spo2": {
+        "low": {
+            "first": 94,
+            "second": 93,
+            "third": 93
+        },
+        "normal": {
+            "first": 99,
+            "second": 99,
+            "third": 99
+        },
+        "high": {
+            "first": 100,
+            "second": 100,
+            "third": 100
+        }
+    }
+
+
+
+}
