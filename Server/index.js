@@ -1,3 +1,4 @@
+const values = require('./values.json');
 const bcrypt = require('./bcrypt.js');
 const timer = require('./cleaner.js');
 const con = require('./connectdb.js');
@@ -182,7 +183,14 @@ app.post('/api/patientsignup', (req, res) => {
 	let hypertension = req.body.checkHypertension;
 	let previousPregnancies = req.body.checkPrevPreg;
 	let previousSurgeries = req.body.selectedSurgeries;
+	let height = req.body.height;
 	let sql = "";
+	if(height <= 0){
+		return res.status(401).send({ message: 'Null Height Value.' });
+	}
+	if(height > 2.5){
+		return res.status(401).send({ message: 'Height Value is in Meters. Fix your input accordingly.' });
+	}
 	if (diabetes == true || diabetes == "true") {
 		diabetes = 1;
 	} else {
@@ -204,9 +212,9 @@ app.post('/api/patientsignup', (req, res) => {
 	const day = String(today.getDate()).padStart(2, '0'); // add leading zero if needed
 	const date = `${year}-${month}-${day}`;
 	let trimester = helper.getTrimester(firstPregDay);
-	if (userId && birthDate && bloodType && firstPregDay && medication != null && diabetes != null && hypertension != null && previousPregnancies != null && previousSurgeries != null) {
-		sql = 'INSERT INTO `patient` (user_id, birth_date, blood_type, first_pregnant_day, trimester, medication_taken, diabetes, hypertension, previous_pregnancies, previous_surgeries, created_on) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
-		con.connection.query(sql, [userId, birthDate, bloodType, firstPregDay, trimester, medication, diabetes, hypertension, previousPregnancies, previousSurgeries, date], async function (error, result) {
+	if (userId && birthDate && height && bloodType && firstPregDay && medication != null && diabetes != null && hypertension != null && previousPregnancies != null && previousSurgeries != null) {
+		sql = 'INSERT INTO `patient` (user_id, birth_date, height, blood_type, first_pregnant_day, trimester, medication_taken, diabetes, hypertension, previous_pregnancies, previous_surgeries, created_on) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+		con.connection.query(sql, [userId, birthDate, height, bloodType, firstPregDay, trimester, medication, diabetes, hypertension, previousPregnancies, previousSurgeries, date], async function (error, result) {
 			if (error) {
 				console.log(error);
 				return res.status(404).send({ message: 'Patient Signup Issue' });
@@ -642,6 +650,7 @@ app.post('/api/editpatient', (req, res) => {
 			let hypertension = req.body.checkHypertension;
 			let previousPregnancies = req.body.checkPrevPreg;
 			let previousSurgeries = req.body.selectedSurgeries;
+			let height = req.body.height;
 			let sql = "SELECT pat_id FROM `patient` WHERE user_id=?";
 			con.connection.query(sql, userId, function (error, rows) {
 				if (error) {
@@ -649,7 +658,13 @@ app.post('/api/editpatient', (req, res) => {
 				}
 				else {
 					let patientId = rows[0].pat_id;
-					if (patientId && birthDate && firstPregDay && medication != null && diabetes != null && hypertension != null && previousPregnancies != null && previousSurgeries != null) {
+					if (patientId && height && birthDate && firstPregDay && medication != null && diabetes != null && hypertension != null && previousPregnancies != null && previousSurgeries != null) {
+						if(height <= 0){
+							return res.status(401).send({ message: 'Null Height Value.' });
+						}
+						if(height > 2.5){
+							return res.status(401).send({ message: 'Height Value is in Meters. Fix your input accordingly.' });
+						}
 						let trimester = helper.getTrimester(firstPregDay);
 						sql = "";
 						if (diabetes == true || diabetes == "true") {
@@ -667,8 +682,8 @@ app.post('/api/editpatient', (req, res) => {
 						} else {
 							previousPregnancies = 0;
 						}
-						sql = 'UPDATE `patient` SET birth_date=?, first_pregnant_day =?, trimester = ?, medication_taken = ?, diabetes = ?, hypertension = ?, previous_pregnancies = ?, previous_surgeries = ? WHERE pat_id = ?';
-						con.connection.query(sql, [birthDate, firstPregDay, trimester, medication, diabetes, hypertension, previousPregnancies, previousSurgeries, patientId], async function (error, result) {
+						sql = 'UPDATE `patient` SET height = ?, birth_date=?, first_pregnant_day =?, trimester = ?, medication_taken = ?, diabetes = ?, hypertension = ?, previous_pregnancies = ?, previous_surgeries = ? WHERE pat_id = ?';
+						con.connection.query(sql, [height, birthDate, firstPregDay, trimester, medication, diabetes, hypertension, previousPregnancies, previousSurgeries, patientId], async function (error, result) {
 							if (error) {
 								console.log(error);
 								return res.status(404).send({ message: 'Error updating your data. Try again later.' });
@@ -947,13 +962,34 @@ app.post('/api/temperature', (req, res) => {
 			let temperature = req.body.temperature;
 			let checkValue = req.body.checked;
 			if (temperature) {
-				console.log("Test");
 				if (checkValue) {
-					console.log("test");
-					return res.status(200).send({ message: "VALIDATION SUCCESS" });
+					let sql = "SELECT * FROM `patient` WHERE user_id = ?";
+					con.connection.query(sql, result.value.userId, function(error, rows){
+						if (error) {
+							return res.status(404).send({ message: "Your are not a user." });
+						}
+						else{
+							if (rows.length !=1) {
+								return res.status(404).send({ message: "Your are not a user." });
+							}
+							else {
+								if(temperature < values.temperature.low.high){
+									return res.status(200).send({ message: "Hypothermia" });
+								}
+								else if(temperature >= values.temperature.high.high.low){
+									return res.status(200).send({ message: "High Fever" });
+								}
+								else if(temperature >= values.temperature.high.light.low){
+									return res.status(200).send({ message: "Light Fever" });
+								}
+								else if(rows[0].trimester == 1 || rows[0].trimester == 2 || rows[0].trimester == 3){
+									return res.status(200).send({ message: "Normal Value" });
+								}
+							}
+						}
+					});
 				}
 				else {
-					console.log(result.value.userId);
 					let sql = "SELECT pat_id FROM `patient` where user_id=?"
 					con.connection.query(sql, result.value.userId, function (error, rows) {
 						if (error) {
@@ -1001,8 +1037,35 @@ app.post('/api/weight', (req, res) => {
 			if (weight) {
 				console.log("Test");
 				if (checkValue) {
-					console.log("test");
-					return res.status(200).send({ message: "VALIDATION SUCCESS" });
+					let sql = "SELECT * FROM `patient` WHERE user_id = ?";
+					con.connection.query(sql, result.value.userId, function(error, rows){
+						if (error) {
+							return res.status(404).send({ message: "Your are not a user." });
+						}
+						else{
+							if (rows.length !=1) {
+								return res.status(404).send({ message: "Your are not a user." });
+							}
+							else {
+								if(weight <= 0){
+									return res.status(200).send({ message: "Weight Cannot Be Null."});
+								}
+								let bmi = (weight/((rows[0].height)*(rows[0].height))).toFixed(2);
+								if(bmi < 18.5){
+									return res.status(200).send({ message: `You are Underweight, your BMI is: ${bmi}` });
+								}
+								else if(bmi < 24.9){
+									return res.status(200).send({ message: `You have a Normal Weight, your BMI is: ${bmi}` });
+								}
+								else if(bmi < 30){
+									return res.status(200).send({ message: `You are Overweight, your BMI is: ${bmi}` });
+								}
+								else{
+									return res.status(200).send({ message: `You are Obese, your BMI is: ${bmi}` });
+								}
+							}
+						}
+					});
 				}
 				else {
 					let sql = "SELECT pat_id FROM `patient` where user_id=?"
@@ -1369,7 +1432,6 @@ app.get('/api/heartratevalue', (req, res) => {
 	})()
 });
 // -------------------------Access Patient Measurements------------------------------- //
-
 
 //countries.getDataUsingAsyncAwaitGetCall(); //Do not remove the comment unless you want to fill the countries tables again.
 timer.cleanVerification(); //cleans the database from verification codes that have been there for more than 10 minutes
