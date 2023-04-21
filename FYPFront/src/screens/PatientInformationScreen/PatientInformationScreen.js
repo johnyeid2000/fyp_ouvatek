@@ -16,6 +16,7 @@ const PatientInformationScreen = ({ route }) => {
   const [BloodType, setBloodType] = useState([]);
   const [selectedBloodType, setSelectedBloodType] = useState(null);
 
+  const [height, setHeight] = useState('');
   const [firstPregnancyDay, setFirstPregnancyDay] = useState('');
 
   const [Medication, setMedication] = useState([]);
@@ -80,7 +81,7 @@ const PatientInformationScreen = ({ route }) => {
   const signUpPatient = async () => {
     try {
       const response = await axios.post('https://ouvatek.herokuapp.com/api/patientsignup',
-        { id, birthDate, selectedBloodType, firstPregnancyDay, selectedMedication, checkDiabetes, checkHypertension, selectedSurgeries, checkPrevPreg },
+        { id, birthDate, height, selectedBloodType, firstPregnancyDay, selectedMedication, checkDiabetes, checkHypertension, selectedSurgeries, checkPrevPreg },
         {
           headers: { 'Content-Type': 'application/json' },
         },
@@ -121,6 +122,14 @@ const PatientInformationScreen = ({ route }) => {
           selOption={selectedBloodType}
           setSelOption={setSelectedBloodType}
           opt={BloodType.map(bloodType => ({ label: bloodType.type_name, value: bloodType.type_id }))}
+        />
+
+        <CustomInput
+          label="Height"
+          IconName="human-male-height"
+          placeholder="Enter Your height in meters"
+          value={height}
+          setValue={setHeight}
         />
 
         <CustomDatePicker

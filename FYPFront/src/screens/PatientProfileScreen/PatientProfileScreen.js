@@ -107,6 +107,11 @@ const PatientProfileScreen = () => {
         </View>
 
         <View style={styles.row}>
+          <Icon name="human-male-height" color="#651B70" size={20} />
+          <Text style={styles.txtRow}>{specificData.height} m</Text>
+        </View>
+
+        <View style={styles.row}>
           <Icon name="medical-bag" color="#651B70" size={20} />
           <Text style={styles.txtRow}>{specificData.surgeries_name}</Text>
         </View>

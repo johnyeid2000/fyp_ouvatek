@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Text, View, ScrollView } from "react-native";
 import { Checkbox } from 'react-native-paper';
 import CustomPicker from '../../components/CustomPicker/CustomPicker';
+import CustomInput from '../../components/CustomInput';
 import CustomDatePicker from "../../components/CustomDatePicker/CustomDatePicker";
 import CustomButton from "../../components/CustomButton/CustomButton";
 import styles from './styles';
@@ -14,6 +15,7 @@ import { useNavigation } from '@react-navigation/native';
 const EditPregnancyInfoScreen = () => {
     const [birthDate, setBirthDate] = useState('');
     const [firstPregnancyDay, setFirstPregnancyDay] = useState('');
+    const [height, setHeight] = useState('');
     const [Medication, setMedication] = useState([]);
     const [selectedMedication, setSelectedMedication] = useState(null);
     const [checkDiabetes, setCheckDiabetes] = useState(false);
@@ -58,6 +60,7 @@ const EditPregnancyInfoScreen = () => {
             });
             setSpecificData(response.data.specificData);
             setBirthDate(response.data.specificData.birthDate);
+            setHeight(response.data.specificData.height);
             setFirstPregnancyDay(response.data.specificData.first_pregnant_day);
             setSelectedMedication(response.data.specificData.medication_taken);
             setCheckDiabetes(response.data.specificData.diabetes);
@@ -77,7 +80,7 @@ const EditPregnancyInfoScreen = () => {
         try {
             const token = await AsyncStorage.getItem('token');
             const response = await axios.post('https://ouvatek.herokuapp.com/api/editpatient',
-                { birthDate, firstPregnancyDay, selectedMedication, checkDiabetes, checkHypertension, checkPrevPreg, selectedSurgeries },
+                { birthDate, height, firstPregnancyDay, selectedMedication, checkDiabetes, checkHypertension, checkPrevPreg, selectedSurgeries },
                 {
                     headers: {
                         'Content-Type': 'application/json',
@@ -110,6 +113,15 @@ const EditPregnancyInfoScreen = () => {
                     value={birthDate}
                     onChange={setBirthDate}
                     isMaxDateDisabled={true}
+                />
+
+                <CustomInput
+                    label="Height"
+                    IconName="human-male-height"
+                    placeholder="Enter Your height in meters"
+                    value={height.toString()}
+                    setValue={setHeight}
+                    keyType="numeric"
                 />
 
                 <CustomDatePicker
