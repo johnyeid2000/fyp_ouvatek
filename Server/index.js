@@ -660,7 +660,7 @@ app.get("/api/profile", (req, res) => {
               );
             } else {
               sql =
-                "SELECT patient.`birth_date`, patient.`first_pregnant_day`, patient.`trimester`,\
+                "SELECT patient.`birth_date`, patient.`height`, patient.`first_pregnant_day`, patient.`trimester`,\
 							patient.`blood_type`, patient.`medication_taken`, patient.`previous_surgeries`, patient.`diabetes`,\
 							patient.`hypertension`, patient.`previous_pregnancies`, blood_type.`type_name`, medication.`medication_name`,\
 							surgeries.`surgeries_name`, trimester.`trimester_name` FROM `patient`\
