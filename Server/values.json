@@ -36,13 +36,57 @@
             "first": 99,
             "second": 99,
             "third": 99
+        }
+    },
+    "heartrate": {
+        "low": {
+            "first": 63,
+            "second": 67,
+            "third": 65
         },
-        "high": {
-            "first": 100,
-            "second": 100,
-            "third": 100
+        "normal": {
+            "first": 105,
+            "second": 113,
+            "third": 114
+        }
+    },
+    "systolic": {
+        "low": {
+            "first": 95,
+            "second": 96,
+            "third": 102
+        },
+        "normal": {
+            "first": 138,
+            "second": 136,
+            "third": 144
+        }
+    },
+    "diastolic": {
+        "low": {
+            "first": 56,
+            "second": 57,
+            "third": 62
+        },
+        "normal": {
+            "first": 87,
+            "second": 87,
+            "third": 95
+        }
+    },
+    "glucose": {
+        "before":{
+            "low": 65,
+            "high": 95
+        },
+        "after1": {
+            "high": 140
+        },
+        "after2": {
+            "high": 120
         }
     }
+
 
 
 
