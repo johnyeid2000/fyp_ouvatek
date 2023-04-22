@@ -19,6 +19,7 @@ const EditDoctorInfoScreen = () => {
     const [experience, setExperience] = useState(null);
 
     const [biography, setBiography] = useState('');
+    const [isPressed, setIsPressed] = useState(false);
 
     const [editStatus, setEditStatus] = useState(null);
     const [specificData, setSpecificData] = useState('');
@@ -66,6 +67,7 @@ const EditDoctorInfoScreen = () => {
     }, []);
 
     const editUser = async () => {
+        setIsPressed(true);
         try {
             const token = await AsyncStorage.getItem('token');
             const response = await axios.post('https://ouvatek.herokuapp.com/api/editdoctor',
@@ -82,6 +84,8 @@ const EditDoctorInfoScreen = () => {
             }
         } catch (error) {
             setEditStatus(error.response.data.message);
+        } finally {
+            setIsPressed(false);
         }
     };
 
@@ -141,7 +145,7 @@ const EditDoctorInfoScreen = () => {
 
 
                 <CustomButton
-                    text="Submit"
+                    text={isPressed ? 'Submitting...' : 'Submit'}
                     onPress={onSubmitPressed}
                 />
             </View>

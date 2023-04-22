@@ -16,6 +16,7 @@ const SignInScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [checked, setChecked] = useState(false);
+  const [isPressed, setIsPressed] = useState(false);
 
   const [loginStatus, setLoginStatus] = useState(null);
 
@@ -24,6 +25,7 @@ const SignInScreen = () => {
   const navigation = useNavigation();
 
   const loginUser = async () => {
+    setIsPressed(true);
     try {
       const response = await axios.post('https://ouvatek.herokuapp.com/api/login', { email, password, checked },
         {
@@ -45,6 +47,8 @@ const SignInScreen = () => {
       }
     } catch (error) {
       setLoginStatus(error.response.data.message);
+    } finally {
+      setIsPressed(false);
     }
   };
 
@@ -139,7 +143,7 @@ const SignInScreen = () => {
         </View>
 
         <CustomButton
-          text="Sign In"
+          text={isPressed ? 'Signing In...' : 'Sign In'}
           onPress={onSignInPressed}
         />
 

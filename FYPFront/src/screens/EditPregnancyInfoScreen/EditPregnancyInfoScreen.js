@@ -25,6 +25,7 @@ const EditPregnancyInfoScreen = () => {
     const [selectedSurgeries, setSelectedSurgeries] = useState(null);
 
     const [editStatus, setEditStatus] = useState(null);
+    const [isPressed, setIsPressed] = useState(false);
 
     const [specificData, setSpecificData] = useState('');
     const navigation = useNavigation();
@@ -77,6 +78,7 @@ const EditPregnancyInfoScreen = () => {
     }, []);
 
     const editUser = async () => {
+        setIsPressed(true);
         try {
             const token = await AsyncStorage.getItem('token');
             const response = await axios.post('https://ouvatek.herokuapp.com/api/editpatient',
@@ -93,6 +95,8 @@ const EditPregnancyInfoScreen = () => {
             }
         } catch (error) {
             setEditStatus(error.response.data.message);
+        } finally {
+            setIsPressed(false);
         }
     };
 
@@ -182,7 +186,7 @@ const EditPregnancyInfoScreen = () => {
                 />
 
                 <CustomButton
-                    text="Submit"
+                    text={isPressed ? 'Submitting...' : 'Submit'}
                     onPress={onSubmitPressed}
                 />
 
