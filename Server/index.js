@@ -185,10 +185,10 @@ app.post('/api/patientsignup', (req, res) => {
 	let previousSurgeries = req.body.selectedSurgeries;
 	let height = req.body.height;
 	let sql = "";
-	if(height <= 0){
+	if (height <= 0) {
 		return res.status(401).send({ message: 'Null Height Value.' });
 	}
-	if(height > 2.5){
+	if (height > 2.5) {
 		return res.status(401).send({ message: 'Height Value is in Meters. Fix your input accordingly.' });
 	}
 	if (diabetes == true || diabetes == "true") {
@@ -514,7 +514,7 @@ app.get('/api/profile', (req, res) => {
 								}
 							});
 						} else {
-							sql = "SELECT patient.`birth_date`, patient.`first_pregnant_day`, patient.`trimester`,\
+							sql = "SELECT patient.`birth_date`, patient.`height`, patient.`first_pregnant_day`, patient.`trimester`,\
 							patient.`blood_type`, patient.`medication_taken`, patient.`previous_surgeries`, patient.`diabetes`,\
 							patient.`hypertension`, patient.`previous_pregnancies`, blood_type.`type_name`, medication.`medication_name`,\
 							surgeries.`surgeries_name`, trimester.`trimester_name` FROM `patient`\
@@ -659,10 +659,10 @@ app.post('/api/editpatient', (req, res) => {
 				else {
 					let patientId = rows[0].pat_id;
 					if (patientId && height && birthDate && firstPregDay && medication != null && diabetes != null && hypertension != null && previousPregnancies != null && previousSurgeries != null) {
-						if(height <= 0){
+						if (height <= 0) {
 							return res.status(401).send({ message: 'Null Height Value.' });
 						}
-						if(height > 2.5){
+						if (height > 2.5) {
 							return res.status(401).send({ message: 'Height Value is in Meters. Fix your input accordingly.' });
 						}
 						let trimester = helper.getTrimester(firstPregDay);
@@ -964,25 +964,25 @@ app.post('/api/temperature', (req, res) => {
 			if (temperature) {
 				if (checkValue) {
 					let sql = "SELECT * FROM `patient` WHERE user_id = ?";
-					con.connection.query(sql, result.value.userId, function(error, rows){
+					con.connection.query(sql, result.value.userId, function (error, rows) {
 						if (error) {
 							return res.status(404).send({ message: "Your are not a user." });
 						}
-						else{
-							if (rows.length !=1) {
+						else {
+							if (rows.length != 1) {
 								return res.status(404).send({ message: "Your are not a user." });
 							}
 							else {
-								if(temperature < values.temperature.low.high){
+								if (temperature < values.temperature.low.high) {
 									return res.status(200).send({ message: "Hypothermia" });
 								}
-								else if(temperature >= values.temperature.high.high.low){
+								else if (temperature >= values.temperature.high.high.low) {
 									return res.status(200).send({ message: "High Fever" });
 								}
-								else if(temperature >= values.temperature.high.light.low){
+								else if (temperature >= values.temperature.high.light.low) {
 									return res.status(200).send({ message: "Light Fever" });
 								}
-								else if(rows[0].trimester == 1 || rows[0].trimester == 2 || rows[0].trimester == 3){
+								else if (rows[0].trimester == 1 || rows[0].trimester == 2 || rows[0].trimester == 3) {
 									return res.status(200).send({ message: "Normal Value" });
 								}
 							}
@@ -1038,29 +1038,29 @@ app.post('/api/weight', (req, res) => {
 				console.log("Test");
 				if (checkValue) {
 					let sql = "SELECT * FROM `patient` WHERE user_id = ?";
-					con.connection.query(sql, result.value.userId, function(error, rows){
+					con.connection.query(sql, result.value.userId, function (error, rows) {
 						if (error) {
 							return res.status(404).send({ message: "Your are not a user." });
 						}
-						else{
-							if (rows.length !=1) {
+						else {
+							if (rows.length != 1) {
 								return res.status(404).send({ message: "Your are not a user." });
 							}
 							else {
-								if(weight <= 0){
-									return res.status(200).send({ message: "Weight Cannot Be Null."});
+								if (weight <= 0) {
+									return res.status(200).send({ message: "Weight Cannot Be Null." });
 								}
-								let bmi = (weight/((rows[0].height)*(rows[0].height))).toFixed(2);
-								if(bmi < 18.5){
+								let bmi = (weight / ((rows[0].height) * (rows[0].height))).toFixed(2);
+								if (bmi < 18.5) {
 									return res.status(200).send({ message: `You are Underweight, your BMI is: ${bmi}` });
 								}
-								else if(bmi < 24.9){
+								else if (bmi < 24.9) {
 									return res.status(200).send({ message: `You have a Normal Weight, your BMI is: ${bmi}` });
 								}
-								else if(bmi < 30){
+								else if (bmi < 30) {
 									return res.status(200).send({ message: `You are Overweight, your BMI is: ${bmi}` });
 								}
-								else{
+								else {
 									return res.status(200).send({ message: `You are Obese, your BMI is: ${bmi}` });
 								}
 							}
