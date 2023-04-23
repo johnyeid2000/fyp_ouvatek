@@ -38,7 +38,7 @@ const GraphScreen = ({ route }) => {
         }}
         width={chartWidth} // from react-native
         height={chartHeight}
-        yAxisInterval={1}
+        yAxisInterval={0.5}
         chartConfig={{
           backgroundColor: "#651B70",
           backgroundGradientFrom: "#810CA8",
@@ -52,7 +52,7 @@ const GraphScreen = ({ route }) => {
         }}
         bezier
         xLabelsOffset={-15} // offset x-axis labels to left
-        yLabelsOffset={40}
+        yLabelsOffset={25}
         verticalLabelRotation={65}
         style={{
           borderRadius: 10,
