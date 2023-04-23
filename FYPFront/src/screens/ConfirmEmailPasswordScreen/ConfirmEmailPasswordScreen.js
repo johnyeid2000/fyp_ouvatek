@@ -12,6 +12,7 @@ import { useNavigation } from '@react-navigation/native';
 const ConfirmEmailPasswordScreen = ({ route }) => {
     const [code, setCode] = useState('');
     const [confirmEmailStatus, setConfirmEmailStatus] = useState(null);
+    const [isPressed, setIsPressed] = useState(false);
     const { id, email } = route.params;
     const navigation = useNavigation();
 
@@ -40,6 +41,7 @@ const ConfirmEmailPasswordScreen = ({ route }) => {
     };
 
     const onConfirmPressed = async () => {
+        setIsPressed(true);
         try {
             const response = await axios.post('https://ouvatek.herokuapp.com/api/sendcode', { id, code },
                 {
@@ -51,6 +53,8 @@ const ConfirmEmailPasswordScreen = ({ route }) => {
             }
         } catch (error) {
             setConfirmEmailStatus(error.response.data.message);
+        } finally {
+            setIsPressed(false);
         }
     };
 
@@ -69,7 +73,7 @@ const ConfirmEmailPasswordScreen = ({ route }) => {
             />
 
             <CustomButton
-                text="Confirm"
+                text={isPressed ? 'Confirming...' : 'Confirm'}
                 onPress={onConfirmPressed}
             />
 

@@ -10,10 +10,12 @@ import { useNavigation } from '@react-navigation/native';
 const ForgotPasswordScreen = () => {
     const [email, setEmail] = useState('');
     const [forgotPassStatus, setForgotPassStatus] = useState(null);
+    const [isPressed, setIsPressed] = useState(false);
 
     const navigation = useNavigation();
 
     const onSendPressed = async () => {
+        setIsPressed(true);
         try {
             const response = await axios.post('https://ouvatek.herokuapp.com/api/forgotpassmail',
                 { email },
@@ -27,6 +29,8 @@ const ForgotPasswordScreen = () => {
             }
         } catch (error) {
             setForgotPassStatus(error.response.data.message);
+        } finally {
+            setIsPressed(false);
         }
     };
 
@@ -45,7 +49,7 @@ const ForgotPasswordScreen = () => {
             />
 
             <CustomButton
-                text="Send"
+                text={isPressed ? 'Sending...' : 'Send'}
                 onPress={onSendPressed}
             />
 

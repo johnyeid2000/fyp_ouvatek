@@ -14,9 +14,12 @@ const WeightScreen = () => {
     const [date, setDate] = useState([]);
     const [time, setTime] = useState([]);
     const [value, setValue] = useState([]);
+    const [isPressed, setIsPressed] = useState(false);
+    const [isPressedCheckVal, setIsPressedCheckVal] = useState(false);
     const [error, setError] = useState(null);
 
     const addWeight = async (isChecked) => {
+        isChecked ? setIsPressedCheckVal(true) : setIsPressed(true);
         try {
             const token = await AsyncStorage.getItem('token');
             const response = await axios.post('https://ouvatek.herokuapp.com/api/weight',
@@ -29,11 +32,13 @@ const WeightScreen = () => {
                 },
             );
             if (response.status === 200) {
-                setError(response.data.message);
                 isChecked ? navigation.navigate('Weight') : navigation.navigate('Measurement');
+                setError(response.data.message);
             }
         } catch (error) {
             setError(error.response.data.message);
+        } finally {
+            isChecked ? setIsPressedCheckVal(false) : setIsPressed(false);
         }
     };
 
@@ -110,7 +115,7 @@ const WeightScreen = () => {
 
             <View style={styles.btnContainer}>
                 <CustomButton
-                    text="Check Values"
+                    text={isPressedCheckVal ? "Checking values" : "Check Values"}
                     onPress={onCheckValuePressed}
                     type='Teritiary'
                 />
@@ -124,7 +129,7 @@ const WeightScreen = () => {
                 />
             </View>
             <CustomButton
-                text="Submit"
+                text={isPressed ? 'Submitting...' : 'Submit'}
                 onPress={onSubmitPressed}
             />
 

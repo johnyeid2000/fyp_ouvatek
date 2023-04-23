@@ -21,7 +21,8 @@ const EditClinicScreen = ({ route }) => {
     const [phoneNumber, setPhoneNumber] = useState('');
     const [doctorClinicStatus, setDoctorClinicStatus] = useState("");
     const { locationId } = route.params;
-    const [address, setAddress] = useState([]);
+    const [isPressed, setIsPressed] = useState(false);
+
 
     const navigation = useNavigation();
 
@@ -64,6 +65,7 @@ const EditClinicScreen = ({ route }) => {
     }, []);
 
     const editDoctorClinic = async () => {
+        setIsPressed(true);
         try {
             const token = await AsyncStorage.getItem('token');
             const response = await axios.post('https://ouvatek.herokuapp.com/api/editlocation',
@@ -80,6 +82,8 @@ const EditClinicScreen = ({ route }) => {
             }
         } catch (error) {
             setDoctorClinicStatus(error.response.data.message);
+        } finally {
+            setIsPressed(false);
         }
     };
 
@@ -143,7 +147,7 @@ const EditClinicScreen = ({ route }) => {
                 />
 
                 <CustomButton
-                    text="Submit"
+                    text={isPressed ? 'Submitting...' : 'Submit'}
                     onPress={onSubmitPressed}
                 />
             </View>

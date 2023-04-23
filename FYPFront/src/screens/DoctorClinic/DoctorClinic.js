@@ -17,7 +17,8 @@ const DoctorClinic = ({ route }) => {
   const [building, setBuilding] = useState('');
   const [floor, setFloor] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
-
+  const [isPressed, setIsPressed] = useState(false);
+  const [isPressedClinic, setIsPressedClinic] = useState(false);
   const { id, doctorId } = route.params;
 
   const [doctorClinicStatus, setDoctorClinicStatus] = useState("");
@@ -48,6 +49,7 @@ const DoctorClinic = ({ route }) => {
   };
 
   const insertDoctorClinic = async () => {
+    setIsPressed(true);
     try {
       const response = await axios.post('https://ouvatek.herokuapp.com/api/doctorlocation',
         { doctorId, selectedCountry, city, street, building, floor, phoneNumber },
@@ -60,10 +62,13 @@ const DoctorClinic = ({ route }) => {
       }
     } catch (error) {
       setDoctorClinicStatus(error.response.data.message);
+    } finally {
+      setIsPressed(false);
     }
   };
 
   const insertAnotherDoctorClinic = async () => {
+    setIsPressedClinic(true);
     try {
       const response = await axios.post('https://ouvatek.herokuapp.com/api/doctorlocation',
         { doctorId, selectedCountry, city, street, building, floor, phoneNumber },
@@ -83,6 +88,8 @@ const DoctorClinic = ({ route }) => {
       }
     } catch (error) {
       setDoctorClinicStatus(error.response.data.message);
+    } finally {
+      setIsPressedClinic(false);
     }
   };
 
@@ -153,12 +160,12 @@ const DoctorClinic = ({ route }) => {
         />
 
         <CustomButton
-          text="Add Another Clinic"
+          text={isPressedClinic ? "Adding..." : "Add Another Clinic"}
           onPress={onClinicPressed}
         />
 
         <CustomButton
-          text="Submit"
+          text={isPressed ? 'Submitting...' : 'Submit'}
           onPress={onSubmitPressed}
         />
 

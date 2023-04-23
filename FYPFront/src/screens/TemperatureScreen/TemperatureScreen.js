@@ -14,9 +14,12 @@ const TemperatureScreen = () => {
     const [date, setDate] = useState([]);
     const [time, setTime] = useState([]);
     const [value, setValue] = useState([]);
+    const [isPressed, setIsPressed] = useState(false);
+    const [isPressedCheckVal, setIsPressedCheckVal] = useState(false);
     const [error, setError] = useState(null);
 
     const addTemperature = async (isChecked) => {
+        isChecked ? setIsPressedCheckVal(true) : setIsPressed(true);
         try {
             const token = await AsyncStorage.getItem('token');
             const response = await axios.post('https://ouvatek.herokuapp.com/api/temperature',
@@ -30,9 +33,12 @@ const TemperatureScreen = () => {
             );
             if (response.status === 200) {
                 isChecked ? navigation.navigate('Temperature') : navigation.navigate('Measurement');
+                setError(response.data.message);
             }
         } catch (error) {
             setError(error.response.data.message);
+        } finally {
+            isChecked ? setIsPressedCheckVal(false) : setIsPressed(false);
         }
     };
 
@@ -110,7 +116,7 @@ const TemperatureScreen = () => {
 
             <View style={styles.btnContainer}>
                 <CustomButton
-                    text="Check Values"
+                    text={isPressedCheckVal ? "Checking values" : "Check Values"}
                     onPress={onCheckValuePressed}
                     type='Teritiary'
                 />
@@ -124,7 +130,7 @@ const TemperatureScreen = () => {
                 />
             </View>
             <CustomButton
-                text="Submit"
+                text={isPressed ? 'Submitting...' : 'Submit'}
                 onPress={onSubmitPressed}
             />
             <CustomButton

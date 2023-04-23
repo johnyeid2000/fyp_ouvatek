@@ -16,9 +16,12 @@ const BloodGlucoseScreen = () => {
     const [time, setTime] = useState([]);
     const [value, setValue] = useState([]);
     const [checkedTime, setCheckedTime] = useState('');
+    const [isPressed, setIsPressed] = useState(false);
+    const [isPressedCheckVal, setIsPressedCheckVal] = useState(false);
     const [error, setError] = useState(null);
 
     const addBloodGlucose = async (isChecked) => {
+        isChecked ? setIsPressedCheckVal(true) : setIsPressed(true);
         try {
             const token = await AsyncStorage.getItem('token');
             const response = await axios.post('https://ouvatek.herokuapp.com/api/glucose',
@@ -36,6 +39,8 @@ const BloodGlucoseScreen = () => {
             }
         } catch (error) {
             setError(error.response.data.message);
+        } finally {
+            isChecked ? setIsPressedCheckVal(false) : setIsPressed(false);
         }
     };
 
@@ -124,7 +129,7 @@ const BloodGlucoseScreen = () => {
 
                 <View style={styles.btnContainer}>
                     <CustomButton
-                        text="Check Values"
+                        text={isPressedCheckVal ? "Checking values" : "Check Values"}
                         onPress={onCheckValuePressed}
                         type='Teritiary'
                     />
@@ -138,7 +143,7 @@ const BloodGlucoseScreen = () => {
                     />
                 </View>
                 <CustomButton
-                    text="Submit"
+                    text={isPressed ? 'Submitting...' : 'Submit'}
                     onPress={onSubmitPressed}
                 />
 

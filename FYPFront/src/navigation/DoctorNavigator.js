@@ -18,7 +18,7 @@ const Tab=createBottomTabNavigator();
 const DoctorNavigator = (props) => {
     
     return (
-        <Tab.Navigator screenOptions={{headerShown:false, tabBarActiveTintColor:'#651B70'}}>
+        <Tab.Navigator screenOptions={{ headerShown: false, tabBarActiveTintColor: '#651B70', tabBarHideOnKeyboard: true }}>
             <Tab.Screen
                 name='Check Patient'
                 component={CheckMeasurementNavigator}

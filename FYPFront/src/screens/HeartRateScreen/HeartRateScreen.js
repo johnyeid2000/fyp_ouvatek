@@ -13,9 +13,13 @@ const HeartRateScreen = () => {
   const [pulse, setPulse] = useState('');
   const [systolic, setSystolic] = useState('');
   const [diastolic, setDiastolic] = useState('');
+  const [isPressed, setIsPressed] = useState(false);
+  const [isPressedCheckVal, setIsPressedCheckVal] = useState(false);
+
   const [error, setError] = useState(null);
 
   const addHRandBP = async (isChecked) => {
+    isChecked ? setIsPressedCheckVal(true) : setIsPressed(true);
     try {
       const token = await AsyncStorage.getItem('token');
       const response = await axios.post('https://ouvatek.herokuapp.com/api/heartrate',
@@ -29,9 +33,12 @@ const HeartRateScreen = () => {
       );
       if (response.status === 200) {
         isChecked ? navigation.navigate('HeartRate') : navigation.navigate('Measurement');
+        setError(` ${response.data.respiratoryStatus} \n ${response.data.bloodPressure}`);
       }
     } catch (error) {
       setError(error.response.data.message);
+    } finally {
+      isChecked ? setIsPressedCheckVal(false) : setIsPressed(false);
     }
   };
 
@@ -106,7 +113,7 @@ const HeartRateScreen = () => {
 
         <View style={styles.btnContainer}>
           <CustomButton
-            text="Check Values"
+            text={isPressedCheckVal ? "Checking values" : "Check Values"}
             onPress={onCheckValuePressed}
             type='Teritiary'
           />
@@ -120,7 +127,7 @@ const HeartRateScreen = () => {
           />
         </View>
         <CustomButton
-          text="Submit"
+          text={isPressed ? 'Submitting...' : 'Submit'}
           onPress={onSubmitPressed}
         />
 
