@@ -827,7 +827,7 @@ app.post("/api/login", (req, res) => {
 							const token = jwt.sign({
 								userId
 							}, process.env.SECRET, {
-								expiresIn: "1h",
+								expiresIn: "7d",
 							});
 							return res
 								.status(200)
@@ -2493,11 +2493,11 @@ app.get("/api/showpatientrequests", (req, res) => {
 			JOIN `user` u ON patient.user_id = u.id\
 			JOIN `country` c ON c.country_id = u.country";
 			con.connection.query(sql, function (error, rows) {
-				if (error){
-					return console.log(error);
+				if (error) {
+					return res.status(401).send({ message: error })
 				}
 				else {
-					return res.send(rows);
+					return res.status(200).send({ rows:rows });
 				}
 			});
 		}
@@ -2578,19 +2578,27 @@ app.get("/api/showmypatients", (req, res) => {
 		const token = req.headers.authorization.split(" ")[1];
 		let result = await helper.validateUser(token);
 		if (result.indicator) {
-			let sql = "SELECT linking_request.dr_id, linking_request.pat_id, u.first_name, u.last_name, u.country,\
-			c.country_name, patient.trimester, trimester.trimester_name FROM `linked`\
-			JOIN `patient` ON linking_request.pat_id = patient.pat_id\
-			JOIN `trimester` ON trimester.trimester_id = patient.trimester\
-			JOIN `user` u ON patient.user_id = u.id\
-			JOIN `country` c ON c.country_id = u.country\
-			WHERE ";
-			con.connection.query(sql, function (error, rows) {
-				if (error){
-					return console.log(error);
+			let sql = "SELECT dr_id FROM `doctor` WHERE user_id = ?";
+			con.connection.query(sql, result.value.userId, function (error, rows) {
+				if(error){
+					return res.status(401).send({ message: error })
 				}
-				else {
-					return res.send(rows);
+				else{
+					let sql = "SELECT linked.dr_id, linked.pat_id, u.first_name, u.last_name, u.country,\
+					c.country_name, patient.trimester, trimester.trimester_name FROM `linked`\
+					JOIN `patient` ON linked.pat_id = patient.pat_id\
+					JOIN `trimester` ON trimester.trimester_id = patient.trimester\
+					JOIN `user` u ON patient.user_id = u.id\
+					JOIN `country` c ON c.country_id = u.country\
+					WHERE dr_id = ?";
+					con.connection.query(sql, rows[0].dr_id, function (error, rows) {
+						if (error){
+							return res.status(401).send({ message: error })
+						}
+						else {
+							return res.status(200).send({ rows:rows });
+						}
+					});
 				}
 			});
 		}
