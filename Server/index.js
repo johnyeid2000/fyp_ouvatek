@@ -9,10 +9,8 @@ const jwt = require("jsonwebtoken");
 const express = require("express");
 const app = express();
 const port = process.env.PORT || 3000;
-var bodyParser = require("body-parser");
-const {
-	fixDate
-} = require("./helper.js");
+const bodyParser = require("body-parser");
+const fixDate = require("./helper.js");
 app.use(bodyParser.json({
 	type: "application/json"
 }));
@@ -34,24 +32,166 @@ app.get("/", (req, res) => {
 });
 
 // -------------------------Shared Information------------------------------- //
-app.get("/api/patient", (req, res) => {
-	con.connection.query(`select * from patient`, function (error, rows, fields) {
-		if (error) console.log(error);
-		else {
-			console.log(rows);
-			res.send(rows);
+app.post("/api/getpatient", (req, res) => {
+	(async () => {
+		const token = req.headers.authorization.split(" ")[1];
+		let result = await helper.validateUser(token);
+		if (result.indicator) {
+			let id = req.body.id;
+			sql ="SELECT user.first_name, user.last_name, user.country, country.country_name, patient.`birth_date`, patient.`height`, patient.`first_pregnant_day`, patient.`trimester`,\
+			patient.`blood_type`, patient.`medication_taken`, patient.`previous_surgeries`, patient.`diabetes`,\
+			patient.`hypertension`, patient.`previous_pregnancies`, blood_type.`type_name`, medication.`medication_name`,\
+			surgeries.`surgeries_name`, trimester.`trimester_name` FROM `user`\
+			JOIN `country` ON user.country = country.country_id\
+			JOIN `patient` ON user.id = patient.user_id\
+			JOIN `blood_type` ON patient.blood_type = blood_type.type_id\
+			JOIN `medication` ON patient.medication_taken = medication.medication_id\
+			JOIN `surgeries` ON patient.previous_surgeries = surgeries.surgeries_id\
+			JOIN `trimester` ON patient.trimester = trimester.trimester_id\
+			WHERE id=?";
+			con.connection.query(
+				sql,
+				id,
+				function (error, rowsSpecific) {
+					if (rowsSpecific[0].previous_pregnancies) {
+						rowsSpecific[0].previous_pregnanciesValue =
+							"Had previous pregnancies";
+					} else {
+						rowsSpecific[0].previous_pregnanciesValue =
+							"No previous pregnancies";
+					}
+					if (rowsSpecific[0].diabetes) {
+						rowsSpecific[0].diabetesValue = "Diabetic";
+					} else {
+						rowsSpecific[0].diabetesValue = "Not Diabetic";
+					}
+					if (rowsSpecific[0].hypertension) {
+						rowsSpecific[0].hypertensionValue = "Hypertensive";
+					} else {
+						rowsSpecific[0].hypertensionValue = "Not Hypertensive";
+					}
+					rowsSpecific[0].birthDate = helper.fixDate(
+						rowsSpecific[0].birth_date
+					);
+					rowsSpecific[0].week = helper.getWeek(
+						rowsSpecific[0].first_pregnant_day
+					);
+					console.log(rowsSpecific[0].week);
+					rowsSpecific[0].first_pregnant_day = helper.fixDate(
+						rowsSpecific[0].first_pregnant_day
+					);
+					if (error) {
+						return res
+							.status(404)
+							.send({
+								message: "User Not Found. Login again.",
+								reason: error.message,
+							});
+					} else {
+						return res
+							.status(200)
+							.send({
+								specificData: rowsSpecific[0],
+							});
+					}
+				}
+			);
 		}
-	});
-});
+		else{
+			return res.status(401).send({ message: "Unauthorized User.", reason: result.value})
+		}
+	})();
+})
 app.get("/api/doctor", (req, res) => {
-	con.connection.query(`select * from doctor`, function (error, rows, fields) {
-		if (error) console.log(error);
-		else {
-			console.log(rows);
-			res.send(rows);
+	(async () => {
+		const token = req.headers.authorization.split(" ")[1];
+		let result = await helper.validateUser(token);
+		if (result.indicator) {
+			let sql = "SELECT user.id, user.first_name, user.last_name, user.country,\
+			doctor.dr_id, doctor.speciality, doctor.gender, doctor.experience, experience.exp_years, country.country_name FROM `user`\
+			JOIN `doctor` ON user.id = doctor.user_id\
+			JOIN `experience` ON doctor.experience = experience.exp_id\
+			JOIN `country` ON user.country = country.country_id";
+			con.connection.query(sql, function (error, rows) {
+				if (error){
+					return res.status(404).send({message: error});
+				}
+				else {
+					return res.status(200).send({rows: rows});
+				}
+			});
 		}
-	});
+		else{
+			return res.status(401).send({ message: "Unauthorized User.", reason: result.value})
+		}
+	})();
 });
+app.post("/api/getdoctor", (req,res) => {
+	(async () => {
+		const token = req.headers.authorization.split(" ")[1];
+		let result = await helper.validateUser(token);
+		if (result.indicator) {
+			let id = req.body.id;
+			sql ="SELECT user.first_name, user.last_name, user.country, c.country_name, doctor.dr_id, doctor.oop_number, doctor.speciality, doctor.gender,\
+			doctor.biography, doctor.experience, experience.exp_years, doctor_address.* , co.country_name FROM `user`\
+			JOIN `doctor` ON user.id = doctor.user_id\
+			JOIN `experience` ON doctor.experience = experience.exp_id\
+			JOIN `country` c ON user.country = c.country_id\
+			JOIN `doctor_address` ON doctor.dr_id = doctor_address.doctor_id\
+			JOIN `country` co ON doctor_address.clinic_country = co.country_id\
+			WHERE id=?";
+			con.connection.query(
+				sql,
+				id,
+				function (error, rowsSpecific) {
+					if (error) {
+						return res
+							.status(404)
+							.send({
+								message: "User Not Found. Login again.",
+								reason: error.message,
+							});
+					} else {
+						console.log(rowsSpecific);
+						let clinics = [];
+						rowsSpecific.forEach((line) => {
+							let clinic = {};
+							clinic.clinic_id = line.clinic_id;
+							clinic.country = line.country_name;
+							clinic.country_id = line.clinic_country;
+							clinic.number = line.clinic_number;
+							clinic.floor = line.clinic_floor;
+							clinic.building = line.clinic_building;
+							clinic.street = line.clinic_street;
+							clinic.city = line.clinic_city;
+							clinics.push(clinic);
+						});
+						let doctorData = {};
+						doctorData.first_name = rowsSpecific[0].first_name;
+						doctorData.last_name = rowsSpecific[0].last_name;
+						doctorData.doctorCountry = rowsSpecific[0].country_name;
+						doctorData.dr_id = rowsSpecific[0].dr_id;
+						doctorData.oop_number = rowsSpecific[0].oop_number;
+						doctorData.speciality = rowsSpecific[0].speciality;
+						doctorData.gender = rowsSpecific[0].gender;
+						doctorData.biography = rowsSpecific[0].biography;
+						doctorData.experience = rowsSpecific[0].experience;
+						doctorData.exp_years = rowsSpecific[0].exp_years;
+						return res
+							.status(200)
+							.send({
+								specificData: doctorData,
+								address: clinics,
+							});
+					}
+				}
+			);
+		}
+		else{
+			return res.status(401).send({ message: "Unauthorized User.", reason: result.value})
+		}
+	})();
+})
 app.get("/api/countries", (req, res) => {
 	sql = "SELECT * FROM `country`";
 	con.connection.query(sql, function (error, rows, fields) {
@@ -687,7 +827,7 @@ app.post("/api/login", (req, res) => {
 							const token = jwt.sign({
 								userId
 							}, process.env.SECRET, {
-								expiresIn: "1h",
+								expiresIn: "7d",
 							});
 							return res
 								.status(200)
@@ -735,8 +875,7 @@ app.get("/api/profile", (req, res) => {
 					if (rows.length == 1) {
 						let sql = "";
 						if (rows[0].user_type) {
-							sql =
-								"SELECT doctor.`dr_id`, doctor.`oop_number`, doctor.`speciality`, doctor.`gender`,\
+							sql ="SELECT doctor.`dr_id`, doctor.`oop_number`, doctor.`speciality`, doctor.`gender`,\
 							doctor.`biography`, doctor.`experience`, experience.`exp_years`, doctor_address.* , country.country_name FROM `doctor`\
 							JOIN `experience` ON doctor.experience = experience.exp_id\
 							JOIN `doctor_address` ON doctor.dr_id = doctor_address.doctor_id\
@@ -2298,6 +2437,173 @@ app.post("/api/heartrate", (req, res) => {
 					message: "You are not an authorized user.",
 					reason: result.value,
 				});
+		}
+	})();
+});
+app.post("/api/linktodoc", (req, res) => {
+	(async () => {
+		const token = req.headers.authorization.split(" ")[1];
+		let result = await helper.validateUser(token);
+		if (result.indicator) {
+			let doctorId = req.body.doctor;
+			console.log("Test1");
+			if (doctorId) {
+				let sql = "SELECT pat_id FROM `patient` WHERE user_id = ?";
+				con.connection.query(sql, result.value.userId, function(error, rows){
+					if(error){
+						return res.status(401).send({ message: "Unauthorized User.", reason: error})
+					}
+					else{
+						const today = new Date();
+						const year = today.getFullYear();
+						const month = String(today.getMonth() + 1).padStart(2, "0"); // add leading zero if needed
+						const day = String(today.getDate()).padStart(2, "0"); // add leading zero if needed
+						const date = `${year}-${month}-${day}`;
+						sql = "INSERT INTO `linking_request` (dr_id, pat_id, request_date) VALUES(?,?,?)";
+						con.connection.query(sql, [ doctorId, rows[0].pat_id, date ], function (error, result) {
+							if (error){
+								console.log(error);
+								return res.status(401).send({ message: "Linking Request Error. Try again later."})
+							}
+							else {
+								return res.status(200).send({ message: "Request Sent.", result: result })
+							}
+				});
+					}
+				});
+			}
+			else {
+				return res.status(401).send({ message: "Doctor ID required."})
+			}
+		}
+		else{
+			return res.status(401).send({ message: "Unauthorized User.", reason: result.value})
+		}
+	})();
+});
+app.get("/api/showpatientrequests", (req, res) => {
+	(async () => {
+		const token = req.headers.authorization.split(" ")[1];
+		let result = await helper.validateUser(token);
+		if (result.indicator) {
+			let sql = "SELECT linking_request.dr_id, linking_request.pat_id, u.id, u.first_name, u.last_name, u.country,\
+			c.country_name, patient.trimester, trimester.trimester_name FROM `linking_request`\
+			JOIN `patient` ON linking_request.pat_id = patient.pat_id\
+			JOIN `trimester` ON trimester.trimester_id = patient.trimester\
+			JOIN `user` u ON patient.user_id = u.id\
+			JOIN `country` c ON c.country_id = u.country";
+			con.connection.query(sql, function (error, rows) {
+				if (error) {
+					return res.status(401).send({ message: error })
+				}
+				else {
+					return res.status(200).send({ rows:rows });
+				}
+			});
+		}
+		else{
+			return res.status(401).send({ message: "Unauthorized User.", reason: result.value})
+		}
+	})();
+});
+app.post("/api/acceptlink", (req,res) => {
+	(async () => {
+		const token = req.headers.authorization.split(" ")[1];
+		let result = await helper.validateUser(token);
+		if (result.indicator) {
+			let doctorId = req.body.dr_id;
+			let patientId = req.body.pat_id;
+			if (doctorId && patientId) {
+				const today = new Date();
+				const year = today.getFullYear();
+				const month = String(today.getMonth() + 1).padStart(2, "0"); // add leading zero if needed
+				const day = String(today.getDate()).padStart(2, "0"); // add leading zero if needed
+				const date = `${year}-${month}-${day}`;
+				sql = "INSERT INTO `linked` (dr_id, pat_id, link_creation_date) VALUES(?,?,?)";
+				con.connection.query(sql, [ doctorId, patientId, date ], function (error, result) {
+					if (error){
+						return res.status(401).send({ message: "Link Error. Try again later."})
+					}
+					else {
+						sql = "DELETE FROM `linking_request` WHERE pat_id = ? AND dr_id = ?";
+						con.connection.query(sql, [patientId, doctorId], function(error, result){
+							if(error){
+								return res.status(401).send({ message: "Link Error. Try again later."})
+							}
+							else{
+								return res.status(200).send({ message: "Link Successful."})
+							}
+						})
+					}
+				});
+			}
+			else {
+				return res.status(401).send({ message: "Doctor ID & Patient ID required."})
+			}
+		}
+		else{
+			return res.status(401).send({ message: "Unauthorized User.", reason: result.value})
+		}
+	})();
+});
+app.post("/api/denylink", (req,res) => {
+	(async () => {
+		const token = req.headers.authorization.split(" ")[1];
+		let result = await helper.validateUser(token);
+		if (result.indicator) {
+			let doctorId = req.body.dr_id;
+			let patientId = req.body.pat_id;
+			if (doctorId && patientId) {
+				sql = "DELETE FROM `linking_request` WHERE pat_id = ? AND dr_id = ?";
+				con.connection.query(sql, [patientId, doctorId], function(error, result){
+					if(error){
+						return res.status(401).send({ message: "Link Error. Try again later."})
+					}
+					else{
+						return res.status(200).send({ message: "Link Denied Successfully."})
+					}
+				});
+			}
+			else {
+				return res.status(401).send({ message: "Doctor ID & Patient ID required."})
+			}
+		}
+		else{
+			return res.status(401).send({ message: "Unauthorized User.", reason: result.value})
+		}
+	})();
+});
+app.get("/api/showmypatients", (req, res) => {
+	(async () => {
+		const token = req.headers.authorization.split(" ")[1];
+		let result = await helper.validateUser(token);
+		if (result.indicator) {
+			let sql = "SELECT dr_id FROM `doctor` WHERE user_id = ?";
+			con.connection.query(sql, result.value.userId, function (error, rows) {
+				if(error){
+					return res.status(401).send({ message: error })
+				}
+				else{
+					let sql = "SELECT linked.dr_id, linked.pat_id, u.first_name, u.last_name, u.country,\
+					c.country_name, patient.trimester, trimester.trimester_name FROM `linked`\
+					JOIN `patient` ON linked.pat_id = patient.pat_id\
+					JOIN `trimester` ON trimester.trimester_id = patient.trimester\
+					JOIN `user` u ON patient.user_id = u.id\
+					JOIN `country` c ON c.country_id = u.country\
+					WHERE dr_id = ?";
+					con.connection.query(sql, rows[0].dr_id, function (error, rows) {
+						if (error){
+							return res.status(401).send({ message: error })
+						}
+						else {
+							return res.status(200).send({ rows:rows });
+						}
+					});
+				}
+			});
+		}
+		else{
+			return res.status(401).send({ message: "Unauthorized User.", reason: result.value})
 		}
 	})();
 });
