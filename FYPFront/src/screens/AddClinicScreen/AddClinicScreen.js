@@ -18,6 +18,7 @@ const AddClinicScreen = ({ route }) => {
     const [building, setBuilding] = useState('');
     const [floor, setFloor] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
+    const [isPressed, setIsPressed] = useState(false);
 
     const { doctorId, getProfileData } = route.params;
 
@@ -36,6 +37,7 @@ const AddClinicScreen = ({ route }) => {
     const navigation = useNavigation();
 
     const insertDoctorClinic = async () => {
+        setIsPressed(true);
         try {
             const token = await AsyncStorage.getItem('token');
             const response = await axios.post('https://ouvatek.herokuapp.com/api/doctorlocation',
@@ -54,6 +56,8 @@ const AddClinicScreen = ({ route }) => {
             }
         } catch (error) {
             setDoctorClinicStatus(error.response.data.message);
+        } finally {
+            setIsPressed(false);
         }
     };
 
@@ -116,7 +120,7 @@ const AddClinicScreen = ({ route }) => {
                 />
 
                 <CustomButton
-                    text="Submit"
+                    text={isPressed ? 'Submitting...' : 'Submit'}
                     onPress={onSubmitPressed}
                 />
 

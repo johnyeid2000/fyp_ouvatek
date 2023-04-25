@@ -51,10 +51,6 @@ const styles = StyleSheet.create({
         fontSize: 16
     },
 
-    btnContainer: {
-        marginTop: 10,
-    }
-
 });
 
 

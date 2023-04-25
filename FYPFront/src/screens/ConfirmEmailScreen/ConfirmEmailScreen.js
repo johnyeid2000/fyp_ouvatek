@@ -13,6 +13,8 @@ const ConfirmEmailScreen = ({ route }) => {
     const [code, setCode] = useState('');
     const [isResendDisabled, setIsResendDisabled] = useState(true);
     const [confirmEmailStatus, setConfirmEmailStatus] = useState(null);
+    const [isPressed, setIsPressed] = useState(false);
+
     const { id } = route.params;
     const navigation = useNavigation();
 
@@ -47,6 +49,7 @@ const ConfirmEmailScreen = ({ route }) => {
 
 
     const onConfirmPressed = async () => {
+        setIsPressed(true);
         try {
             const response = await axios.post('https://ouvatek.herokuapp.com/api/sendcode', { id, code },
                 {
@@ -58,6 +61,8 @@ const ConfirmEmailScreen = ({ route }) => {
             }
         } catch (error) {
             setConfirmEmailStatus(error.response.data.message);
+        } finally {
+            setIsPressed(false);
         }
     };
 
@@ -89,7 +94,7 @@ const ConfirmEmailScreen = ({ route }) => {
             />
 
             <CustomButton
-                text="Confirm"
+                text={isPressed ? 'Confirming...' : 'Confirm'}
                 onPress={onConfirmPressed}
             />
 

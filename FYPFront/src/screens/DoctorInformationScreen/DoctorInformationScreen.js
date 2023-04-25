@@ -18,6 +18,7 @@ const DoctorInformationScreen = ({ route }) => {
     const [experience, setExperience] = useState(null);
 
     const [biography, setBiography] = useState('');
+    const [isPressed, setIsPressed] = useState(false);
 
     const [doctorInfoStatus, setDoctorInfoStatus] = useState(null);
     const { id } = route.params;
@@ -62,6 +63,7 @@ const DoctorInformationScreen = ({ route }) => {
     };
 
     const signUpDoctor = async () => {
+        setIsPressed(true);
         try {
             const response = await axios.post('https://ouvatek.herokuapp.com/api/doctorsignup',
                 { id, speciality, oopnum, gender, experience, biography },
@@ -75,6 +77,8 @@ const DoctorInformationScreen = ({ route }) => {
             }
         } catch (error) {
             setDoctorInfoStatus(error.response.data.message);
+        } finally {
+            setIsPressed(false);
         }
     };
 
@@ -136,7 +140,7 @@ const DoctorInformationScreen = ({ route }) => {
 
 
                 <CustomButton
-                    text="Submit"
+                    text={isPressed ? 'Submitting...' : 'Submit'}
                     onPress={onSubmitPressed}
                 />
 

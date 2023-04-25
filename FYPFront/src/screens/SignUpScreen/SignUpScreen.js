@@ -24,6 +24,8 @@ const SignUpScreen = () => {
     const [passwordRepeat, setPasswordRepeat] = useState('');
 
     const [singnupStatus, setSignupStatus] = useState(null);
+    const [isPressed, setIsPressed] = useState(false);
+
     const [checked, setChecked] = useState(false);
 
     useEffect(() => {
@@ -39,6 +41,7 @@ const SignUpScreen = () => {
     const navigation = useNavigation();
 
     const signUpUser = async () => {
+        setIsPressed(true);
         try {
             const response = await axios.post('https://ouvatek.herokuapp.com/api/commonsignup',
                 { fname, lname, email, selectedCountry, phoneNb, password, passwordRepeat, 'userType': checked },
@@ -55,6 +58,8 @@ const SignUpScreen = () => {
             }
         } catch (error) {
             setSignupStatus(error.response.data.message);
+        } finally {
+            setIsPressed(false);
         }
     };
 
@@ -143,7 +148,7 @@ const SignUpScreen = () => {
                 </View>
 
                 <CustomButton
-                    text="Register"
+                    text={isPressed ? 'Registering...' : 'Register'}
                     onPress={onRegisterPressed}
                 />
 

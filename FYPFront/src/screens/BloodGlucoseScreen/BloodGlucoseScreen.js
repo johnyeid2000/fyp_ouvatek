@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput } from 'react-native';
+import { View, Text, TextInput, ScrollView } from 'react-native';
+import { RadioButton } from 'react-native-paper'
 import CustomButton from "../../components/CustomButton/CustomButton";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import styles from './styles';
@@ -14,13 +15,17 @@ const BloodGlucoseScreen = () => {
     const [date, setDate] = useState([]);
     const [time, setTime] = useState([]);
     const [value, setValue] = useState([]);
+    const [checkedTime, setCheckedTime] = useState('');
+    const [isPressed, setIsPressed] = useState(false);
+    const [isPressedCheckVal, setIsPressedCheckVal] = useState(false);
     const [error, setError] = useState(null);
 
     const addBloodGlucose = async (isChecked) => {
+        isChecked ? setIsPressedCheckVal(true) : setIsPressed(true);
         try {
             const token = await AsyncStorage.getItem('token');
             const response = await axios.post('https://ouvatek.herokuapp.com/api/glucose',
-                { checked: isChecked, glucose },
+                { checked: isChecked, glucose, checkedTime },
                 {
                     headers: {
                         'Content-Type': 'application/json',
@@ -30,9 +35,12 @@ const BloodGlucoseScreen = () => {
             );
             if (response.status === 200) {
                 isChecked ? navigation.navigate('BloodGlucose') : navigation.navigate('Measurement');
+                setError(response.data.message);
             }
         } catch (error) {
             setError(error.response.data.message);
+        } finally {
+            isChecked ? setIsPressedCheckVal(false) : setIsPressed(false);
         }
     };
 
@@ -81,58 +89,71 @@ const BloodGlucoseScreen = () => {
     };
 
     return (
-        <View style={styles.container}>
-            <View style={styles.iconContainer}>
-                <Icon
-                    name="diabetes"
-                    style={styles.icon}
-                />
-                <Text style={styles.error}>{error}</Text>
-            </View>
-            <View style={styles.titleContainer}>
-                <Text style={styles.txtTitle}>Please Enter Your Blood Glucose Value</Text>
-                <Icon
-                    name='help-circle-outline'
-                    style={styles.helpIcon}
-                />
-            </View>
-            <View style={styles.inputContainer}>
-                <TextInput
-                    onChangeText={setGlucose}
-                    value={glucose}
-                    placeholder="100"
-                    keyboardType="numeric"
-                    style={styles.input}
-                />
-                <Text style={styles.txt}>mg/dL</Text>
-            </View>
+        <ScrollView keyboardShouldPersistTaps='handled'>
+            <View style={styles.container}>
+                <View style={styles.iconContainer}>
+                    <Icon
+                        name="diabetes"
+                        style={styles.icon}
+                    />
+                    <Text style={styles.error}>{error}</Text>
+                </View>
+                <View style={styles.titleContainer}>
+                    <Text style={styles.txtTitle}>Please Enter Your Blood Glucose Value And Select The Option If You Have Not Ate Since:</Text>
+                    <Icon
+                        name='help-circle-outline'
+                        style={styles.helpIcon}
+                    />
+                </View>
+                <View style={styles.inputContainer}>
+                    <TextInput
+                        onChangeText={setGlucose}
+                        value={glucose}
+                        placeholder="100"
+                        keyboardType="numeric"
+                        style={styles.input}
+                    />
+                    <Text style={styles.txt}>mg/dL</Text>
+                </View>
 
-            <View style={styles.btnContainer}>
+                <View style={{ marginLeft: -15, width: '110%' }}>
+                    <RadioButton.Group
+                        onValueChange={value => setCheckedTime(value)}
+                        value={checkedTime}
+                    >
+                        <RadioButton.Item label="Yesterday" value="1" color='#651B70' labelStyle={{ color: 'grey' }} />
+                        <RadioButton.Item label="One Hour" value="2" color='#651B70' labelStyle={{ color: 'grey' }} />
+                        <RadioButton.Item label="Two or More Hours" value="3" color='#651B70' labelStyle={{ color: 'grey' }} />
+                    </RadioButton.Group>
+                </View>
+
+                <View style={styles.btnContainer}>
+                    <CustomButton
+                        text={isPressedCheckVal ? "Checking values" : "Check Values"}
+                        onPress={onCheckValuePressed}
+                        type='Teritiary'
+                    />
+                </View>
+
+                <View style={styles.btnContainer}>
+                    <CustomButton
+                        text="See Graph"
+                        onPress={onSeeGraphPressed}
+                        type='Secondary'
+                    />
+                </View>
                 <CustomButton
-                    text="Check Values"
-                    onPress={onCheckValuePressed}
+                    text={isPressed ? 'Submitting...' : 'Submit'}
+                    onPress={onSubmitPressed}
+                />
+
+                <CustomButton
+                    text="Go back"
+                    onPress={() => navigation.goBack()}
                     type='Teritiary'
                 />
             </View>
-
-            <View style={styles.btnContainer}>
-                <CustomButton
-                    text="See Graph"
-                    onPress={onSeeGraphPressed}
-                    type='Secondary'
-                />
-            </View>
-            <CustomButton
-                text="Submit"
-                onPress={onSubmitPressed}
-            />
-
-            <CustomButton
-                text="Go back"
-                onPress={() => navigation.goBack()}
-                type='Teritiary'
-            />
-        </View>
+        </ScrollView>
     );
 };
 

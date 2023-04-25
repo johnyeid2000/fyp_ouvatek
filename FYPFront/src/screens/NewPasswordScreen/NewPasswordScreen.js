@@ -11,11 +11,14 @@ const NewPasswordScreen = ({ route }) => {
   const [password, setPassword] = useState('');
   const [passwordRepeat, setPasswordRepeat] = useState('');
   const [newPassStatus, setNewPassStatus] = useState('');
+  const [isPressed, setIsPressed] = useState(false);
+
   const { id } = route.params;
 
   const navigation = useNavigation();
 
   const onSubmitPressed = async () => {
+    setIsPressed(true);
     try {
       const response = await axios.post('https://ouvatek.herokuapp.com/api/changepass',
         { password, passwordRepeat, id },
@@ -28,6 +31,8 @@ const NewPasswordScreen = ({ route }) => {
       }
     } catch (error) {
       setNewPassStatus(error.response.data.message);
+    } finally {
+      setIsPressed(false);
     }
   };
 
@@ -56,7 +61,10 @@ const NewPasswordScreen = ({ route }) => {
         isPassword
       />
 
-      <CustomButton text="Submit" onPress={onSubmitPressed} />
+      <CustomButton
+        text={isPressed ? 'Submitting...' : 'Submit'}
+        onPress={onSubmitPressed}
+      />
 
     </View>
   );

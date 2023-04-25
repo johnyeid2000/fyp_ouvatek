@@ -1,6 +1,6 @@
 import React from 'react';
 
-import PatientContactScreen from '../screens/PatientContactScreen';
+import ChatNavigator from './ChatNavigator';
 import DevicesScreen from '../screens/DevicesScreen';
 import EventsScreen from '../screens/EventsScreen';
 
@@ -33,7 +33,7 @@ const PatientNavigator = (props) => {
 
             <Tab.Screen
                 name='Chats'
-                component={PatientContactScreen}
+                component={ChatNavigator}
                 options={{
                     tabBarIcon: ({ color }) => (
                         <Icon name="message-processing-outline" size={25} color={color} />

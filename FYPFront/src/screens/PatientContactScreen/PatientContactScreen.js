@@ -5,6 +5,8 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import styles from './styles';
 
+import { useNavigation } from '@react-navigation/native';
+
 const Messages = [
     {
         id: 1,
@@ -32,11 +34,12 @@ const Messages = [
     },
 ]
 
-
 const PatientContactScreen = () => {
 
+    const navigation = useNavigation();
+
     const onAddDoctorPressed = () => {
-        console.warn('add doctor pressed');
+        navigation.navigate("AddDoctor");
     }
     return (
         <View style={styles.container}>
