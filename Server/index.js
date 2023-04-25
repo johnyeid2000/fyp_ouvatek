@@ -11,6 +11,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 const bodyParser = require("body-parser");
 const fixDate = require("./helper.js");
+const e = require("express");
 app.use(bodyParser.json({
 	type: "application/json"
 }));
@@ -152,7 +153,6 @@ app.post("/api/getdoctor", (req,res) => {
 								reason: error.message,
 							});
 					} else {
-						console.log(rowsSpecific);
 						let clinics = [];
 						rowsSpecific.forEach((line) => {
 							let clinic = {};
@@ -2446,7 +2446,6 @@ app.post("/api/linktodoc", (req, res) => {
 		let result = await helper.validateUser(token);
 		if (result.indicator) {
 			let doctorId = req.body.doctor;
-			console.log("Test1");
 			if (doctorId) {
 				let sql = "SELECT pat_id FROM `patient` WHERE user_id = ?";
 				con.connection.query(sql, result.value.userId, function(error, rows){
@@ -2592,6 +2591,37 @@ app.get("/api/showmypatients", (req, res) => {
 					JOIN `country` c ON c.country_id = u.country\
 					WHERE dr_id = ?";
 					con.connection.query(sql, rows[0].dr_id, function (error, rows) {
+						if (error){
+							return res.status(401).send({ message: error })
+						}
+						else {
+							return res.status(200).send({ rows:rows });
+						}
+					});
+				}
+			});
+		}
+		else{
+			return res.status(401).send({ message: "Unauthorized User.", reason: result.value})
+		}
+	})();
+});
+app.get("/api/showmydoctors", (req, res) => {
+	(async () => {
+		const token = req.headers.authorization.split(" ")[1];
+		let result = await helper.validateUser(token);
+		if (result.indicator) {
+			let sql = "SELECT pat_id FROM `patient` WHERE user_id = ?";
+			con.connection.query(sql, result.value.userId, function (error, rows) {
+				if(error){
+					return res.status(401).send({ message: error })
+				}
+				else{
+					let sql = "SELECT linked.dr_id, linked.pat_id, u.first_name, u.last_name FROM `linked`\
+					JOIN `doctor` ON linked.dr_id = doctor.dr_id\
+					JOIN `user` u ON doctor.user_id = u.id\
+					WHERE pat_id = ?";
+					con.connection.query(sql, rows[0].pat_id, function (error, rows) {
 						if (error){
 							return res.status(401).send({ message: error })
 						}
@@ -2871,6 +2901,215 @@ app.get("/api/heartratevalue", (req, res) => {
 	})();
 });
 // -------------------------Access Patient Measurements------------------------------- //
+
+// -------------------------Access Patient Measurements As Doctor------------------------------- //
+app.get("/api/temperaturevalueasdoctor", (req, res) => {
+	(async () => {
+		const token = req.headers.authorization.split(" ")[1];
+		let result = await helper.validateUser(token);
+		if (result.indicator) {
+			let patientId = req.body.pat_id;
+			if(patientId){
+				sql ="SELECT temp_id, temp_val, temp_date, temp_time FROM `temperature` where pat_id=? ORDER BY temp_id ASC";
+				con.connection.query(sql, patientId, function (error, rows) {
+					if (error) {
+						return res
+							.status(404)
+							.send({
+								message: "There was an Error fetching your body temperature.",
+							});
+					} else {
+						rows.forEach((element) => {
+							element.temp_date = helper.fixDate(element.temp_date);
+						});
+						return res.status(200).send({
+							data: rows
+						});
+					}
+				});	
+			}
+			else{
+				return res.status(401).send({ message: "Patiend ID is required." });
+			}
+		} else {
+			return res
+				.status(401)
+				.send({
+					message: "You are not an authorized user.",
+					reason: result.value,
+				});
+		}
+	})();
+});
+app.get("/api/weightvalueasdoctor", (req, res) => {
+	(async () => {
+		const token = req.headers.authorization.split(" ")[1];
+		let result = await helper.validateUser(token);
+		if (result.indicator) {
+			let patientId = req.body.pat_id;
+			if(patientId){
+				sql = "SELECT weight_id, weight_value, weight_date, weight_time FROM `weight` where pat_id=? ORDER BY weight_id ASC";
+				con.connection.query(sql, patientId, function (error, rows) {
+					if (error) {
+						return res
+							.status(404)
+							.send({
+								message: "There was an Error fetching your weight.",
+							});
+					} else {
+						rows.forEach((element) => {
+							element.weight_date = helper.fixDate(element.weight_date);
+						});
+						return res.status(200).send({
+							data: rows
+						});
+					}
+				});
+			}
+			else {
+				return res
+					.status(401)
+					.send({
+						message: "Patient ID is required."
+					});
+			}
+		} else {
+			return res
+				.status(401)
+				.send({
+					message: "You are not an authorized user.",
+					reason: result.value,
+				});
+		}
+	})();
+});
+app.get("/api/spo2valueasdoctor", (req, res) => {
+	(async () => {
+		const token = req.headers.authorization.split(" ")[1];
+		let result = await helper.validateUser(token);
+		if (result.indicator) {
+			let patientId = req.body.pat_id;
+			if(patientId){
+				sql ="SELECT spo2_id, spo2_val, spo2_date, spo2_time FROM `spo2` where pat_id=? ORDER BY spo2_id ASC";
+				con.connection.query(sql, patientId, function (error, rows) {
+					if (error) {
+						return res
+							.status(404)
+							.send({
+								message: "There was an Error fetching your SPO2 Values.",
+							});
+					} else {
+						rows.forEach((element) => {
+							element.spo2_date = helper.fixDate(element.spo2_date);
+						});
+						return res.status(200).send({
+							data: rows
+						});
+					}
+				});
+			}
+			else {
+				return res
+				.status(401)
+				.send({
+					message: "Patiend ID is required."
+				});
+			}
+		} else {
+			return res
+				.status(401)
+				.send({
+					message: "You are not an authorized user.",
+					reason: result.value,
+				});
+		}
+	})();
+});
+app.get("/api/glucosevalueasdoctor", (req, res) => {
+	(async () => {
+		const token = req.headers.authorization.split(" ")[1];
+		let result = await helper.validateUser(token);
+		if (result.indicator) {
+			let patientId = req.body.pat_id;
+			if(patientId){
+				let	sql ="SELECT glucose_id, glucose_val, gluc_date, gluc_time FROM `glucose` where pat_id=? ORDER BY glucose_id ASC";
+				con.connection.query(sql, patientId, function (error, rows) {
+					if (error) {
+						return res
+							.status(404)
+							.send({
+								message: "There was an Error fetching your Glucose values.",
+							});
+					} else {
+						rows.forEach((element) => {
+							element.gluc_date = helper.fixDate(element.gluc_date);
+						});
+						return res.status(200).send({
+							data: rows
+						});
+					}
+				});
+			}
+			else{
+				return res
+					.status(401)
+					.send({
+						message: "Patiend ID is required."
+					});
+			}
+		} else {
+			return res
+				.status(401)
+				.send({
+					message: "You are not an authorized user.",
+					reason: result.value,
+				});
+		}
+	})();
+});
+app.get("/api/heartratevalueasdoctor", (req, res) => {
+	(async () => {
+		const token = req.headers.authorization.split(" ")[1];
+		let result = await helper.validateUser(token);
+		if (result.indicator) {
+			let patientId = req.body.pat_id;
+			if(patientId){
+				sql ="SELECT hr_id, HR_val, Sys_val, Dias_val, hr_date, hr_time FROM `heart_rate` where pat_id=? ORDER BY hr_id ASC";
+				con.connection.query(sql, patientId, function (error, rows) {
+				if (error) {
+					return res
+						.status(404)
+						.send({
+							message: "There was an Error fetching your heart rate.",
+						});
+				} else {
+					rows.forEach((element) => {
+						element.hr_date = helper.fixDate(element.hr_date);
+					});
+					return res.status(200).send({
+						data: rows
+					});
+				}
+				});
+			}
+			else{
+				return res
+				.status(401)
+				.send({
+					message: "Patient ID is required."
+				});
+			}
+		} else {
+			return res
+				.status(401)
+				.send({
+					message: "You are not an authorized user.",
+					reason: result.value,
+				});
+		}
+	})();
+});
+// -------------------------Access Patient Measurements As Doctor------------------------------- //
 
 //countries.getDataUsingAsyncAwaitGetCall(); //Do not remove the comment unless you want to fill the countries tables again.
 timer.cleanVerification(); //cleans the database from verification codes that have been there for more than 10 minutes
