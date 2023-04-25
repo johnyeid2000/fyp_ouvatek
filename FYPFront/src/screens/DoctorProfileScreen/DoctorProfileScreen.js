@@ -40,7 +40,7 @@ const DoctorProfileScreen = () => {
 
   const onEditAccountPressed = () => {
     navigation.navigate('EditDoctor');
-  }
+  };
 
   const onLogoutPressed = () => {
     Alert.alert(
@@ -52,7 +52,15 @@ const DoctorProfileScreen = () => {
       ],
       { cancelable: false }
     );
+  };
+
+  let avatarUrl = 'https://dub01pap003files.storage.live.com/y4mMx07s_SWkpClEZrtYUCuO2jDtBi2Pnel1GavSyn1jCbU7P6KRZlEbmR3si4ZpJfEM8UOMbpqtquo3FY_VO4RtFPnnEZf4vn2Dk_NUtt6iqZh8gPDONgJ6OwsVIP1TWEOcr1aTtIx5sjaAuJmgRbOZqK9tY9NaGQlbdHGWuWzTRRpMic5i6win3FockxVWP8l?width=388&height=250&cropmode=none';
+  if (specificData.gender === 'Male') {
+    avatarUrl = 'https://dub01pap003files.storage.live.com/y4mrLDyxrRdKUEEsesJPIsPznb3KhEX29pEarP8PHNNzusTd_CJDqpVyMJC8u1mrbYUDyERoGdIC2JksAdaph1pHshiWaiJ9Ol9KPQNZrO1wx621FyVDarhhQ-1R7hl3BgaSWS1hbOuo1o48O5uGSJTfdpKylpWebM16Xf0wrpfip5Oz51yOQUyEAQiFclSlFtY?width=225&height=225&cropmode=none';
+  } else if (specificData.gender === 'Female') {
+    avatarUrl = 'https://dub01pap003files.storage.live.com/y4mcMjlOdY1IqkolZCpnZuU7_urbNqxsQ52MSSMNlF8UJmMI8eRKSEzxftp0JDL0jISfqZoRucHibO52EOiE3T5QQylWvzb7LuPtLW6hcfT6hzlM6ol65hzX-zWMa0OSt77eH5N1JuFry3Z3BZeTzd4g8Ek2VhVgHmCj-OYbIpHCqjbQ63MzhT4qk0WWH68Bg_E?width=225&height=225&cropmode=none';
   }
+
 
   return (
     <SafeAreaView style={styles.container}>
@@ -68,7 +76,7 @@ const DoctorProfileScreen = () => {
       <View style={styles.userInfoSection}>
         <View style={{ flexDirection: 'row' }}>
           <Avatar.Image
-            source={{ uri: 'https://dub01pap003files.storage.live.com/y4mMx07s_SWkpClEZrtYUCuO2jDtBi2Pnel1GavSyn1jCbU7P6KRZlEbmR3si4ZpJfEM8UOMbpqtquo3FY_VO4RtFPnnEZf4vn2Dk_NUtt6iqZh8gPDONgJ6OwsVIP1TWEOcr1aTtIx5sjaAuJmgRbOZqK9tY9NaGQlbdHGWuWzTRRpMic5i6win3FockxVWP8l?width=388&height=250&cropmode=none' }}
+            source={{ uri: avatarUrl }}
             //source={require('../../assets/images/doctor.jpg')}
             size={80}
             style={{ backgroundColor: 'white' }}
