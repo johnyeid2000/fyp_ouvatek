@@ -18,8 +18,20 @@ const styles = StyleSheet.create({
         padding: 10,
         zIndex: 1,
     },
-    iconConnect: {
+    connectText: {
         color: 'red',
+    },
+    doctorImage: {
+        width: 50,
+        height: 50,
+        borderRadius: 25,
+        marginRight: 10,
+    },
+    doctorInfoContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        width: '70%',
+        height: 60,
     },
 });
 

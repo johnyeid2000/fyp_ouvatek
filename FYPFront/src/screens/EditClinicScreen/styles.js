@@ -16,17 +16,7 @@ const styles = StyleSheet.create({
         color: 'red',
         marginBottom: 5
     },
-    checkbox: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginTop: 1,
-        marginBottom: 1,
-    },
-    checkboxContainer: {
-        alignContent: 'flex-start',
-        marginBottom: 5,
-        marginLeft: '-45%'
-    },
+
 });
 
 export default styles;

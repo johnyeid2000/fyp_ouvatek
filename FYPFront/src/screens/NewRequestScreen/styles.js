@@ -1,23 +1,48 @@
-import {StyleSheet} from 'react-native';
+import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
-    container:{
-        padding:20
+    container: {
+        flex: 1,
     },
 
-    newReq:{
-        flexDirection:'row',
-        justifyContent:'space-between',
-        marginTop:10,
-        marginBottom:20
+    newReq: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginTop: 5,
+        marginLeft: 10,
+        marginRight: 5,
     },
-    iconAccept:{
-        fontSize:25,
-        color:'green'
+    icon: {
+        position: 'absolute',
+        top: 0,
+        right: 10,
+        padding: 10,
+        zIndex: 1,
     },
-    iconDecline:{
-        fontSize:25,
-        color:'red'
+    doctorImage: {
+        width: 50,
+        height: 50,
+        borderRadius: 25,
+        marginRight: 10,
+    },
+    doctorInfoContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        width: '75%',
+        height: 60,
+    },
+    iconAccept: {
+        fontSize: 25,
+        color: 'green'
+    },
+    iconDecline: {
+        fontSize: 25,
+        color: 'red'
+    },
+    iconsPressable: {
+        width: '12%',
+        alignItems: 'center',
+        justifyContent: 'center'
     },
 });
 
