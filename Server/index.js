@@ -108,17 +108,35 @@ app.get("/api/doctor", (req, res) => {
 		const token = req.headers.authorization.split(" ")[1];
 		let result = await helper.validateUser(token);
 		if (result.indicator) {
-			let sql = "SELECT user.id, user.first_name, user.last_name, user.country,\
-			doctor.dr_id, doctor.speciality, doctor.gender, doctor.experience, experience.exp_years, country.country_name FROM `user`\
-			JOIN `doctor` ON user.id = doctor.user_id\
-			JOIN `experience` ON doctor.experience = experience.exp_id\
-			JOIN `country` ON user.country = country.country_id";
-			con.connection.query(sql, function (error, rows) {
-				if (error){
+			let sql = "SELECT pat_id FROM `patient` WHERE user_id = ? ";
+			con.connection.query(sql, result.value.userId, function(error, rows){
+				if(error){
 					return res.status(404).send({message: error});
 				}
 				else {
-					return res.status(200).send({rows: rows});
+					let sql = "SELECT linked.pat_id, linked.dr_id, u.id, u.first_name, u.country, c.country_name,\
+					doctor.dr_id, doctor.speciality, doctor.gender, doctor.experience, experience.exp_years FROM `linked`\
+					JOIN `doctor` ON linked.dr_id = doctor.dr_id\
+					JOIN `experience` ON doctor.experience = experience.exp_id\
+					JOIN `user` u ON doctor.user_id = u.id\
+					JOIN `country` c ON c.country_id = u.country\
+					WHERE pat_id != ?";
+					con.connection.query(sql, rows[0].pat_id, function (error, data) {
+						if (error){
+							return res.status(404).send({message: error});
+						}
+						else {
+							let sql = "SELECT dr_id FROM `linking_request` WHERE pat_id = ?"
+							con.connection.query(sql, rows[0].pat_id, function(error, requests){
+								if (error){
+									return res.status(404).send({message: error});
+								}
+								else {
+									return res.status(200).send({rows: data, requestedDoctors: requests});
+								}
+							})
+						}
+					});
 				}
 			});
 		}
