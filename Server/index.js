@@ -2698,7 +2698,7 @@ app.get("/api/showmydoctors", (req, res) => {
 					return res.status(401).send({ message: error })
 				}
 				else{
-					let sql = "SELECT linked.dr_id, linked.pat_id, doctor.gender, u.first_name, u.last_name FROM `linked`\
+					let sql = "SELECT linked.dr_id, linked.pat_id, doctor.gender, u.id, u.first_name, u.last_name FROM `linked`\
 					JOIN `doctor` ON linked.dr_id = doctor.dr_id\
 					JOIN `user` u ON doctor.user_id = u.id\
 					WHERE pat_id = ?";
