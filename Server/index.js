@@ -2530,20 +2530,29 @@ app.get("/api/showpatientrequests", (req, res) => {
 		const token = req.headers.authorization.split(" ")[1];
 		let result = await helper.validateUser(token);
 		if (result.indicator) {
-			let sql = "SELECT linking_request.dr_id, linking_request.pat_id, u.id, u.first_name, u.last_name, u.country,\
-			c.country_name, patient.trimester, trimester.trimester_name FROM `linking_request`\
-			JOIN `patient` ON linking_request.pat_id = patient.pat_id\
-			JOIN `trimester` ON trimester.trimester_id = patient.trimester\
-			JOIN `user` u ON patient.user_id = u.id\
-			JOIN `country` c ON c.country_id = u.country";
-			con.connection.query(sql, function (error, rows) {
-				if (error) {
-					return res.status(401).send({ message: error })
+			let sql = "SELECT dr_id FROM `doctor` WHERE user_id =?";
+			con.connection.query(sql, result.value.userId, function(error, rows){
+				if(error){
+					return res.status(401).send({ message: "Not Authorized Doctor."});
 				}
-				else {
-					return res.status(200).send({ rows:rows });
+				else{
+					let sql = "SELECT linking_request.dr_id, linking_request.pat_id, u.id, u.first_name, u.last_name, u.country,\
+					c.country_name, patient.trimester, trimester.trimester_name FROM `linking_request`\
+					JOIN `patient` ON linking_request.pat_id = patient.pat_id\
+					JOIN `trimester` ON trimester.trimester_id = patient.trimester\
+					JOIN `user` u ON patient.user_id = u.id\
+					JOIN `country` c ON c.country_id = u.country\
+					WHERE linking_request.dr_id = ?";
+					con.connection.query(sql, rows[0].dr_id, function (error, rows) {
+						if (error) {
+							return res.status(401).send({ message: error })
+						}
+						else {
+							return res.status(200).send({ rows:rows });
+						}
+					});
 				}
-			});
+			})
 		}
 		else{
 			return res.status(401).send({ message: "Unauthorized User.", reason: result.value})
