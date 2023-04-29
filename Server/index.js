@@ -398,51 +398,52 @@ app.post("/api/commonsignup", (req, res) => {
 						message: "This email has already a Registered Account."
 					});
 			} else {
-				let hashpass = await bcrypt.hashPassword(password);
-				const today = new Date();
-				const year = today.getFullYear();
-				const month = String(today.getMonth() + 1).padStart(2, "0"); // add leading zero if needed
-				const day = String(today.getDate()).padStart(2, "0"); // add leading zero if needed
-				const date = `${year}-${month}-${day}`;
-				let sql =
-					"INSERT INTO `user`(`first_name`, `last_name`, `email`, `password`, `country`, `phone_number`, `user_type`, `created_on`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-				con.connection.query(
-					sql,
-					[
-						firstName,
-						lastName,
-						email,
-						hashpass,
-						country,
-						phoneNumber,
-						isDoctor,
-						date,
-					],
-					function (error, result) {
-						if (error) {
-							console.log(error);
-							return res
-								.status(403)
-								.send({
-									message: "Cannot Insert Data - Sign up"
-								});
-						} else {
-							return res
-								.status(200)
-								.send({
-									message: "User Created.",
-									userId: result.insertId,
-									isDoctor: isDoctor,
-								});
-						}
-					}
-				);
+				return res.status(200).send({ message: "Valid."});
+				// let hashpass = await bcrypt.hashPassword(password);
+				// const today = new Date();
+				// const year = today.getFullYear();
+				// const month = String(today.getMonth() + 1).padStart(2, "0"); // add leading zero if needed
+				// const day = String(today.getDate()).padStart(2, "0"); // add leading zero if needed
+				// const date = `${year}-${month}-${day}`;
+				// let sql =
+				// 	"INSERT INTO `user`(`first_name`, `last_name`, `email`, `password`, `country`, `phone_number`, `user_type`, `created_on`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+				// con.connection.query(
+				// 	sql,
+				// 	[
+				// 		firstName,
+				// 		lastName,
+				// 		email,
+				// 		hashpass,
+				// 		country,
+				// 		phoneNumber,
+				// 		isDoctor,
+				// 		date,
+				// 	],
+				// 	function (error, result) {
+				// 		if (error) {
+				// 			console.log(error);
+				// 			return res
+				// 				.status(403)
+				// 				.send({
+				// 					message: "Cannot Insert Data - Sign up"
+				// 				});
+				// 		} else {
+				// 			return res
+				// 				.status(200)
+				// 				.send({
+				// 					message: "User Created.",
+				// 					userId: result.insertId,
+				// 					isDoctor: isDoctor,
+				// 				});
+				// 		}
+				// 	}
+				// );
 			}
 		}
 	});
 });
 app.post("/api/patientsignup", (req, res) => {
-	let userId = req.body.id;
+	// let userId = req.body.id;
 	let birthDate = req.body.birthDate;
 	let bloodType = req.body.selectedBloodType;
 	let firstPregDay = req.body.firstPregnancyDay;
@@ -487,7 +488,7 @@ app.post("/api/patientsignup", (req, res) => {
 	const date = `${year}-${month}-${day}`;
 	let trimester = helper.getTrimester(firstPregDay);
 	if (
-		userId &&
+		// userId &&
 		birthDate &&
 		height &&
 		bloodType &&
@@ -498,41 +499,42 @@ app.post("/api/patientsignup", (req, res) => {
 		previousPregnancies != null &&
 		previousSurgeries != null
 	) {
-		sql =
-			"INSERT INTO `patient` (user_id, birth_date, height, blood_type, first_pregnant_day, trimester, medication_taken, diabetes, hypertension, previous_pregnancies, previous_surgeries, created_on) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-		con.connection.query(
-			sql,
-			[
-				userId,
-				birthDate,
-				height,
-				bloodType,
-				firstPregDay,
-				trimester,
-				medication,
-				diabetes,
-				hypertension,
-				previousPregnancies,
-				previousSurgeries,
-				date,
-			],
-			async function (error, result) {
-				if (error) {
-					console.log(error);
-					return res.status(404).send({
-						message: "Patient Signup Issue"
-					});
-				} else {
-					return res
-						.status(200)
-						.send({
-							message: "Patient Created.",
-							userId: result.insertId,
-							result,
-						});
-				}
-			}
-		);
+		return res.status(200).send({ message: "Valid."});
+		// sql =
+		// 	"INSERT INTO `patient` (user_id, birth_date, height, blood_type, first_pregnant_day, trimester, medication_taken, diabetes, hypertension, previous_pregnancies, previous_surgeries, created_on) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		// con.connection.query(
+		// 	sql,
+		// 	[
+		// 		userId,
+		// 		birthDate,
+		// 		height,
+		// 		bloodType,
+		// 		firstPregDay,
+		// 		trimester,
+		// 		medication,
+		// 		diabetes,
+		// 		hypertension,
+		// 		previousPregnancies,
+		// 		previousSurgeries,
+		// 		date,
+		// 	],
+		// 	async function (error, result) {
+		// 		if (error) {
+		// 			console.log(error);
+		// 			return res.status(404).send({
+		// 				message: "Patient Signup Issue"
+		// 			});
+		// 		} else {
+		// 			return res
+		// 				.status(200)
+		// 				.send({
+		// 					message: "Patient Created.",
+		// 					userId: result.insertId,
+		// 					result,
+		// 				});
+		// 		}
+		// 	}
+		// );
 	} else {
 		return res.status(401).send({
 			message: "All Fields Are Required."
@@ -540,7 +542,7 @@ app.post("/api/patientsignup", (req, res) => {
 	}
 });
 app.post("/api/doctorsignup", (req, res) => {
-	const userId = req.body.id;
+	// const userId = req.body.id;
 	let speciality = req.body.speciality;
 	let oopnum = req.body.oopnum;
 	let gender = req.body.gender;
@@ -554,7 +556,9 @@ app.post("/api/doctorsignup", (req, res) => {
 	const month = String(today.getMonth() + 1).padStart(2, "0"); // add leading zero if needed
 	const day = String(today.getDate()).padStart(2, "0"); // add leading zero if needed
 	const date = `${year}-${month}-${day}`;
-	if (userId && speciality && oopnum && gender && experience) {
+	if (
+		// userId && 
+		speciality && oopnum && gender && experience) {
 		sql =
 			"INSERT INTO `doctor` (user_id, oop_number, speciality, gender, created_on, experience, biography) VALUES (?, ?, ?, ?, ?, ?, ?)";
 		con.connection.query(
@@ -583,7 +587,7 @@ app.post("/api/doctorsignup", (req, res) => {
 	}
 });
 app.post("/api/doctorlocation", (req, res) => {
-	let doctorId = req.body.doctorId;
+	// let doctorId = req.body.doctorId;
 	let country = req.body.selectedCountry;
 	let city = req.body.city;
 	let street = req.body.street;
@@ -596,7 +600,9 @@ app.post("/api/doctorlocation", (req, res) => {
 		});
 	}
 	let sql = "";
-	if (doctorId && country && city && street && building && floor && phone) {
+	if (
+		// doctorId &&
+		 country && city && street && building && floor && phone) {
 		sql =
 			"INSERT INTO `doctor_address`(`doctor_id` , `clinic_country`, `clinic_city`, `clinic_street`, `clinic_building`, `clinic_floor`, `clinic_number`) VALUES (?, ?, ?, ?, ?, ?, ?)";
 		con.connection.query(
@@ -623,7 +629,7 @@ app.post("/api/doctorlocation", (req, res) => {
 	}
 });
 app.post("/api/sendconfirmation", (req, res) => {
-	let userid = req.body.id;
+	// let userid = req.body.id;
 	let sql = "SELECT email from `user` WHERE id = ?";
 	con.connection.query(sql, userid, async function (error, rows) {
 		if (error) {
@@ -2529,7 +2535,8 @@ app.get("/api/showpatientrequests", (req, res) => {
 			JOIN `patient` ON linking_request.pat_id = patient.pat_id\
 			JOIN `trimester` ON trimester.trimester_id = patient.trimester\
 			JOIN `user` u ON patient.user_id = u.id\
-			JOIN `country` c ON c.country_id = u.country";
+			JOIN `country` c ON c.country_id = u.country\
+			WHERE doctor.dr_id ";
 			con.connection.query(sql, function (error, rows) {
 				if (error) {
 					return res.status(401).send({ message: error })
@@ -2599,6 +2606,33 @@ app.post("/api/denylink", (req,res) => {
 					}
 					else{
 						return res.status(200).send({ message: "Link Denied Successfully."})
+					}
+				});
+			}
+			else {
+				return res.status(401).send({ message: "Doctor ID & Patient ID required."})
+			}
+		}
+		else{
+			return res.status(401).send({ message: "Unauthorized User.", reason: result.value})
+		}
+	})();
+});
+app.post("/api/endlink", (req,res) => {
+	(async () => {
+		const token = req.headers.authorization.split(" ")[1];
+		let result = await helper.validateUser(token);
+		if (result.indicator) {
+			let doctorId = req.body.dr_id;
+			let patientId = req.body.pat_id;
+			if (doctorId && patientId) {
+				sql = "DELETE FROM `linked` WHERE pat_id = ? AND dr_id = ?";
+				con.connection.query(sql, [patientId, doctorId], function(error, result){
+					if(error){
+						return res.status(401).send({ message: "Link Error. Try again later."})
+					}
+					else{
+						return res.status(200).send({ message: "Link Ended Successfully."})
 					}
 				});
 			}
