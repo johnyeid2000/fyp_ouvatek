@@ -114,27 +114,48 @@ app.get("/api/doctor", (req, res) => {
 					return res.status(404).send({message: error});
 				}
 				else {
-					let sql = "SELECT linked.pat_id, linked.dr_id, u.id, u.first_name, u.country, c.country_name,\
-					doctor.dr_id, doctor.speciality, doctor.gender, doctor.experience, experience.exp_years FROM `linked`\
-					JOIN `doctor` ON linked.dr_id = doctor.dr_id\
-					JOIN `experience` ON doctor.experience = experience.exp_id\
-					JOIN `user` u ON doctor.user_id = u.id\
-					JOIN `country` c ON c.country_id = u.country\
-					WHERE pat_id != ?";
+					let sql = "SELECT dr_id FROM `linked` WHERE pat_id = ?";
+					con.connection.query(sql, rows[0].pat_id, function (error, linkedDoctors) {
+						if (error){
+							return res.status(404).send({message: error});
+						}
+						else {
+							let doctors = [];
+							linkedDoctors.forEach(element => {
+								doctors.push(element.dr_id);
+							});
+							let sql = "SELECT doctor.dr_id, doctor.speciality, doctor.gender, doctor.experience,\
+							experience.exp_years, u.id, u.first_name, u.last_name, u.country, c.country_name FROM `doctor`\
+							JOIN `experience` ON experience.exp_id = doctor.experience\
+							JOIN `user` u ON doctor.user_id = u.id\
+							JOIN `country` c ON c.country_id = u.country\
+							WHERE dr_id NOT IN (?)";
+							con.connection.query(sql, [doctors], function (error, doctorsData) {
+								if (error){
+									return res.status(404).send({message: error});
+								}
+								else{
+									let sql = "SELECT dr_id FROM `linking_request` WHERE pat_id = ?"
+									con.connection.query(sql, rows[0].pat_id, function(error, requests){
+										if (error){
+											return res.status(404).send({message: error});
+										}
+										else {
+											return res.status(200).send({rows: doctorsData, requestedDoctors: requests});
+										}
+									})
+								}
+							});
+
+						}
+					});
+					
 					con.connection.query(sql, rows[0].pat_id, function (error, data) {
 						if (error){
 							return res.status(404).send({message: error});
 						}
 						else {
-							let sql = "SELECT dr_id FROM `linking_request` WHERE pat_id = ?"
-							con.connection.query(sql, rows[0].pat_id, function(error, requests){
-								if (error){
-									return res.status(404).send({message: error});
-								}
-								else {
-									return res.status(200).send({rows: data, requestedDoctors: requests});
-								}
-							})
+							
 						}
 					});
 				}
@@ -2635,7 +2656,7 @@ app.get("/api/showmydoctors", (req, res) => {
 					return res.status(401).send({ message: error })
 				}
 				else{
-					let sql = "SELECT linked.dr_id, linked.pat_id, u.first_name, u.last_name FROM `linked`\
+					let sql = "SELECT linked.dr_id, linked.pat_id, doctor.gender, u.first_name, u.last_name FROM `linked`\
 					JOIN `doctor` ON linked.dr_id = doctor.dr_id\
 					JOIN `user` u ON doctor.user_id = u.id\
 					WHERE pat_id = ?";
