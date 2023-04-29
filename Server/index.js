@@ -817,15 +817,15 @@ app.post("/api/deleteuser", (req, res) => {
 										});
 								});
 							} else {
-								let sql = "DELETE FROM confirmation_code WHERE user_id=?";
+								let sql = "DELETE FROM `linked` WHERE dr_id=?";
 								con.connection.query(
 									sql,
-									rows[0].user_id,
+									rows[0].dr_id,
 									function (error, result) {
 										if (error) {
 											console.log(error);
 										} else {
-											sql = "DELETE FROM doctor_address WHERE doctor_id=?";
+											let sql = "DELETE FROM `linking_request` WHERE dr_id=?";
 											con.connection.query(
 												sql,
 												rows[0].dr_id,
@@ -833,7 +833,7 @@ app.post("/api/deleteuser", (req, res) => {
 													if (error) {
 														console.log(error);
 													} else {
-														sql = "DELETE FROM doctor WHERE dr_id=?";
+														sql = "DELETE FROM doctor_address WHERE doctor_id=?";
 														con.connection.query(
 															sql,
 															rows[0].dr_id,
@@ -841,19 +841,30 @@ app.post("/api/deleteuser", (req, res) => {
 																if (error) {
 																	console.log(error);
 																} else {
-																	sql = "DELETE FROM user WHERE id=?";
+																	sql = "DELETE FROM doctor WHERE dr_id=?";
 																	con.connection.query(
 																		sql,
-																		rows[0].user_id,
+																		rows[0].dr_id,
 																		function (error, result) {
 																			if (error) {
 																				console.log(error);
 																			} else {
-																				return res
-																					.status(200)
-																					.send({
-																						message: "Doctor Deleted Successfully",
-																					});
+																				sql = "DELETE FROM user WHERE id=?";
+																				con.connection.query(
+																					sql,
+																					rows[0].user_id,
+																					function (error, result) {
+																						if (error) {
+																							console.log(error);
+																						} else {
+																							return res
+																								.status(200)
+																								.send({
+																									message: "Doctor Deleted Successfully",
+																								});
+																						}
+																					}
+																				);
 																			}
 																		}
 																	);
@@ -861,8 +872,7 @@ app.post("/api/deleteuser", (req, res) => {
 															}
 														);
 													}
-												}
-											);
+												});
 										}
 									}
 								);
@@ -887,7 +897,7 @@ app.post("/api/deleteuser", (req, res) => {
 										});
 								});
 							} else {
-								let sql = "DELETE FROM `fetal_measurements` WHERE patient_id=?";
+								let sql = "DELETE FROM `linked` WHERE pat_id=?";
 								con.connection.query(
 									sql,
 									rows[0].pat_id,
@@ -895,7 +905,7 @@ app.post("/api/deleteuser", (req, res) => {
 										if (error) {
 											console.log(error);
 										} else {
-											sql = "DELETE FROM `glucose` WHERE pat_id=?";
+											let sql = "DELETE FROM `linking_request` WHERE pat_id=?";
 											con.connection.query(
 												sql,
 												rows[0].pat_id,
@@ -903,7 +913,7 @@ app.post("/api/deleteuser", (req, res) => {
 													if (error) {
 														console.log(error);
 													} else {
-														sql = "DELETE FROM `heart_rate` WHERE pat_id=?";
+														let sql = "DELETE FROM `weight` WHERE pat_id=?";
 														con.connection.query(
 															sql,
 															rows[0].pat_id,
@@ -911,7 +921,7 @@ app.post("/api/deleteuser", (req, res) => {
 																if (error) {
 																	console.log(error);
 																} else {
-																	sql = "DELETE FROM `spo2` WHERE pat_id=?";
+																	sql = "DELETE FROM `glucose` WHERE pat_id=?";
 																	con.connection.query(
 																		sql,
 																		rows[0].pat_id,
@@ -919,8 +929,7 @@ app.post("/api/deleteuser", (req, res) => {
 																			if (error) {
 																				console.log(error);
 																			} else {
-																				sql =
-																					"DELETE FROM `temperature` WHERE pat_id=?";
+																				sql = "DELETE FROM `heart_rate` WHERE pat_id=?";
 																				con.connection.query(
 																					sql,
 																					rows[0].pat_id,
@@ -928,17 +937,16 @@ app.post("/api/deleteuser", (req, res) => {
 																						if (error) {
 																							console.log(error);
 																						} else {
-																							sql =
-																								"DELETE FROM confirmation_code WHERE user_id=?";
+																							sql = "DELETE FROM `spo2` WHERE pat_id=?";
 																							con.connection.query(
 																								sql,
-																								rows[0].user_id,
+																								rows[0].pat_id,
 																								function (error, result) {
 																									if (error) {
 																										console.log(error);
 																									} else {
 																										sql =
-																											"DELETE FROM `patient` WHERE pat_id=?";
+																											"DELETE FROM `temperature` WHERE pat_id=?";
 																										con.connection.query(
 																											sql,
 																											rows[0].pat_id,
@@ -947,24 +955,48 @@ app.post("/api/deleteuser", (req, res) => {
 																													console.log(error);
 																												} else {
 																													sql =
-																														"DELETE FROM `user` WHERE id=?";
+																														"DELETE FROM confirmation_code WHERE user_id=?";
 																													con.connection.query(
 																														sql,
 																														rows[0].user_id,
-																														function (
-																															error,
-																															result
-																														) {
+																														function (error, result) {
 																															if (error) {
-																																console.log(
-																																	error
-																																);
+																																console.log(error);
 																															} else {
-																																return res
-																																	.status(200)
-																																	.send({
-																																		message: "Patient Deleted Successfully",
-																																	});
+																																sql =
+																																	"DELETE FROM `patient` WHERE pat_id=?";
+																																con.connection.query(
+																																	sql,
+																																	rows[0].pat_id,
+																																	function (error, result) {
+																																		if (error) {
+																																			console.log(error);
+																																		} else {
+																																			sql =
+																																				"DELETE FROM `user` WHERE id=?";
+																																			con.connection.query(
+																																				sql,
+																																				rows[0].user_id,
+																																				function (
+																																					error,
+																																					result
+																																				) {
+																																					if (error) {
+																																						console.log(
+																																							error
+																																						);
+																																					} else {
+																																						return res
+																																							.status(200)
+																																							.send({
+																																								message: "Patient Deleted Successfully",
+																																							});
+																																					}
+																																				}
+																																			);
+																																		}
+																																	}
+																																);
 																															}
 																														}
 																													);
@@ -984,11 +1016,9 @@ app.post("/api/deleteuser", (req, res) => {
 															}
 														);
 													}
-												}
-											);
-										}
-									}
-								);
+												});
+											}
+								});
 							}
 						}
 					});
@@ -998,11 +1028,7 @@ app.post("/api/deleteuser", (req, res) => {
 	});
 });
 
-// -------------------------Common Information------------------------------- //
-
-
 // -------------------------Patient Information------------------------------- //
-
 app.post("/api/patientsignup", (req, res) => {
 	let userId = req.body.id;
 	let birthDate = req.body.birthDate;
@@ -2302,13 +2328,14 @@ app.get("/api/doctor", (req, res) => {
 						}
 						else {
 							let doctors = [];
+							doctors.push(581);
 							linkedDoctors.forEach(element => {
 								doctors.push(element.dr_id);
 							});
 							let sql = "SELECT doctor.dr_id, doctor.speciality, doctor.gender, doctor.experience,\
 							experience.exp_years, u.id, u.first_name, u.last_name, u.country, c.country_name FROM `doctor`\
 							JOIN `experience` ON experience.exp_id = doctor.experience\
-							JOIN `user` u ON doctor.user_id = u.id\
+							JOIN `user` u ON doctor.`user_id` = u.`id`\
 							JOIN `country` c ON c.country_id = u.country\
 							WHERE dr_id NOT IN (?)";
 							con.connection.query(sql, [doctors], function (error, doctorsData) {
@@ -2316,6 +2343,7 @@ app.get("/api/doctor", (req, res) => {
 									return res.status(404).send({message: error});
 								}
 								else{
+									console.log("Test4");
 									let sql = "SELECT dr_id FROM `linking_request` WHERE pat_id = ?"
 									con.connection.query(sql, rows[0].pat_id, function(error, requests){
 										if (error){
@@ -2324,19 +2352,10 @@ app.get("/api/doctor", (req, res) => {
 										else {
 											return res.status(200).send({rows: doctorsData, requestedDoctors: requests});
 										}
-									})
+									});
 								}
 							});
 
-						}
-					});
-					
-					con.connection.query(sql, rows[0].pat_id, function (error, data) {
-						if (error){
-							return res.status(404).send({message: error});
-						}
-						else {
-							
 						}
 					});
 				}
@@ -2452,6 +2471,76 @@ app.post("/api/linktodoc", (req, res) => {
 		}
 	})();
 });
+app.post("/api/denylink", (req,res) => {
+	(async () => {
+		const token = req.headers.authorization.split(" ")[1];
+		let result = await helper.validateUser(token);
+		if (result.indicator) {
+			let doctorId = req.body.dr_id;
+			if (doctorId) {
+				let sql = "SELECT pat_id FROM `patient` WHERE user_id =?";
+				con.connection.query(sql, result.value.userId, function(error, result){
+					if(error){
+						return res.status(401).send({ message: "Not an Authorized Patient."})
+					}
+					else{
+						sql = "DELETE FROM `linking_request` WHERE pat_id = ? AND dr_id = ?";
+						con.connection.query(sql, [rows[0].pat_id, doctorId], function(error, result){
+							if(error){
+								return res.status(401).send({ message: "Link Error. Try again later."})
+							}
+							else{
+								return res.status(200).send({ message: "Link Denied Successfully."})
+							}
+						});
+					}
+				});
+				
+			}
+			else {
+				return res.status(401).send({ message: "Doctor ID & Patient ID required."})
+			}
+		}
+		else{
+			return res.status(401).send({ message: "Unauthorized User.", reason: result.value})
+		}
+	})();
+});
+app.post("/api/endlink", (req,res) => {
+	(async () => {
+		const token = req.headers.authorization.split(" ")[1];
+		let result = await helper.validateUser(token);
+		if (result.indicator) {
+			let doctorId = req.body.dr_id;
+			if (patientId) {
+				let sql = "SELECT pat_id from `patient` WHERE user_id = ?";
+				con.connection.query(sql, result.value.userId, function(error, rows){
+					if(error){
+						return res.status(401).send({ message: "Unauthorized Patient."})
+					}
+					else{
+						let sql = "DELETE FROM `linked` WHERE pat_id = ? AND dr_id = ?";
+						con.connection.query(sql, [rows[0].pat_id, doctorId], function(error, result){
+							if(error){
+								return res.status(401).send({ message: "Link Error. Try again later."})
+							}
+							else{
+								return res.status(200).send({ message: "Link Ended Successfully."})
+							}
+						});
+					}
+				});
+
+			}
+			else {
+				return res.status(401).send({ message: "Doctor ID & Patient ID required."})
+			}
+		}
+		else{
+			return res.status(401).send({ message: "Unauthorized User.", reason: result.value})
+		}
+	})();
+});
 app.get("/api/showmydoctors", (req, res) => {
 	(async () => {
 		const token = req.headers.authorization.split(" ")[1];
@@ -2483,9 +2572,6 @@ app.get("/api/showmydoctors", (req, res) => {
 		}
 	})();
 });
-
-
-// -------------------------Patient Information------------------------------- //
 
 
 // -------------------------Doctor Information------------------------------- //
@@ -2931,18 +3017,26 @@ app.post("/api/endlink", (req,res) => {
 		const token = req.headers.authorization.split(" ")[1];
 		let result = await helper.validateUser(token);
 		if (result.indicator) {
-			let doctorId = req.body.dr_id;
 			let patientId = req.body.pat_id;
-			if (doctorId && patientId) {
-				sql = "DELETE FROM `linked` WHERE pat_id = ? AND dr_id = ?";
-				con.connection.query(sql, [patientId, doctorId], function(error, result){
+			if (patientId) {
+				let sql = "SELECT dr_id from `doctor` WHERE user_id = ?";
+				con.connection.query(sql, result.value.userId, function(error, rows){
 					if(error){
-						return res.status(401).send({ message: "Link Error. Try again later."})
+						return res.status(401).send({ message: "Unauthorized Doctor."})
 					}
 					else{
-						return res.status(200).send({ message: "Link Ended Successfully."})
+						let sql = "DELETE FROM `linked` WHERE pat_id = ? AND dr_id = ?";
+						con.connection.query(sql, [patientId, rows[0].dr_id], function(error, result){
+							if(error){
+								return res.status(401).send({ message: "Link Error. Try again later."})
+							}
+							else{
+								return res.status(200).send({ message: "Link Ended Successfully."})
+							}
+						});
 					}
 				});
+
 			}
 			else {
 				return res.status(401).send({ message: "Doctor ID & Patient ID required."})
