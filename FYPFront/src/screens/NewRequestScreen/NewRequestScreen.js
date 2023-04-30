@@ -50,6 +50,7 @@ const NewRequestScreen = () => {
                         'Authorization': `Bearer ${token}`
                     }
                 });
+            getPatients();
         } catch (error) {
             console.error(error);
         }
@@ -58,13 +59,14 @@ const NewRequestScreen = () => {
     const declinePressed = async (patient) => {
         try {
             const token = await AsyncStorage.getItem('token');
-            const response = await axios.post('https://ouvatek.herokuapp.com/api/denylink', {
+            const response = await axios.post('https://ouvatek.herokuapp.com/api/denylinkdoctor', {
                 dr_id: patient.dr_id, pat_id: patient.pat_id
             }, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
+            getPatients();
         } catch (error) {
             console.error(error);
         }

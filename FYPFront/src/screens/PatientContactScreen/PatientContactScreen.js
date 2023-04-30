@@ -1,73 +1,126 @@
-import React from 'react';
-import { View, Text, FlatList, Image, Pressable } from 'react-native';
 
+import React, { useEffect, useState } from 'react';
+import { View, Text, FlatList, Image, TouchableOpacity, Pressable } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-
+import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import styles from './styles';
-
 import { useNavigation } from '@react-navigation/native';
 
-const Messages = [
-    {
-        id: 1,
-        userName: 'Dr. Jack Ross',
-        userImg: { uri: 'https://dub01pap003files.storage.live.com/y4mPsDASd_NsvIuHNrjzmKB_IJKiRsdEO8q3bKfRweMw0Cb6kwNVlmfihFcAzfuti79leq6S7Gw4i5uz2uqyzueHd3PK_Q5Lg2nRhn3Y5MGrhgaVDlesKIYR_p7uBM4B67yPyh-GXRXL_oclB360naCRSjflFHOEli7bL-2BIsnW8Bgz2pF-OxSodlcGsxLGsqJ?width=432&height=407&cropmode=none' },
-        //userImg: require('../../assets/images/2.jpeg'),
-        messageTime: '4 mins ago',
-        messageText: 'Hey there I am your doctor',
-    },
-    {
-        id: 2,
-        userName: 'Dr. Grace Smith',
-        userImg: { uri: 'https://dub01pap003files.storage.live.com/y4maIqiwQPq8-E4dJlAnm2g1BmdMSE-xRXaANtPdkNC7z0uCccV8cZNYPAPeGGB_16llt3DXYR5naQSw4SU_l6Q8jsJu8xLdvKs-OHOwRZLEVfGmxi90fYe1TNUeEIBPJvuoYyoxq-JPVaAKNHUEnA7fhfkXChdY9zgdApDd8n-gdyG9L36tdtKtCdc-IdL5DUj?width=4000&height=6000&cropmode=none' },
-        //userImg: require('../../assets/images/3.jpg'),
-        messageTime: '10 mins ago',
-        messageText: 'Hey there I am your doctor',
-    },
-    {
-        id: 3,
-        userName: 'Dr. Taylor Clark',
-        userImg: { uri: 'https://dub01pap003files.storage.live.com/y4m43m6XoKoxWX3N4cg-leGaknrE5bhnkb2vsT2LRBusrIx0Yrly5Cgp1uypTME28YCVj0ER8_8Dg-v3GZ4SbQQNjOoDZc2gq9UJEVSa6NziP3KgIG5YqOjUecpFQallG3jee__WqYFSWdQwrpm3kH9uqS61khSSpBUfE626jgGXDxAkj1whW7VxB7I58XFKPtc?width=6720&height=4480&cropmode=none' },
-        //userImg: require('../../assets/images/4.jpg'),
-        messageTime: '1 day ago',
-        messageText: 'Hey there I am your doctor',
-    },
-]
 
 const PatientContactScreen = () => {
+    const [doctors, setDoctors] = useState([]);
+    const [selectedDoctor, setSelectedDoctor] = useState(null);
 
     const navigation = useNavigation();
+    const getMyDoctors = async () => {
+        try {
+            const token = await AsyncStorage.getItem('token');
+            const response = await axios.get('https://ouvatek.herokuapp.com/api/showmydoctors', {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            setDoctors(response.data.rows);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('focus', () => {
+            getMyDoctors();
+            setSelectedDoctor(null);
+        });
+        return unsubscribe;
+    }, [navigation]);
 
     const onAddDoctorPressed = () => {
         navigation.navigate("AddDoctor");
-    }
+    };
+
+    const getAvatarUrl = (gender) => {
+        let avatarUrl = 'https://dub01pap003files.storage.live.com/y4mMx07s_SWkpClEZrtYUCuO2jDtBi2Pnel1GavSyn1jCbU7P6KRZlEbmR3si4ZpJfEM8UOMbpqtquo3FY_VO4RtFPnnEZf4vn2Dk_NUtt6iqZh8gPDONgJ6OwsVIP1TWEOcr1aTtIx5sjaAuJmgRbOZqK9tY9NaGQlbdHGWuWzTRRpMic5i6win3FockxVWP8l?width=388&height=250&cropmode=none';
+        if (gender === 'Male') {
+            avatarUrl = 'https://dub01pap003files.storage.live.com/y4mrLDyxrRdKUEEsesJPIsPznb3KhEX29pEarP8PHNNzusTd_CJDqpVyMJC8u1mrbYUDyERoGdIC2JksAdaph1pHshiWaiJ9Ol9KPQNZrO1wx621FyVDarhhQ-1R7hl3BgaSWS1hbOuo1o48O5uGSJTfdpKylpWebM16Xf0wrpfip5Oz51yOQUyEAQiFclSlFtY?width=225&height=225&cropmode=none';
+        } else if (gender === 'Female') {
+            avatarUrl = 'https://dub01pap003files.storage.live.com/y4mcMjlOdY1IqkolZCpnZuU7_urbNqxsQ52MSSMNlF8UJmMI8eRKSEzxftp0JDL0jISfqZoRucHibO52EOiE3T5QQylWvzb7LuPtLW6hcfT6hzlM6ol65hzX-zWMa0OSt77eH5N1JuFry3Z3BZeTzd4g8Ek2VhVgHmCj-OYbIpHCqjbQ63MzhT4qk0WWH68Bg_E?width=225&height=225&cropmode=none';
+        }
+        return avatarUrl;
+    };
+
+    const onDeleteConnectionPressed = async (item) => {
+        try {
+            const token = await AsyncStorage.getItem('token');
+            const response = await axios.post('https://ouvatek.herokuapp.com/api/endlinkpatient', {
+                dr_id: item.dr_id,
+            }, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
+            getMyDoctors();
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const renderDoctorOptions = (item) => {
+        if (selectedDoctor === item) {
+            return (
+                <View>
+                    <TouchableOpacity onPress={() => onDeleteConnectionPressed(item)}>
+                        <Text>End Connection</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => navigation.navigate("CheckDoctorInfo", { id: item.id })}>
+                        <Text >Check Profile</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => setSelectedDoctor(null)}>
+                        <Text >Close</Text>
+                    </TouchableOpacity>
+                </View>
+            );
+        }
+        return null;
+    };
+
     return (
         <View style={styles.container}>
             <Pressable onPress={onAddDoctorPressed} >
                 <Icon name='square-edit-outline' style={styles.icon} />
             </Pressable>
-            <FlatList
-                data={Messages}
-                keyExtractor={item => item.id}
-                renderItem={({ item }) => (
-                    <View style={styles.userInfo}>
-                        <View style={styles.userImgWrapper}>
-                            <Image source={item.userImg} style={styles.img} />
-                        </View>
-                        <View style={styles.txtSection}>
-                            <View style={styles.userInfoTxt}>
-                                <Text style={styles.nameTxt}>{item.userName}</Text>
-                                <Text style={styles.userInfoTime}>{item.messageTime}</Text>
+            {doctors.length === 0 ? (
+                <View style={styles.noDoctorsContainer}>
+                    <Text style={{ marginTop: 30 }}>You have no linked doctors.</Text>
+                </View>
+            ) : (
+                <FlatList
+                    data={doctors}
+                    keyExtractor={item => item.dr_id.toString()}
+                    renderItem={({ item }) => (
+                        <View style={styles.userInfo}>
+                            <View style={styles.userImgWrapper}>
+                                <Image source={{ uri: getAvatarUrl(item.gender) }} style={styles.img} />
                             </View>
-                            <View>
-                                <Text style={styles.msgTxt}>{item.messageText}</Text>
+                            <View style={styles.txtSection}>
+                                <View style={styles.userInfoTxt}>
+                                    <Text style={styles.nameTxt}>{item.first_name} {item.last_name}</Text>
+                                    {!selectedDoctor || selectedDoctor.dr_id !== item.dr_id ? (
+                                        <TouchableOpacity style={{ marginRight: 20 }} onPress={() => setSelectedDoctor(item)}>
+                                            <Icon size={20} name='dots-horizontal' />
+                                        </TouchableOpacity>
+                                    ) : null}
+                                    {renderDoctorOptions(item)}
+                                </View>
+                                <View>
+                                    <Text style={styles.msgTxt}>Hey there I am your doctor</Text>
+                                </View>
                             </View>
                         </View>
-                    </View>
-                )}
-            />
+                    )}
+                />
+            )}
         </View>
     )
 }
-
 export default PatientContactScreen

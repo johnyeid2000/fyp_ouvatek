@@ -1,26 +1,26 @@
-import {StyleSheet} from 'react-native';
+import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
-    container:{
+    container: {
         flex: 1,
         paddingLeft: 10,
         alignItems: 'center',
         backgroundColor: '#ffffff',
     },
-    userInfo:{
+    userInfo: {
         flexDirection: 'row',
         justifyContent: 'space-between',
     },
-    userImgWrapper:{
-        paddingTop:15,
-        paddingBottom:15,
+    userImgWrapper: {
+        paddingTop: 15,
+        paddingBottom: 15,
     },
-    img:{
+    img: {
         width: 50,
         height: 50,
         borderRadius: 25,
     },
-    txtSection:{
+    txtSection: {
         flexDirection: 'column',
         justifyContent: 'center',
         padding: 15,
@@ -30,28 +30,28 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         borderBottomColor: '#cccccc',
     },
-    userInfoTxt:{
+    userInfoTxt: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         marginBottom: 5,
     },
-    nameTxt:{
+    nameTxt: {
         fontSize: 14,
         fontWeight: 'bold',
     },
-    userInfoTime:{
+    userInfoTime: {
         fontSize: 12,
         color: '#666',
     },
-    msgTxt:{
-        fontSize:14,
-        color:'#333333',
+    msgTxt: {
+        fontSize: 14,
+        color: '#333333',
     },
-    icon:{
-        fontSize:30,
-        marginTop:10,
-        marginLeft:'80%',
-    }
+    icon: {
+        fontSize: 30,
+        marginTop: 10,
+        marginLeft: '80%',
+    },
 });
 
 export default styles;

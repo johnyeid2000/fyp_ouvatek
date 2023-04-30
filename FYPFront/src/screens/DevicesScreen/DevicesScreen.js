@@ -1,40 +1,75 @@
-import React from 'react';
-import { View, Text } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, Modal, TouchableOpacity, FlatList, Button } from 'react-native';
 import CustomButton from "../../components/CustomButton/CustomButton";
 import styles from './styles';
-import axios from 'axios';
 
-const DevicesScreen =()=>{
+const DevicesScreen = () => {
+  const devices = [
+    { id: 1, name: 'Cosinus Device' },
+    { id: 2, name: 'Watch' },
+    { id: 3, name: 'Fitbit' },
 
-    const onSearchDevicePressed = () => {
-        console.warn('Search device pressed');
-    };
-    const getDataUsingAsyncAwaitGetCall = async () => {
-        try {
-          const response = await axios.get(
-            'localhost:3000/countries',
-          );
-          alert(JSON.stringify(response.data));
-        } catch (error) {
-          // handle error
-          alert(error.message);
-        }
-      };
-    return(
-        <View>
-            <View style={styles.btnView}>
-                <CustomButton
-                    text="Add a device"
-                    onPress={getDataUsingAsyncAwaitGetCall}
-                    type='Primary'
-                />
-            </View>
+  ];
+  const [selectedDevice, setSelectedDevice] = useState(null);
+  const [showModal, setShowModal] = useState(false);
 
-            <View style={styles.txtView}>
-                <Text style={styles.txt}>No Device connected</Text>
-            </View>
+  const onSearchDevicePressed = () => {
+    setShowModal(true);
+  };
+
+  const selectDevice = (device) => {
+    setSelectedDevice(device);
+    setShowModal(false);
+  };
+
+  return (
+    <View>
+      <View style={styles.btnView}>
+        <CustomButton
+          text="Add a device"
+          onPress={onSearchDevicePressed}
+          type='Primary'
+        />
+      </View>
+
+      <View style={styles.txtView}>
+        {selectedDevice ? (
+          <Text style={styles.txt}>Selected device: {selectedDevice.name}</Text>
+        ) : (
+          <Text style={styles.txt}>No Device connected</Text>
+        )}
+      </View>
+
+      <Modal
+        visible={showModal}
+        animationType='slide'
+        onRequestClose={() => setShowModal(false)}
+      >
+        <View style={styles.modalView}>
+          <FlatList
+            data={devices}
+            keyExtractor={(item) => item.id.toString()}
+            renderItem={({ item }) => (
+              <TouchableOpacity
+                style={styles.deviceItem}
+                onPress={() => selectDevice(item)}
+              >
+                <Text>{item.name}</Text>
+              </TouchableOpacity>
+            )}
+          />
+
+          <View style={{ marginTop: 20, width: 150 }}>
+            <Button
+              onPress={() => setShowModal(false)}
+              title="Cancel"
+              color="#651B70"
+            />
+          </View>
         </View>
-    )
+      </Modal>
+    </View>
+  )
 }
 
-export default DevicesScreen
+export default DevicesScreen;

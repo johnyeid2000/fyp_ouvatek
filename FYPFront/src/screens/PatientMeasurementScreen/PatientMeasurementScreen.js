@@ -1,15 +1,30 @@
 import React from 'react';
 import { View, SafeAreaView, ScrollView } from 'react-native';
-import { Avatar, Title, Caption, Text } from 'react-native-paper';
+import { Avatar, Title, Caption } from 'react-native-paper';
 import styles from './styles';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import MeasurementButton from '../../components/MeasurementButton/MeasurementButton';
 
 import { useNavigation } from '@react-navigation/native';
 
-const PatientMeasurementScreen = () => {
+const PatientMeasurementScreen = ({ route }) => {
 
   const navigation = useNavigation();
+  const { Name, trimester, pat_id } = route.params;
 
+  const HeartRatePressed = () => {
+  };
+  const TemperaturePressed = () => {
+  };
+  const BloodGlucosePressed = () => {
+  };
+  const LabTestPressed = () => {
+  };
+  const SpO2Pressed = () => {
+  };
+  const FetusPressed = () => {
+  };
+  const WeightPressed = () => {
+  };
   return (
     <SafeAreaView style={styles.container}>
 
@@ -24,53 +39,54 @@ const PatientMeasurementScreen = () => {
             <Title style={[styles.title, {
               marginTop: 15,
               marginBottom: 5,
-            }]}>Jane Doe</Title>
-            <Caption style={styles.caption}>First Trimester</Caption>
+            }]}>{Name}</Title>
+            <Caption style={styles.caption}>{trimester}</Caption>
           </View>
         </View>
       </View>
 
-      <ScrollView style={styles.userInfoSection}>
-        <View style={[styles.row, styles.innerRow]}>
-          <Text style={styles.txtRow}>Diabetic</Text>
-          <Text style={[styles.txtRow, { marginLeft: '20%' }]}>Not Hypertensive</Text>
-        </View>
-        <View style={styles.row}>
-          <Text style={[styles.txtRow, { fontWeight: 'bold' }]}>Heart Rate and Blood Pressure</Text>
-          <View style={styles.innerRow}>
-            <Text style={styles.txtRow}>HR: 70</Text>
-            <Text style={styles.txtRow}>Sys: 125</Text>
-            <Text style={styles.txtRow}>Dias: 85</Text>
-          </View>
-          <View style={styles.innerRow}>
-            <Text style={styles.txtRow}>Date: 2022-05-08</Text>
-            <Text style={styles.txtRow}>Time: 14:11:17</Text>
-          </View>
-        </View>
-        <View style={styles.row}>
-          <Text style={[styles.txtRow, { fontWeight: 'bold' }]}>Temperature</Text>
-          <Text style={styles.txtRow}>37.00°C</Text>
-          <View style={styles.innerRow}>
-            <Text style={styles.txtRow}>Date: 2022-05-08</Text>
-            <Text style={styles.txtRow}>Time: 14:11:28</Text>
-          </View>
-        </View>
-        <View style={styles.row}>
-          <Text style={[styles.txtRow, { fontWeight: 'bold' }]}>Blood Glucose</Text>
-          <Text style={styles.txtRow}>No values</Text>
-        </View>
-        <View style={styles.row}>
-          <Text style={[styles.txtRow, { fontWeight: 'bold' }]}>SpO2</Text>
-          <Text style={styles.txtRow}>No values</Text>
-        </View>
-        <View style={styles.row}>
-          <Text style={[styles.txtRow, { fontWeight: 'bold' }]}>Lab Tests</Text>
-          <Text style={styles.txtRow}>No values</Text>
-        </View>
-        <View style={styles.row}>
-          <Text style={[styles.txtRow, { fontWeight: 'bold' }]}>Fetus's Measurements</Text>
-          <Text style={styles.txtRow}>No values</Text>
-        </View>
+      <ScrollView style={{ marginTop: 20 }}>
+        <MeasurementButton
+          text="Check Heart rate & blood pressure"
+          onPress={HeartRatePressed}
+          IconName="heart-pulse"
+        />
+
+        <MeasurementButton
+          text="Check Temperature"
+          onPress={TemperaturePressed}
+          IconName="thermometer"
+        />
+
+        <MeasurementButton
+          text="Check Blood glucose"
+          onPress={BloodGlucosePressed}
+          IconName="diabetes"
+        />
+
+        <MeasurementButton
+          text="Check Lab test"
+          onPress={LabTestPressed}
+          IconName="test-tube"
+        />
+
+        <MeasurementButton
+          text="Check SpO2"
+          onPress={SpO2Pressed}
+          IconName="percent-outline"
+        />
+
+        <MeasurementButton
+          text="Check Weight"
+          onPress={WeightPressed}
+          IconName="scale-bathroom"
+        />
+
+        <MeasurementButton
+          text="Check Fetus"
+          onPress={FetusPressed}
+          IconName="baby-face-outline"
+        />
       </ScrollView>
     </SafeAreaView>
   );
