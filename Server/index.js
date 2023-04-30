@@ -2471,7 +2471,7 @@ app.post("/api/linktodoc", (req, res) => {
 		}
 	})();
 });
-app.post("/api/denylink", (req,res) => {
+app.post("/api/denylinkpatient", (req,res) => {
 	(async () => {
 		const token = req.headers.authorization.split(" ")[1];
 		let result = await helper.validateUser(token);
@@ -2506,13 +2506,13 @@ app.post("/api/denylink", (req,res) => {
 		}
 	})();
 });
-app.post("/api/endlink", (req,res) => {
+app.post("/api/endlinkpatient", (req,res) => {
 	(async () => {
 		const token = req.headers.authorization.split(" ")[1];
 		let result = await helper.validateUser(token);
 		if (result.indicator) {
 			let doctorId = req.body.dr_id;
-			if (patientId) {
+			if (doctorId) {
 				let sql = "SELECT pat_id from `patient` WHERE user_id = ?";
 				con.connection.query(sql, result.value.userId, function(error, rows){
 					if(error){
@@ -2985,7 +2985,7 @@ app.post("/api/acceptlink", (req,res) => {
 		}
 	})();
 });
-app.post("/api/denylink", (req,res) => {
+app.post("/api/denylinkdoctor", (req,res) => {
 	(async () => {
 		const token = req.headers.authorization.split(" ")[1];
 		let result = await helper.validateUser(token);
@@ -3012,7 +3012,7 @@ app.post("/api/denylink", (req,res) => {
 		}
 	})();
 });
-app.post("/api/endlink", (req,res) => {
+app.post("/api/endlinkdoctor", (req,res) => {
 	(async () => {
 		const token = req.headers.authorization.split(" ")[1];
 		let result = await helper.validateUser(token);
