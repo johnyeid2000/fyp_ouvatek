@@ -3287,7 +3287,112 @@ app.get("/api/heartratevalueasdoctor", (req, res) => {
 		}
 	})();
 });
-
+app.post("/api/addavailability", (req,res) => {
+	(async () => {
+		const token = req.headers.authorization.split(" ")[1];
+		let result = await helper.validateUser(token);
+		if (result.indicator) {
+			let day = req.body.dayOfWeek;
+			let startTime = req.body.start;
+			let endTime = req.body.end;
+			if(day && startTime && endTime){
+				let sql = "SELECT dr_id FROM `doctor` WHERE user_id = ?"
+				con.connection.query(sql, result.value.userId, function(error, rows){
+					if(error){
+						return res.status(400).send({ message: "Doctor Unauthorized." });
+					}
+					else{
+						let sql = "INSERT INTO `doctor_availability` (dr_id, day_of_week, start_time, end_time) VALUES (?,?,?,?)"
+						con.connection.query(sql, [rows[0].dr_id, day, startTime, endTime], function(error, result){
+							if(error){
+								return res.status(400).send({ message: "Error Adding your schedule."});
+							}
+							else{
+								return res.status(200).send({ message: "Schedule Added."});
+							}
+						});
+					}
+				});
+			}
+			else {
+				return res.status(400).send({ message: "Missing Fields." });
+			}
+		} else {
+			return res
+				.status(401)
+				.send({
+					message: "You are not an authorized user.",
+					reason: result.value,
+				});
+		}
+	})();
+});
+app.post("/api/checkavailability", (req,res) =>{
+	(async () => {
+		const token = req.headers.authorization.split(" ")[1];
+		let result = await helper.validateUser(token);
+		if (result.indicator) {
+			let times = ["08:00-08:30","08:30-09:00","09:00-09:30","09:00-09:30","09:30-10:00",
+			"10:00-10:30","10:30-11:00","11:00-11:30","11:30-12:00","12:00-12:30","12:30-13:00",
+			"13:00-13:30","13:30-14:00","14:00-14:30","14:30-15:00","15:00-15:30","15:30-16:00",
+			"16:00-16:30","16:30-17:00","17:00-17:30","17:30-18:00","18:00-18:30","18:30-19:00",
+			"19:00-19:30","19:30-20:00"];
+			let day = req.body.dayOfWeek;
+			if(day){
+				let sql = "SELECT dr_id FROM `doctor` WHERE user_id = ?"
+				con.connection.query(sql, result.value.userId, function(error, rows){
+					if(error){
+						return res.status(400).send({ message: "Doctor Unauthorized." });
+					}
+					else{
+						let sql = "SELECT * FROM `doctor_availability` WHERE dr_id =?"
+						con.connection.query(sql, rows[0].dr_id, function(error, availabilities){
+							if(error){
+								return res.status(400).send({ message: "Error Adding your schedule."});
+							}
+							else{
+								if(availabilities.length == 0){
+									console.log("weird");
+									return res.status(200).send(times);
+								}
+								else{
+									availabilities.forEach(batchOfTime => {
+										if(batchOfTime.day_of_week == day){
+											let dateStr = batchOfTime.start_time;
+											let [hours, minutes] = dateStr.split(':');
+											let newDateStr = `${hours}:${minutes}`;
+											console.log(newDateStr);
+											let [hours2, minutes2] = newDateStr.split(':');
+											minutes2 = parseInt(minutes2, 10) + 30;
+											let newTimeStr = `${hours2}:${minutes2.toString().padStart(2, '0')}`;
+											console.log(newTimeStr);
+											let value = `${newDateStr}-${newTimeStr}`;
+											console.log(value);
+											let index = times.indexOf(value);
+											
+											times.splice(index, 1);
+										}
+									});
+									return res.status(200).send(times);
+								}
+							}
+						});
+					}
+				});
+			}
+			else {
+				return res.status(400).send({ message: "Missing Fields." });
+			}
+		} else {
+			return res
+				.status(401)
+				.send({
+					message: "You are not an authorized user.",
+					reason: result.value,
+				});
+		}
+	})();
+});
 
 
 
