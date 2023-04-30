@@ -2479,7 +2479,7 @@ app.post("/api/denylinkpatient", (req,res) => {
 			let doctorId = req.body.dr_id;
 			if (doctorId) {
 				let sql = "SELECT pat_id FROM `patient` WHERE user_id =?";
-				con.connection.query(sql, result.value.userId, function(error, result){
+				con.connection.query(sql, result.value.userId, function(error, rows){
 					if(error){
 						return res.status(401).send({ message: "Not an Authorized Patient."})
 					}
