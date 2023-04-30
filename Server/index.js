@@ -3358,19 +3358,15 @@ app.post("/api/checkavailability", (req,res) =>{
 								else{
 									availabilities.forEach(batchOfTime => {
 										if(batchOfTime.day_of_week == day){
-											let dateStr = batchOfTime.start_time;
-											let [hours, minutes] = dateStr.split(':');
-											let newDateStr = `${hours}:${minutes}`;
-											console.log(newDateStr);
-											let [hours2, minutes2] = newDateStr.split(':');
-											minutes2 = parseInt(minutes2, 10) + 30;
-											let newTimeStr = `${hours2}:${minutes2.toString().padStart(2, '0')}`;
-											console.log(newTimeStr);
-											let value = `${newDateStr}-${newTimeStr}`;
-											console.log(value);
-											let index = times.indexOf(value);
-											
-											times.splice(index, 1);
+											let firstValue = helper.getFirstTime(batchOfTime.start_time);
+											let lastValue = helper.getLastTime(batchOfTime.end_time);
+											let startIndex = times.indexOf(firstValue);
+											let endIndex = times.indexOf(lastValue);
+											console.log(startIndex, endIndex);
+											console.log(endIndex - startIndex);
+											for(let i = startIndex ; i <= endIndex; i++){
+												times.splice(startIndex, 1);
+											}
 										}
 									});
 									return res.status(200).send(times);
