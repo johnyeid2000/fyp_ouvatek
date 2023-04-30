@@ -58,6 +58,29 @@ function fixDate(givenDate){
     let formattedDate = year + "-" + month + "-" + day;
     return formattedDate;
 }
+function getFirstTime(givenTime){
+    let dateStr = givenTime;
+    let [hours, minutes] = dateStr.split(':');
+    let newDateStr = `${hours}:${minutes}`;
+    let [hours2, minutes2] = newDateStr.split(':');
+    minutes2 = parseInt(minutes2, 10) + 30;
+    let newTimeStr = `${hours2}:${minutes2.toString().padStart(2, '0')}`;
+    let value = `${newDateStr}-${newTimeStr}`;
+    return value;
+}
+function getLastTime(givenTime){
+    let dateStr = givenTime;
+    let [hours, minutes] = dateStr.split(':');
+    let newDateStr = `${hours}:${minutes}`;
+    let [hours2, minutes2] = newDateStr.split(':');
+    minutes2 = parseInt(minutes2, 10) - 30;
+    let newTimeStr = `${hours2}:${minutes2.toString().padStart(2, '0')}`;
+    let value = `${newTimeStr}-${newDateStr}`;
+    return value;
+}
+
+exports.getFirstTime = getFirstTime;
+exports.getLastTime = getLastTime;
 exports.validateUser = validateUser;
 exports.getWeek = getWeek;
 exports.getTrimester = getTrimester;
