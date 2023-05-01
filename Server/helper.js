@@ -74,15 +74,26 @@ function getLastTime(givenTime){
     let newDateStr = `${hours}:${minutes}`;
     let [hours2, minutes2] = newDateStr.split(':');
     minutes2 = parseInt(minutes2, 10) - 30;
+    if (minutes2 < 0) {
+        minutes2 = 60 + minutes2;
+        hours2 = parseInt(hours2, 10) - 1;
+        if (hours2 < 0) {
+          hours2 = 23;
+        }
+      }
     let newTimeStr = `${hours2}:${minutes2.toString().padStart(2, '0')}`;
     let value = `${newTimeStr}-${newDateStr}`;
     return value;
 }
-
+function fixTime(oldTime){
+    const timeWithoutSeconds = oldTime.substring(0, 5);
+    return timeWithoutSeconds;
+}
 exports.getFirstTime = getFirstTime;
 exports.getLastTime = getLastTime;
 exports.validateUser = validateUser;
 exports.getWeek = getWeek;
 exports.getTrimester = getTrimester;
 exports.fixDate = fixDate;
+exports.fixTime = fixTime;
 
