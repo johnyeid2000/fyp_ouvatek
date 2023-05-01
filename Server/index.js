@@ -10,7 +10,6 @@ const express = require("express");
 const app = express();
 const port = process.env.PORT || 3000;
 const bodyParser = require("body-parser");
-const e = require("express");
 app.use(bodyParser.json({
 	type: "application/json"
 }));
@@ -3296,6 +3295,9 @@ app.post("/api/addavailability", (req,res) => {
 			let startTime = req.body.start;
 			let endTime = req.body.end;
 			if(day && startTime && endTime){
+				if(startTime >= endTime){
+					return res.status(400).send({ message: "Error Adding your schedule. End time Should be greater than Start Time."});
+				}
 				let sql = "SELECT dr_id FROM `doctor` WHERE user_id = ?"
 				con.connection.query(sql, result.value.userId, function(error, rows){
 					if(error){
@@ -3327,7 +3329,7 @@ app.post("/api/addavailability", (req,res) => {
 		}
 	})();
 });
-app.post("/api/checkavailability", (req,res) =>{
+app.post("/api/checkavailabilityuselater", (req,res) =>{
 	(async () => {
 		const token = req.headers.authorization.split(" ")[1];
 		let result = await helper.validateUser(token);
@@ -3362,7 +3364,6 @@ app.post("/api/checkavailability", (req,res) =>{
 											let lastValue = helper.getLastTime(batchOfTime.end_time);
 											let startIndex = times.indexOf(firstValue);
 											let endIndex = times.indexOf(lastValue);
-											console.log(startIndex, endIndex);
 											console.log(endIndex - startIndex);
 											for(let i = startIndex ; i <= endIndex; i++){
 												times.splice(startIndex, 1);
@@ -3378,6 +3379,206 @@ app.post("/api/checkavailability", (req,res) =>{
 			}
 			else {
 				return res.status(400).send({ message: "Missing Fields." });
+			}
+		} else {
+			return res
+				.status(401)
+				.send({
+					message: "You are not an authorized user.",
+					reason: result.value,
+				});
+		}
+	})();
+});
+app.post("/api/checkavailablestarttime", (req,res) =>{
+	(async () => {
+		const token = req.headers.authorization.split(" ")[1];
+		let result = await helper.validateUser(token);
+		if (result.indicator) {
+			let startTimes = ["08:00","09:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00","18:00","19:00"];
+			let day = req.body.dayOfWeek;
+			if(day){
+				let sql = "SELECT dr_id FROM `doctor` WHERE user_id = ?"
+				con.connection.query(sql, result.value.userId, function(error, rows){
+					if(error){
+						return res.status(400).send({ message: "Doctor Unauthorized." });
+					}
+					else{
+						let sql = "SELECT * FROM `doctor_availability` WHERE dr_id =?"
+						con.connection.query(sql, rows[0].dr_id, function(error, availabilities){
+							if(error){
+								return res.status(400).send({ message: "Error Adding your schedule."});
+							}
+							else{
+								if(availabilities.length == 0){
+									return res.status(200).send({startTimes: startTimes});
+								}
+								else{
+									availabilities.forEach(batchOfTime => {
+										if(batchOfTime.day_of_week == day){
+											let tmp = batchOfTime.start_time;
+											let [hours, minutes] = tmp.split(':');
+											let timeStart = `${hours}:${minutes}`;
+											tmp = batchOfTime.end_time;
+											[hours, minutes] = tmp.split(':');
+											let timeEnd = `${hours}:${minutes}`;
+											let startIndex = startTimes.indexOf(timeStart);
+											let endIndex = startTimes.indexOf(timeEnd);
+											for(let i = startIndex ; i < endIndex; i++){
+												startTimes.splice(startIndex, 1);
+											}
+										}
+									});
+									return res.status(200).send({startTimes: startTimes});
+								}
+							}
+						});
+					}
+				});
+			}
+			else {
+				return res.status(400).send({ message: "Missing Fields." });
+			}
+		} else {
+			return res
+				.status(401)
+				.send({
+					message: "You are not an authorized user.",
+					reason: result.value,
+				});
+		}
+	})();
+});
+app.post("/api/checkavailableendtime", (req,res) =>{
+	(async () => {
+		const token = req.headers.authorization.split(" ")[1];
+		let result = await helper.validateUser(token);
+		if (result.indicator) {
+			let startTimes = ["08:00","09:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00","18:00","19:00"];
+			let endTimes = ["09:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00","18:00","19:00","20:00"];
+			let day = req.body.dayOfWeek;
+			let startTime = req.body.start;
+			if(day && startTime){
+				let index = endTimes.indexOf(startTime);
+				for(let i =0; i <= index; i++){
+					endTimes.splice(0, 1);
+				}
+				let sql = "SELECT dr_id FROM `doctor` WHERE user_id = ?"
+				con.connection.query(sql, result.value.userId, function(error, rows){
+					if(error){
+						return res.status(400).send({ message: "Doctor Unauthorized." });
+					}
+					else{
+						let sql = "SELECT * FROM `doctor_availability` WHERE dr_id =?"
+						con.connection.query(sql, rows[0].dr_id, function(error, availabilities){
+							if(error){
+								return res.status(400).send({ message: "Error Adding your schedule."});
+							}
+							else{
+								if(availabilities.length == 0){
+									return res.status(200).send({endTimes: endTimes});
+								}
+								else{
+									try{
+										availabilities.forEach(batchOfTime => {
+											if(batchOfTime.day_of_week == day){
+												let tmp = batchOfTime.start_time;
+												let [hours, minutes] = tmp.split(':');
+												let bookedTimeStart = `${hours}:${minutes}`;
+												let startIndex = endTimes.indexOf(bookedTimeStart);
+												let shouldContinue = true
+												if(startTime < bookedTimeStart){
+													console.log(endTimes.length);
+													for(let i = endTimes.length ; i > startIndex ; i--){
+														startTimes.splice(startIndex, 1);
+														endTimes.splice(startIndex +1, 1);
+													}
+													shouldContinue = false	
+												}
+												if(shouldContinue == false){
+													throw new Error("Deleted all End Times after first Start Time.");
+												}
+											}
+										});
+									} catch (e) {
+										console.log(e.message);
+									}
+									
+									return res.status(200).send({endTimes: endTimes});
+								}
+							}
+						});
+					}
+				});
+			}
+			else {
+				return res.status(400).send({ message: "Missing Fields." });
+			}
+		} else {
+			return res
+				.status(401)
+				.send({
+					message: "You are not an authorized user.",
+					reason: result.value,
+				});
+		}
+	})();
+});
+app.get("/api/showschedule", (req,res) =>{
+	(async () => {
+		const token = req.headers.authorization.split(" ")[1];
+		let result = await helper.validateUser(token);
+		if (result.indicator) {
+			let sql = "SELECT dr_id from `doctor` WHERE user_id =?"
+			con.connection.query(sql, result.value.userId, function(error, rows){
+				if(error){
+					return res.status(400).send({message: "You are not a doctor."});
+				}
+				else{
+					let sql = "SELECT avail_id, day_of_week, start_time, end_time FROM `doctor_availability` WHERE dr_id =? ORDER BY day_of_week";
+					con.connection.query(sql, rows[0].dr_id, function(error, schedule){
+						if(error){
+							return res.status(400).send({ message: "There are no chosen schedule yet." });
+						}
+						else{
+							schedule.forEach(batchOfTime => {
+								batchOfTime.start_time = helper.fixTime(batchOfTime.start_time);
+								batchOfTime.end_time = helper.fixTime(batchOfTime.end_time);
+							});
+							return res.status(200).send({ schedule: schedule })
+						}
+					});
+				}
+			});
+		} else {
+			return res
+				.status(401)
+				.send({
+					message: "You are not an authorized user.",
+					reason: result.value,
+				});
+		}
+	})();
+});
+app.post("/api/deletetime", (req,res) =>{
+	(async () => {
+		const token = req.headers.authorization.split(" ")[1];
+		let result = await helper.validateUser(token);
+		if (result.indicator) {
+			let timeChosen = req.body.timeChosen;
+			if(timeChosen){
+				let sql = "DELETE FROM `doctor_availability` WHERE avail_id =?";
+				con.connection.query(sql, timeChosen, function(error, result){
+					if(error){
+						return res.status(400).send({ message: "The chosen time is already deleted." });
+					}
+					else{
+						return res.status(200).send({ result: result })
+					}
+				});
+			}	
+			else{
+				return res.status(400).send({message: "You did not choose a time to delete."});
 			}
 		} else {
 			return res
