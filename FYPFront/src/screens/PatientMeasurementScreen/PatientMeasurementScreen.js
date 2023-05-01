@@ -1,29 +1,60 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, SafeAreaView, ScrollView } from 'react-native';
 import { Avatar, Title, Caption } from 'react-native-paper';
 import styles from './styles';
 import MeasurementButton from '../../components/MeasurementButton/MeasurementButton';
-
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 
 const PatientMeasurementScreen = ({ route }) => {
 
   const navigation = useNavigation();
-  const { id } = route.params;
+  const { id, pat_id } = route.params;
+  const [userData, setUserData] = useState('');
+
+  const getPatientData = async () => {
+    try {
+      const token = await AsyncStorage.getItem('token');
+      const response = await axios.post('https://ouvatek.herokuapp.com/api/getpatient', { id }, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (response.status === 200) {
+        setUserData(response.data.specificData);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    getPatientData();
+  }, []);
+
 
   const HeartRatePressed = () => {
+    navigation.navigate('CheckHRandBP', { pat_id });
   };
   const TemperaturePressed = () => {
+    navigation.navigate('CheckTemperature', { pat_id });
   };
   const BloodGlucosePressed = () => {
+    navigation.navigate('CheckBloodGlucose', { pat_id });
   };
   const LabTestPressed = () => {
+    console.warn('Check lab test pressed');
   };
   const SpO2Pressed = () => {
+    navigation.navigate('CheckSPO2', { pat_id });
   };
   const FetusPressed = () => {
+    console.warn('Check Fetus Pressed');
   };
   const WeightPressed = () => {
+    navigation.navigate('CheckWeight', { pat_id });
   };
   return (
     <SafeAreaView style={styles.container}>
@@ -39,8 +70,8 @@ const PatientMeasurementScreen = ({ route }) => {
             <Title style={[styles.title, {
               marginTop: 15,
               marginBottom: 5,
-            }]}></Title>
-            <Caption style={styles.caption}></Caption>
+            }]}>{userData.first_name} {userData.last_name}</Title>
+            <Caption style={styles.caption}>{userData.trimester_name}</Caption>
           </View>
         </View>
       </View>
