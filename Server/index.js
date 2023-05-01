@@ -3058,7 +3058,7 @@ app.get("/api/showmypatients", (req, res) => {
 					return res.status(401).send({ message: error })
 				}
 				else{
-					let sql = "SELECT linked.dr_id, linked.pat_id, u.first_name, u.last_name, u.country,\
+					let sql = "SELECT linked.dr_id, linked.pat_id, u.id, u.first_name, u.last_name, u.country,\
 					c.country_name, patient.trimester, trimester.trimester_name FROM `linked`\
 					JOIN `patient` ON linked.pat_id = patient.pat_id\
 					JOIN `trimester` ON trimester.trimester_id = patient.trimester\
@@ -3081,7 +3081,7 @@ app.get("/api/showmypatients", (req, res) => {
 		}
 	})();
 });
-app.get("/api/temperaturevalueasdoctor", (req, res) => {
+app.post("/api/temperaturevalueasdoctor", (req, res) => {
     (async () => {
 		const token = req.headers.authorization.split(" ")[1];
 		let result = await helper.validateUser(token);
@@ -3119,7 +3119,7 @@ app.get("/api/temperaturevalueasdoctor", (req, res) => {
 		}
 	})();
 });
-app.get("/api/weightvalueasdoctor", (req, res) => {
+app.post("/api/weightvalueasdoctor", (req, res) => {
 	(async () => {
 		const token = req.headers.authorization.split(" ")[1];
 		let result = await helper.validateUser(token);
@@ -3161,7 +3161,7 @@ app.get("/api/weightvalueasdoctor", (req, res) => {
 		}
 	})();
 });
-app.get("/api/spo2valueasdoctor", (req, res) => {
+app.post("/api/spo2valueasdoctor", (req, res) => {
 	(async () => {
 		const token = req.headers.authorization.split(" ")[1];
 		let result = await helper.validateUser(token);
@@ -3203,7 +3203,7 @@ app.get("/api/spo2valueasdoctor", (req, res) => {
 		}
 	})();
 });
-app.get("/api/glucosevalueasdoctor", (req, res) => {
+app.post("/api/glucosevalueasdoctor", (req, res) => {
 	(async () => {
 		const token = req.headers.authorization.split(" ")[1];
 		let result = await helper.validateUser(token);
@@ -3245,7 +3245,7 @@ app.get("/api/glucosevalueasdoctor", (req, res) => {
 		}
 	})();
 });
-app.get("/api/heartratevalueasdoctor", (req, res) => {
+app.post("/api/heartratevalueasdoctor", (req, res) => {
 	(async () => {
 		const token = req.headers.authorization.split(" ")[1];
 		let result = await helper.validateUser(token);
