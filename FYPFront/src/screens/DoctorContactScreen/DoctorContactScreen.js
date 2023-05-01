@@ -69,8 +69,16 @@ const DoctorContactScreen = () => {
         return null;
     };
 
+    const newRequestPressed = () => {
+        navigation.navigate('NewRequest');
+    };
+
     return (
         <View style={styles.container}>
+            <Pressable onPress={newRequestPressed} style={styles.newReq}>
+                <Icon name='account-outline' style={{ fontSize: 20, marginRight: 10 }} />
+                <Text style={styles.txtNewReq}>New Requests</Text>
+            </Pressable>
             {patients.length === 0 ? (
                 <View>
                     <Text style={{ marginTop: 30 }}>You have no linked Patients.</Text>
