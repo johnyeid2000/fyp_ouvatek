@@ -1,43 +1,36 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, FlatList, Text, Image, Pressable, BackHandler, Alert } from 'react-native';
-
+import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import styles from './styles';
-
 import { useNavigation } from '@react-navigation/native';
-
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-const patients = [
-  {
-    id: 1,
-    userName: 'Jane Doe',
-    userImg: { uri: 'https://dub01pap003files.storage.live.com/y4mUTpdeE5ber7ncC37Eb1aFtmem0QJ7FPaX-4RhvcDCtq0gyAQCUcaNHeG1psURhZUG77mTce3aqnaZSsidUYQO3lMUaPeWn9-2_QntNdXcokuy1VL6XmWX9ueKhDCRpzXRYYw8BaLJs9m5FU3Uq_4mp8kIX6a2S7E42T0_uls2nHaPP9iZx2gL2FCaz-9Zsvq?width=600&height=900&cropmode=none' },
-  },
-  {
-    id: 2,
-    userName: 'Linda Johnson',
-    userImg: { uri: 'https://dub01pap003files.storage.live.com/y4mTvIhdBEQzE64l6Q-GFs74G1_J-xoEnQgq2aACR9L29gpcDkhCTOEJ139dD4UWf_zwLbcHicd3s9vdlieBxTq9i5LplIgGaG_azk5boywdRtz0BijKyMofeojFlQdZFm8HGRw_JflnvLuUYdR-sY9NN9rdRIY2tMDH3L6rbIcUgiQPTj4iiy6mygWpKRGe5Xy?width=600&height=900&cropmode=none' },
-  },
-  {
-    id: 3,
-    userName: 'Jennifer Williams',
-    userImg: { uri: 'https://dub01pap003files.storage.live.com/y4mL16X0DqXLAw9QvrC17EmcCHvlpHTrK4e7qoy8AJoPz36CrElyjU-ESUbT73WyiteFo8iqiYn65AVvPxEjx3yt_HH_Bo1F0mdJjnmDkdh7iswBxJA2mB-ASHRG71ymLAdty7MqxENQzIoLL6sq5_naPU1xncTEYfC-SuVi7MzyygN54m7VDvqtHTmfKslrOLQ?width=600&height=900&cropmode=none' },
-  },
-  {
-    id: 4,
-    userName: 'Maria Miller',
-    userImg: { uri: 'https://dub01pap003files.storage.live.com/y4mYlaDRVpV0hQMD1xeG2GCytav7xteB8-B3wH1dnIOZ0AWkXgxcHMDM7TG_BRfTwP8ECGV1hiMBrDX8r90Y8DSuNHgCXmelOVjm0U0Qm116iB5vUtLdUPXxo5JVUSVNjZTuFgjcMBkYYHQZL_GdUbGF9fsr3H-18J58qHMkHsWBloALOtgKG2qxeSGs4C0zFCW?width=600&height=900&cropmode=none' },
-  },
-  {
-    id: 5,
-    userName: 'Carol White',
-    userImg: { uri: 'https://dub01pap003files.storage.live.com/y4mdTl-M1YtLxlSkmNUFegVvgOAEOa2TGSse4maH18sW-oNYj8qqYbQLnijueIKmZ-DF6YYSaXIfxTXnUvaPDrboJlTmkVNtSeuZcktO9stodSTrPmHex1PoQPKJLIFujfXpcefebb3nWmc-Om2v2ayZNL1mCOGrnQv7kwjjIdmiLamFQraRjV4U6jdDB-755Pm?width=600&height=400&cropmode=none' },
-  },
-]
 
 const CheckMeasurementScreen = () => {
+  const [patients, setPatients] = useState([]);
 
   const navigation = useNavigation();
+  const getMyPatients = async () => {
+    try {
+      const token = await AsyncStorage.getItem('token');
+      const response = await axios.get('https://ouvatek.herokuapp.com/api/showmypatients', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      setPatients(response.data.rows);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      getMyPatients();
+    });
+    return unsubscribe;
+  }, [navigation]);
 
   useEffect(() => {
     const handleBackPress = () => {
@@ -69,13 +62,13 @@ const CheckMeasurementScreen = () => {
     };
   }, [navigation]);
 
-  const patientPressed = () => {
-    navigation.navigate('PatientMeasurements');
-  }
+  const patientPressed = (item) => {
+    navigation.navigate('PatientMeasurements', { Name: item.first_name + ' ' + item.last_name, trimester: item.trimester_name, pat_id: item.pat_id });
+  };
 
   const newRequestPressed = () => {
     navigation.navigate('NewRequest');
-  }
+  };
 
   return (
     <View style={styles.container}>
@@ -83,20 +76,28 @@ const CheckMeasurementScreen = () => {
         <Icon name='account-outline' style={{ fontSize: 20, marginRight: 10 }} />
         <Text style={styles.txtNewReq}>New Requests</Text>
       </Pressable>
-      <FlatList
-        data={patients}
-        keyExtractor={item => item.id}
-        renderItem={({ item }) => (
-          <Pressable onPress={patientPressed} style={styles.userInfo}>
-            <View style={styles.userImgWrapper}>
-              <Image source={item.userImg} style={styles.img} />
-            </View>
-            <View style={styles.txtSection}>
-              <Text style={styles.nameTxt}>{item.userName}</Text>
-            </View>
-          </Pressable>
-        )}
-      />
+      {patients.length === 0 ? (
+        <View>
+          <Text style={{ marginTop: 30 }}>You have no linked Patients.</Text>
+        </View>
+      ) : (
+        <FlatList
+          data={patients}
+          keyExtractor={item => item.pat_id.toString()}
+          renderItem={({ item }) => (
+            <Pressable onPress={() => patientPressed(item)} style={styles.userInfo}>
+              <View style={styles.userImgWrapper}>
+                <Image
+                  source={{ uri: 'https://dub01pap003files.storage.live.com/y4m0SSC9fzPryBlevyPGjBpQlVmCD52-SGGPDA-Hk8H2ps-cfOXNJ_Jt_G7wR64SL0IwM9SyZz7ocmciHVwZ52Ij1OrTg1MS2IQogTINfsqc7KU2eFR2Z2zXB0BmAbDAE0_cmbOEtQfuA13NUuitrJ3KQr0YHT4hgjwqAUGU2iG5iNfenB95VV2l3JT6vKPQ-6u?width=200&height=200&cropmode=none' }}
+                  style={styles.img} />
+              </View>
+              <View style={styles.txtSection}>
+                <Text style={styles.nameTxt}>{item.first_name} {item.last_name}</Text>
+              </View>
+            </Pressable>
+          )}
+        />
+      )}
     </View>
   )
 }

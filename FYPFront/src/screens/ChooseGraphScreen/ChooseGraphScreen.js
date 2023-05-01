@@ -13,6 +13,7 @@ const ChooseGraphScreen = () => {
     const [valueHR, setValueHR] = useState([]);
     const [valueSys, setValueSys] = useState([]);
     const [valueDias, setValueDias] = useState([]);
+    const [error, setError] = useState([]);
     const navigation = useNavigation();
 
     const getProfileData = async () => {
@@ -54,18 +55,26 @@ const ChooseGraphScreen = () => {
     }, [navigation]);
 
     const onSeeHRGraphPressed = () => {
-        navigation.navigate('Graph', { date: date, time: time, value: valueHR });
+        if (valueHR.length > 0) {
+            navigation.navigate('Graph', { date: date, time: time, value: valueHR });
+        } else {
+            setError("There are no heart rate values to show in the graph");
+        }
     };
 
     const onSeeBPGraphPressed = () => {
-        navigation.navigate('Graph', { date: date, time: time, value: valueSys, value2: valueDias });
+        if (valueSys.length > 0) {
+            navigation.navigate('Graph', { date: date, time: time, value: valueSys, value2: valueDias });
+        } else {
+            setError("There are no blood pressure values to show in the graph");
+        }
     };
 
     return (
         <View style={styles.container}>
 
             <Text style={styles.txt}>Choose which graph you want to check</Text>
-
+            <Text style={styles.error}>{error}</Text>
             <CustomButton
                 text="Check Heart Rate Graph"
                 onPress={onSeeHRGraphPressed}

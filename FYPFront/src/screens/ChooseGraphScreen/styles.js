@@ -11,13 +11,10 @@ const styles = StyleSheet.create({
     txt: {
         marginBottom: 20
     },
-    delBtn: {
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginTop: 20,
-        width: '100%',
-        height: 30
-    }
+    error: {
+        fontSize: 16,
+        color: 'red',
+    },
 });
 
 

@@ -18,7 +18,10 @@ const styles = StyleSheet.create({
         padding: 10,
         zIndex: 1,
     },
-    connectText: {
+    connectTextConnect: {
+        color: 'green',
+    },
+    connectTextDisconnect: {
         color: 'red',
     },
     doctorImage: {

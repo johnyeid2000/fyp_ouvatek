@@ -95,7 +95,10 @@ const GraphScreen = ({ route }) => {
 
       {selectedPoint && (
         <View style={{ position: 'absolute', top: selectedPoint.y, left: selectedPoint.x > chartWidth / 2 ? selectedPoint.x - 100 : selectedPoint.x + 10, backgroundColor: '#fff', padding: 10, borderRadius: 10 }}>
-          <Text style={{ fontWeight: 'bold' }}>{selectedPoint.value} {value2 && `/ ` + value2[selectedPoint.index]}</Text >
+          <Text style={{ fontWeight: 'bold' }}>
+            {value[selectedPoint.index]}
+            {value2 && ` / ${value2[selectedPoint.index]}`}
+          </Text>
           <Text style={{ fontWeight: 'bold' }}>{labels[selectedPoint.index]}</Text>
         </View>
       )}

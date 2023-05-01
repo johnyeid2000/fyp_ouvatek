@@ -8,6 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 const AddDoctorScreen = () => {
     const [doctors, setDoctors] = useState([]);
     const [requestsSent, setRequestsSent] = useState([]);
+    const [requestedDoctors, setRequestedDoctors] = useState([]);
     const navigation = useNavigation();
 
     const getDoctor = async () => {
@@ -19,7 +20,9 @@ const AddDoctorScreen = () => {
                 }
             });
             setDoctors(response.data.rows);
+            setRequestedDoctors(response.data.requestedDoctors.map(doctor => doctor.dr_id));
             setRequestsSent(new Array(response.data.rows.length).fill(false));
+
         } catch (error) {
             console.error(error);
         }
@@ -46,7 +49,6 @@ const AddDoctorScreen = () => {
                     'Authorization': `Bearer ${token}`,
                 },
             });
-            console.log(response.data);
             const updatedRequestsSent = [...requestsSent];
             updatedRequestsSent[index] = true;
             setRequestsSent(updatedRequestsSent);
@@ -65,6 +67,48 @@ const AddDoctorScreen = () => {
             avatarUrl = 'https://dub01pap003files.storage.live.com/y4mcMjlOdY1IqkolZCpnZuU7_urbNqxsQ52MSSMNlF8UJmMI8eRKSEzxftp0JDL0jISfqZoRucHibO52EOiE3T5QQylWvzb7LuPtLW6hcfT6hzlM6ol65hzX-zWMa0OSt77eH5N1JuFry3Z3BZeTzd4g8Ek2VhVgHmCj-OYbIpHCqjbQ63MzhT4qk0WWH68Bg_E?width=225&height=225&cropmode=none';
         }
         return avatarUrl;
+    };
+
+    const onDisconnectPressed = async (index, doctor) => {
+        try {
+            const token = await AsyncStorage.getItem('token');
+            const response = await axios.post('https://ouvatek.herokuapp.com/api/denylinkpatient', {
+                dr_id: doctor.dr_id,
+            }, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
+            const updatedRequestsSent = [...requestsSent];
+            updatedRequestsSent[index] = false;
+            setRequestsSent(updatedRequestsSent);
+            getDoctor();
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+
+    const renderConnectButton = (index, doctor) => {
+        if (requestsSent[index]) {
+            return (
+                <Pressable style={{ width: "28%", alignItems: "center" }} onPress={() => onDisconnectPressed(index, doctor)}>
+                    <Text style={styles.connectTextDisconnect}>Remove Request</Text>
+                </Pressable>
+            );
+        } else if (requestedDoctors.includes(doctor.dr_id)) {
+            return (
+                <Pressable style={{ width: "28%", alignItems: "center" }} onPress={() => onDisconnectPressed(index, doctor)}>
+                    <Text style={styles.connectTextDisconnect}>Remove Request</Text>
+                </Pressable>
+            );
+        } else {
+            return (
+                <Pressable style={{ width: "28%", alignItems: "center" }} onPress={() => onConnectPressed(index, doctor)}>
+                    <Text style={styles.connectTextConnect}>Connect</Text>
+                </Pressable>
+            );
+        }
     };
 
     return (
@@ -93,9 +137,8 @@ const AddDoctorScreen = () => {
                             </View>
                         </Pressable>
 
-                        <Pressable style={{ width: "28%", alignItems: "center" }} onPress={() => onConnectPressed(index, doctor)}>
-                            <Text style={styles.connectText}>{requestsSent[index] ? "Request Sent" : "Connect"}</Text>
-                        </Pressable>
+                        {renderConnectButton(index, doctor)}
+
                     </View>
                 ))}
             </ScrollView>

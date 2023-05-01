@@ -82,7 +82,11 @@ const Spo2Screen = () => {
     }, [navigation]);
 
     const onSeeGraphPressed = () => {
-        navigation.navigate('Graph', { date: date, time: time, value: value });
+        if (value.length > 0) {
+            navigation.navigate('Graph', { date: date, time: time, value: value });
+        } else {
+            setError("There are no spo2 values to show in the graph");
+        }
     };
 
     return (
