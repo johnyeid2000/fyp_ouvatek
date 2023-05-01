@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, ScrollView } from 'react-native';
 import axios from 'axios';
 import styles from './styles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -59,7 +59,7 @@ const CheckSPO2Screen = ({ route }) => {
 
 
     return (
-        <View style={styles.container}>
+        <ScrollView style={styles.container}>
             <Text style={styles.error}>{error}</Text>
 
             <View style={styles.header}>
@@ -73,11 +73,11 @@ const CheckSPO2Screen = ({ route }) => {
                 </View>
             ))}
 
-                    <CustomButton
-                        text="Check SPO2 Graph"
-                        onPress={onSeeGraphPressed}
-                    />
-        </View>
+            <CustomButton
+                text="Check SPO2 Graph"
+                onPress={onSeeGraphPressed}
+            />
+        </ScrollView>
     );
 };
 

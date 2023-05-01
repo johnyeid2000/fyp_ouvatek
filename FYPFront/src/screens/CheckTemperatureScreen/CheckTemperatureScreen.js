@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, ScrollView } from 'react-native';
 import axios from 'axios';
 import styles from './styles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -58,7 +58,7 @@ const CheckTemperatureScreen = ({ route }) => {
     };
 
     return (
-        <View style={styles.container}>
+        <ScrollView style={styles.container}>
             <Text style={styles.error}>{error}</Text>
 
             <View style={styles.header}>
@@ -76,7 +76,7 @@ const CheckTemperatureScreen = ({ route }) => {
                 text="Check Temperature Graph"
                 onPress={onSeeGraphPressed}
             />
-        </View>
+        </ScrollView>
     );
 };
 

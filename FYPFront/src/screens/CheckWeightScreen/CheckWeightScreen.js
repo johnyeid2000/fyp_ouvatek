@@ -5,6 +5,7 @@ import styles from './styles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CustomButton from '../../components/CustomButton';
 import { useNavigation } from '@react-navigation/native';
+import { ScrollView } from 'react-native';
 
 
 const CheckWeightScreen = ({ route }) => {
@@ -59,7 +60,7 @@ const CheckWeightScreen = ({ route }) => {
 
 
     return (
-        <View style={styles.container}>
+        <ScrollView style={styles.container}>
             <Text style={styles.error}>{error}</Text>
 
             <View style={styles.header}>
@@ -78,7 +79,7 @@ const CheckWeightScreen = ({ route }) => {
                 onPress={onSeeGraphPressed}
             />
 
-        </View>
+        </ScrollView>
     );
 };
 
