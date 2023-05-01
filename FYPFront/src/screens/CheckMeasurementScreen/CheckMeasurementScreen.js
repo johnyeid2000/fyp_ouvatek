@@ -63,19 +63,13 @@ const CheckMeasurementScreen = () => {
   }, [navigation]);
 
   const patientPressed = (item) => {
-    navigation.navigate('PatientMeasurements', { Name: item.first_name + ' ' + item.last_name, trimester: item.trimester_name, pat_id: item.pat_id });
+    navigation.navigate('PatientMeasurements', { id: item.id });
   };
 
-  const newRequestPressed = () => {
-    navigation.navigate('NewRequest');
-  };
 
   return (
     <View style={styles.container}>
-      <Pressable onPress={newRequestPressed} style={styles.newReq}>
-        <Icon name='account-outline' style={{ fontSize: 20, marginRight: 10 }} />
-        <Text style={styles.txtNewReq}>New Requests</Text>
-      </Pressable>
+
       {patients.length === 0 ? (
         <View>
           <Text style={{ marginTop: 30 }}>You have no linked Patients.</Text>

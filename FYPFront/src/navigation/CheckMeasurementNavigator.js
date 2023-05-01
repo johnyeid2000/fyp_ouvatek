@@ -18,16 +18,6 @@ const CheckMeasurementNavigator = () => {
             />
 
             <Stack.Screen
-                name='NewRequest'
-                component={NewRequestScreen}
-            />
-
-            <Stack.Screen
-                name='CheckPatientInfo'
-                component={CheckPatientInformationScreen}
-            />
-
-            <Stack.Screen
                 name='PatientMeasurements'
                 component={PatientMeasurementScreen}
             />

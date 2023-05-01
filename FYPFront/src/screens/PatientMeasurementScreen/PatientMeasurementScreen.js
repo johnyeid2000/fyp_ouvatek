@@ -9,7 +9,7 @@ import { useNavigation } from '@react-navigation/native';
 const PatientMeasurementScreen = ({ route }) => {
 
   const navigation = useNavigation();
-  const { Name, trimester, pat_id } = route.params;
+  const { id } = route.params;
 
   const HeartRatePressed = () => {
   };
@@ -39,8 +39,8 @@ const PatientMeasurementScreen = ({ route }) => {
             <Title style={[styles.title, {
               marginTop: 15,
               marginBottom: 5,
-            }]}>{Name}</Title>
-            <Caption style={styles.caption}>{trimester}</Caption>
+            }]}></Title>
+            <Caption style={styles.caption}></Caption>
           </View>
         </View>
       </View>
