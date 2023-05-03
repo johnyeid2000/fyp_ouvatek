@@ -3397,6 +3397,7 @@ app.post("/api/checkavailablestarttime", (req,res) =>{
 		if (result.indicator) {
 			let startTimes = ["08:00","09:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00","18:00","19:00"];
 			let day = req.body.dayOfWeek;
+			console.log(day);
 			if(day){
 				let sql = "SELECT dr_id FROM `doctor` WHERE user_id = ?"
 				con.connection.query(sql, result.value.userId, function(error, rows){
@@ -3437,7 +3438,7 @@ app.post("/api/checkavailablestarttime", (req,res) =>{
 				});
 			}
 			else {
-				return res.status(400).send({ message: "Missing Fields." });
+				return res.status(401).send({ message: "You have not chosen a day." });
 			}
 		} else {
 			return res
