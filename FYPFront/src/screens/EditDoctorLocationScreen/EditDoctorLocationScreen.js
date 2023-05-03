@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Pressable, Text, Alert } from 'react-native';
+import { View, Pressable, Text, Alert, ScrollView } from 'react-native';
 import styles from './styles';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -83,7 +83,7 @@ const EditDoctorLocationScreen = () => {
     };
 
     return (
-        <View style={styles.userInfoSection}>
+        <ScrollView style={styles.userInfoSection}>
             <Text>You can press the name of the clinic in order to update its information and
                 press the delete button if you want to remove a clinic</Text>
             <Text style={styles.error}>{editStatus}</Text>
@@ -108,7 +108,7 @@ const EditDoctorLocationScreen = () => {
                     onPress={addAddClinicPressed}
                 />
             </View>
-        </View>
+        </ScrollView>
 
     );
 };

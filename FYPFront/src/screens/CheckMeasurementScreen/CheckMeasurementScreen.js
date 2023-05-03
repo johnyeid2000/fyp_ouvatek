@@ -63,7 +63,7 @@ const CheckMeasurementScreen = () => {
   }, [navigation]);
 
   const patientPressed = (item) => {
-    navigation.navigate('PatientMeasurements', { id: item.id });
+    navigation.navigate('PatientMeasurements', { id: item.id, pat_id: item.pat_id });
   };
 
 

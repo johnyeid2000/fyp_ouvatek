@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, SafeAreaView, Pressable, Alert } from 'react-native';
+import { View, SafeAreaView, Pressable, Alert, ScrollView } from 'react-native';
 import { Avatar, Title, Caption, Text } from 'react-native-paper';
 import styles from './styles';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -91,7 +91,7 @@ const DoctorProfileScreen = () => {
         </View>
       </View>
 
-      <View style={styles.userInfoSection}>
+      <ScrollView style={styles.userInfoSection}>
         {clinics.map((clinic, index) => (
           <View key={index} style={styles.row}>
             <Icon name="hospital-building" color="#651B70" size={20} />
@@ -126,7 +126,7 @@ const DoctorProfileScreen = () => {
           <Icon name="book-outline" color="#651B70" size={20} />
           <Text style={styles.txtRow}>{specificData.biography}</Text>
         </View>
-      </View>
+      </ScrollView>
 
     </SafeAreaView>
   );
