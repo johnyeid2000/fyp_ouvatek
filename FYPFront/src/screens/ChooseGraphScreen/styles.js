@@ -4,17 +4,23 @@ import { StyleSheet } from 'react-native';
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
         alignItems: 'center',
-        padding: 40,
-    },
-    txt: {
-        marginBottom: 20
+        padding: 10,
     },
     error: {
         fontSize: 16,
         color: 'red',
     },
+    btnContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginTop: 'auto',
+        marginBottom: -10
+    },
+    btn: {
+        margin: '1%',
+        width: '50%',
+    }
 });
 
 

@@ -1,9 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, Dimensions } from 'react-native';
-
 import { LineChart } from "react-native-chart-kit";
-
-import styles from './styles';
 
 const GraphScreen = ({ route }) => {
 
@@ -11,7 +8,6 @@ const GraphScreen = ({ route }) => {
   const [selectedPoint, setSelectedPoint] = useState(null);
 
   const labels = date.map((d, i) => `${d} ${time[i]}`);
-
   const screenWidth = Dimensions.get('window').width;
   const screenHeight = Dimensions.get('window').height;
   const chartWidth = screenWidth * 0.98;
@@ -73,12 +69,13 @@ const GraphScreen = ({ route }) => {
         chartConfig={{
           decimalPlaces: 1, // optional, defaults to 2dp
           backgroundColor: "#FFFFFF",
-          backgroundGradientFrom: "#808080",
-          backgroundGradientTo: "#808080",
+          backgroundGradientFrom: "#D3D3D3",
+          backgroundGradientTo: "#D3D3D3",
           color: () => `rgb(101, 27, 112)`,
-          labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+          labelColor: (opacity = 1) => `rgba(101, 27, 112, ${opacity})`,
           propsForDots: {
-            stroke: "#E5B8F4",
+            r: 6,
+            stroke: "#651B70",
           },
         }}
         bezier
