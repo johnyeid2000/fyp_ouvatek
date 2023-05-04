@@ -6,7 +6,7 @@ const styles = StyleSheet.create({
   },
   userInfoSection: {
     //marginTop:25,
-    paddingHorizontal: 30,
+    paddingHorizontal: 20,
     marginBottom: 25,
   },
   title: {
@@ -25,10 +25,6 @@ const styles = StyleSheet.create({
   txtRow: {
     color: "black",
     marginLeft: 20,
-  },
-  btn: {
-    width: '50%',
-    marginLeft: '25%',
   },
   editLogoutContainer: {
     flexDirection: 'row',

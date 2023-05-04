@@ -4,25 +4,20 @@ import CustomPicker from '../../components/CustomPicker/CustomPicker';
 import CustomInput from '../../components/CustomInput';
 import CustomButton from "../../components/CustomButton/CustomButton";
 import styles from './styles';
-
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
-
 
 const EditGeneralInfoScreen = () => {
     const [fname, setFname] = useState('');
     const [lname, setLname] = useState('');
     const [email, setEmail] = useState('');
     const [oldMail, setOldMail] = useState('');
-
     const [countries, setCountries] = useState([]);
     const [selectedCountry, setSelectedCountry] = useState(null);
-
     const [phoneNb, setPhoneNb] = useState('');
     const [editStatus, setEditStatus] = useState(null);
     const [isPressed, setIsPressed] = useState(false);
-
     const [userData, setUserData] = useState('');
     const navigation = useNavigation();
 

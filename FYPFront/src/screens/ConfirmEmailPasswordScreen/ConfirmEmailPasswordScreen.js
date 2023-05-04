@@ -1,12 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Text, View, BackHandler } from "react-native";
 import axios from "axios";
-
 import CustomInput from '../../components/CustomInput';
 import CustomButton from "../../components/CustomButton/CustomButton";
-
 import styles from './styles';
-
 import { useNavigation } from '@react-navigation/native';
 
 const ConfirmEmailPasswordScreen = ({ route }) => {

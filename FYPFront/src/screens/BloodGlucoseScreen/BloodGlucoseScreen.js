@@ -131,7 +131,7 @@ const BloodGlucoseScreen = () => {
                     </RadioButton.Group>
                 </View>
 
-                <View style={styles.btnContainer}>
+                <View>
                     <CustomButton
                         text={isPressedCheckVal ? "Checking values" : "Check Values"}
                         onPress={onCheckValuePressed}
@@ -139,7 +139,7 @@ const BloodGlucoseScreen = () => {
                     />
                 </View>
 
-                <View style={styles.btnContainer}>
+                <View>
                     <CustomButton
                         text="See Graph"
                         onPress={onSeeGraphPressed}

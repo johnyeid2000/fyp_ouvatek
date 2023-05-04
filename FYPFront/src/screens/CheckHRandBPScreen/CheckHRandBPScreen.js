@@ -11,7 +11,6 @@ const CheckHRandBPScreen = ({ route }) => {
 
     const { pat_id } = route.params;
     const [values, setValues] = useState([]);
-
     const [date, setDate] = useState([]);
     const [time, setTime] = useState([]);
     const [valueHR, setValueHR] = useState([]);

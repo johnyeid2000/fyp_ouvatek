@@ -6,11 +6,10 @@ import styles from './styles';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-
 const CheckMeasurementScreen = () => {
   const [patients, setPatients] = useState([]);
-
   const navigation = useNavigation();
+
   const getMyPatients = async () => {
     try {
       const token = await AsyncStorage.getItem('token');
@@ -66,13 +65,12 @@ const CheckMeasurementScreen = () => {
     navigation.navigate('PatientMeasurements', { id: item.id, pat_id: item.pat_id });
   };
 
-
   return (
     <View style={styles.container}>
 
       {patients.length === 0 ? (
         <View>
-          <Text style={{ marginTop: 30 }}>You have no linked Patients.</Text>
+          <Text style={{ marginTop: 80 }}>You have no linked Patients.</Text>
         </View>
       ) : (
         <FlatList

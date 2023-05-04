@@ -9,15 +9,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
     marginBottom: 25,
   },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  caption: {
-    fontSize: 14,
-    lineHeight: 14,
-    fontWeight: '500',
-  },
   row: {
     flexDirection: 'row',
     marginBottom: 10,
@@ -26,16 +17,6 @@ const styles = StyleSheet.create({
     color: "black",
     marginLeft: 20,
   },
-  btn: {
-    width: '50%',
-    marginLeft: '25%',
-  },
-  editLogoutContainer: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    marginTop: '2%'
-  }
-
 });
 
 export default styles;

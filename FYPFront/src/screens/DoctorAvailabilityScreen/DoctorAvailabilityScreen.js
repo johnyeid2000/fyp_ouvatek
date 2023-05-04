@@ -9,7 +9,6 @@ import { useNavigation } from '@react-navigation/native';
 const DoctorAvailabilityScreen = () => {
 
     const [schedule, setSchedule] = useState([]);
-
     const navigation = useNavigation();
 
     const getSchedule = async () => {
@@ -38,25 +37,6 @@ const DoctorAvailabilityScreen = () => {
     const onAddAvailabilityPressed = () => {
         navigation.navigate("AddAvailability");
     };
-
-    // const onDeleteTimePressed = async (slot) => {
-    //     try {
-    //         const token = await AsyncStorage.getItem('token');
-    //         const response = await axios.post('https://ouvatek.herokuapp.com/api/deletetime', {
-    //             timeChosen: slot.avail_id
-    //         }, {
-    //             headers: {
-    //                 'Authorization': `Bearer ${token}`
-    //             }
-    //         });
-    //         if (response.status === 200) {
-    //             getSchedule();
-    //         }
-    //     } catch (error) {
-    //         console.error(error);
-    //     }
-    // };
-
 
     const onDeleteTimePressed = async (slot) => {
         try {
@@ -120,7 +100,7 @@ const DoctorAvailabilityScreen = () => {
                                                 <View key={index} style={{ flexDirection: 'row', alignItems: 'center' }}>
                                                     <Text style={styles.timeTxt}>{`From ${slot.start_time}- To ${slot.end_time}`}</Text>
                                                     <Pressable onPress={() => onDeleteTimePressed(slot)}>
-                                                        <Icon name='delete' style={{ marginLeft: '65%', marginTop: 15 }} size={14} />
+                                                        <Icon name='delete' style={{ marginLeft: '65%', marginTop: 15 }} size={16} />
                                                     </Pressable>
                                                 </View>
                                             ))

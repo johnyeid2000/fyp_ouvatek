@@ -1,27 +1,23 @@
 import React, { useState, useEffect } from "react";
 import { Text, View, ScrollView, BackHandler } from "react-native";
 import axios from "axios";
-
 import CustomPicker from '../../components/CustomPicker/CustomPicker';
 import CustomInput from '../../components/CustomInput';
 import CustomButton from "../../components/CustomButton/CustomButton";
 import styles from './styles';
-
 import { useNavigation } from '@react-navigation/native';
 
 const DoctorInformationScreen = ({ route }) => {
     const [speciality, setSpeciality] = useState('');
     const [gender, setGender] = useState(null);
     const [oopnum, setOopnum] = useState('');
-
     const [exp, setExp] = useState([]);
     const [experience, setExperience] = useState(null);
-
     const [biography, setBiography] = useState('');
     const [isPressed, setIsPressed] = useState(false);
-
     const [doctorInfoStatus, setDoctorInfoStatus] = useState(null);
     const { id } = route.params;
+    const navigation = useNavigation();
 
     const optionsGender = [
         { label: 'Male', value: 'Male' },
@@ -46,8 +42,6 @@ const DoctorInformationScreen = ({ route }) => {
                 console.log(error);
             });
     }, []);
-
-    const navigation = useNavigation();
 
     useEffect(() => {
         const backHandler = BackHandler.addEventListener('hardwareBackPress', handleBackPress);

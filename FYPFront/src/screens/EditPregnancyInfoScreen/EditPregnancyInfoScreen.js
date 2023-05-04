@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, ScrollView } from "react-native";
+import { Text, View, ScrollView, Pressable } from "react-native";
 import { Checkbox } from 'react-native-paper';
 import CustomPicker from '../../components/CustomPicker/CustomPicker';
 import CustomInput from '../../components/CustomInput';
 import CustomDatePicker from "../../components/CustomDatePicker/CustomDatePicker";
 import CustomButton from "../../components/CustomButton/CustomButton";
 import styles from './styles';
-
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
-
 
 const EditPregnancyInfoScreen = () => {
     const [birthDate, setBirthDate] = useState('');
@@ -23,10 +21,8 @@ const EditPregnancyInfoScreen = () => {
     const [checkPrevPreg, setCheckPrevPreg] = useState(false);
     const [Surgeries, setSurgeries] = useState([]);
     const [selectedSurgeries, setSelectedSurgeries] = useState(null);
-
     const [editStatus, setEditStatus] = useState(null);
     const [isPressed, setIsPressed] = useState(false);
-
     const [specificData, setSpecificData] = useState('');
     const navigation = useNavigation();
 
@@ -145,35 +141,32 @@ const EditPregnancyInfoScreen = () => {
                     opt={Medication.map(medication => ({ label: medication.medication_name, value: medication.medication_id }))}
                 />
 
-                <Text style={styles.txt}>Check the box next to your corresponding case(s):</Text>
+                <Text>Check the box next to your corresponding case(s):</Text>
 
                 <View style={styles.checkboxContainer}>
-                    <View style={styles.checkbox}>
+                    <Pressable style={styles.checkbox} onPress={() => { setCheckDiabetes(!checkDiabetes); }}>
                         <Checkbox
                             status={checkDiabetes ? 'checked' : 'unchecked'}
-                            onPress={() => { setCheckDiabetes(!checkDiabetes); }}
                             color='#651B70'
                         />
                         <Text>Diabetes </Text>
-                    </View>
+                    </Pressable>
 
-                    <View style={styles.checkbox}>
+                    <Pressable style={styles.checkbox} onPress={() => { setCheckHypertension(!checkHypertension); }}>
                         <Checkbox
                             status={checkHypertension ? 'checked' : 'unchecked'}
-                            onPress={() => { setCheckHypertension(!checkHypertension); }}
                             color='#651B70'
                         />
                         <Text>Hypertension </Text>
-                    </View>
+                    </Pressable>
 
-                    <View style={styles.checkbox}>
+                    <Pressable style={styles.checkbox} onPress={() => { setCheckPrevPreg(!checkPrevPreg); }}>
                         <Checkbox
                             status={checkPrevPreg ? 'checked' : 'unchecked'}
-                            onPress={() => { setCheckPrevPreg(!checkPrevPreg); }}
                             color='#651B70'
                         />
                         <Text>Previous Pregnancies </Text>
-                    </View>
+                    </Pressable>
 
                 </View>
 

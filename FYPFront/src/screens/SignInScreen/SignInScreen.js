@@ -1,15 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Text, ScrollView, View, Image, useWindowDimensions, BackHandler, Alert } from "react-native";
+import { Text, ScrollView, View, Image, useWindowDimensions, BackHandler, Alert, Pressable } from "react-native";
 import { Checkbox } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
 import axios from 'axios';
-
-//import Logo from '../../assets/images/OuvatekLogo.png';
 import CustomInput from '../../components/CustomInput';
 import CustomButton from "../../components/CustomButton/CustomButton";
 import styles from './styles';
-
 import { useNavigation } from '@react-navigation/native';
 
 const SignInScreen = () => {
@@ -17,11 +13,8 @@ const SignInScreen = () => {
   const [password, setPassword] = useState('');
   const [checked, setChecked] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
-
   const [loginStatus, setLoginStatus] = useState(null);
-
   const { height } = useWindowDimensions();
-
   const navigation = useNavigation();
 
   const loginUser = async () => {
@@ -133,14 +126,14 @@ const SignInScreen = () => {
           isPassword
         />
 
-        <View style={styles.checkbox}>
+        <Pressable onPress={() => { setChecked(!checked); }} style={styles.checkbox}>
           <Checkbox
             status={checked ? 'checked' : 'unchecked'}
-            onPress={() => { setChecked(!checked); }}
             color='#651B70'
           />
           <Text> Sign in as a doctor </Text>
-        </View>
+        </Pressable>
+
 
         <CustomButton
           text={isPressed ? 'Signing In...' : 'Sign In'}

@@ -4,14 +4,12 @@ import CustomInput from '../../components/CustomInput';
 import CustomButton from "../../components/CustomButton/CustomButton";
 import styles from './styles';
 import axios from 'axios';
-
 import { useNavigation } from '@react-navigation/native';
 
 const ForgotPasswordScreen = () => {
     const [email, setEmail] = useState('');
     const [forgotPassStatus, setForgotPassStatus] = useState(null);
     const [isPressed, setIsPressed] = useState(false);
-
     const navigation = useNavigation();
 
     const onSendPressed = async () => {

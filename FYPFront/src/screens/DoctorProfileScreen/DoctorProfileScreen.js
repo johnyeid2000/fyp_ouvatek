@@ -5,14 +5,12 @@ import styles from './styles';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
 import { useNavigation } from '@react-navigation/native';
 
 const DoctorProfileScreen = () => {
   const [userData, setUserData] = useState('');
   const [specificData, setSpecificData] = useState('');
   const [clinics, setClinics] = useState([]);
-
   const navigation = useNavigation();
 
   const getProfileData = async () => {
@@ -61,7 +59,6 @@ const DoctorProfileScreen = () => {
     avatarUrl = 'https://dub01pap003files.storage.live.com/y4mcMjlOdY1IqkolZCpnZuU7_urbNqxsQ52MSSMNlF8UJmMI8eRKSEzxftp0JDL0jISfqZoRucHibO52EOiE3T5QQylWvzb7LuPtLW6hcfT6hzlM6ol65hzX-zWMa0OSt77eH5N1JuFry3Z3BZeTzd4g8Ek2VhVgHmCj-OYbIpHCqjbQ63MzhT4qk0WWH68Bg_E?width=225&height=225&cropmode=none';
   }
 
-
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.editLogoutContainer}>
@@ -95,10 +92,10 @@ const DoctorProfileScreen = () => {
         {clinics.map((clinic, index) => (
           <View key={index} style={styles.row}>
             <Icon name="hospital-building" color="#651B70" size={20} />
-            <Text style={styles.txtRow}><Text style={{ fontWeight: 'bold' }}>Clinic {index + 1}:</Text> {clinic.country} - {clinic.city} -
-              Street {clinic.street} - Building {clinic.building} -
-              Floor {clinic.floor} -  <Icon name="phone-classic" color="#d1a4eb" size={20} />
-              {clinic.number}</Text>
+            <Text style={styles.txtRow}><Text style={{ fontWeight: 'bold' }}>
+              Clinic {index + 1}:</Text> {clinic.country} - {clinic.city} -
+              Street {clinic.street} - Building {clinic.building} - Floor {clinic.floor} -
+              <Icon name="phone-classic" color="#d1a4eb" size={20} />{clinic.number}</Text>
           </View>
         ))}
 

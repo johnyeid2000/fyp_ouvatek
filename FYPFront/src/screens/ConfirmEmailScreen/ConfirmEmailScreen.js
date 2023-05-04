@@ -1,12 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Text, View, BackHandler } from "react-native";
 import axios from "axios";
-
 import CustomInput from '../../components/CustomInput';
 import CustomButton from "../../components/CustomButton/CustomButton";
-
 import styles from './styles';
-
 import { useNavigation } from '@react-navigation/native';
 
 const ConfirmEmailScreen = ({ route }) => {
@@ -14,7 +11,6 @@ const ConfirmEmailScreen = ({ route }) => {
     const [isResendDisabled, setIsResendDisabled] = useState(true);
     const [confirmEmailStatus, setConfirmEmailStatus] = useState(null);
     const [isPressed, setIsPressed] = useState(false);
-
     const { id } = route.params;
     const navigation = useNavigation();
 
@@ -46,7 +42,6 @@ const ConfirmEmailScreen = ({ route }) => {
         // Return true to prevent default back navigation
         return true;
     };
-
 
     const onConfirmPressed = async () => {
         setIsPressed(true);

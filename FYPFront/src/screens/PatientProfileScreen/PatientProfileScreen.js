@@ -5,13 +5,11 @@ import styles from './styles';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
 import { useNavigation } from '@react-navigation/native';
 
 const PatientProfileScreen = () => {
   const [userData, setUserData] = useState('');
   const [specificData, setSpecificData] = useState('');
-
   const navigation = useNavigation();
 
   const getProfileData = async () => {

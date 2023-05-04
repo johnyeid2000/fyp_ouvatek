@@ -2,10 +2,15 @@ import { StyleSheet } from 'react-native';
 
 
 const styles = StyleSheet.create({
-    btnView: {
-        width: '40%',
-        marginLeft: '55%',
-        marginTop: '5%',
+    // btnView: {
+    //     width: '40%',
+    //     marginLeft: '55%',
+    //     marginTop: '5%',
+    // },
+    icon: {
+        fontSize: 30,
+        marginTop: 10,
+        marginLeft: '88%',
     },
     txtView: {
         marginTop: 20,
@@ -16,7 +21,7 @@ const styles = StyleSheet.create({
     },
     txt: {
         margin: 20,
-        fontSize: 24,
+        fontSize: 16,
     },
     modalView: {
         marginTop: 20,

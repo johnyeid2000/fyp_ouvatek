@@ -56,6 +56,7 @@ const PatientMeasurementScreen = ({ route }) => {
   const WeightPressed = () => {
     navigation.navigate('CheckWeight', { pat_id });
   };
+  
   return (
     <SafeAreaView style={styles.container}>
 

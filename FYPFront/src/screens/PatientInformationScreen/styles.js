@@ -31,11 +31,6 @@ const styles = StyleSheet.create({
         color:'red',
         marginBottom:5
     },
-    picker: {
-    width: 200,
-    borderWidth: 1,
-    borderColor: 'gray'
-  }
 });
 
 export default styles;

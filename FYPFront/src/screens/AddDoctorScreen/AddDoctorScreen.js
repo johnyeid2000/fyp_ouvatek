@@ -88,7 +88,6 @@ const AddDoctorScreen = () => {
         }
     };
 
-
     const renderConnectButton = (index, doctor) => {
         if (requestsSent[index]) {
             return (

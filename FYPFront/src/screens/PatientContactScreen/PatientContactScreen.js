@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, Image, TouchableOpacity, Pressable } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -7,12 +6,11 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import styles from './styles';
 import { useNavigation } from '@react-navigation/native';
 
-
 const PatientContactScreen = () => {
     const [doctors, setDoctors] = useState([]);
     const [selectedDoctor, setSelectedDoctor] = useState(null);
-
     const navigation = useNavigation();
+
     const getMyDoctors = async () => {
         try {
             const token = await AsyncStorage.getItem('token');
@@ -87,7 +85,7 @@ const PatientContactScreen = () => {
     return (
         <View style={styles.container}>
             <Pressable onPress={onAddDoctorPressed} >
-                <Icon name='square-edit-outline' style={styles.icon} />
+                <Icon name='plus' style={styles.icon} />
             </Pressable>
             {doctors.length === 0 ? (
                 <View style={styles.noDoctorsContainer}>

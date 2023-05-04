@@ -9,7 +9,6 @@ import { useNavigation } from '@react-navigation/native';
 const DoctorContactScreen = () => {
     const [patients, setPatients] = useState([]);
     const [selectedPatient, setSelectedPatient] = useState(null);
-
     const navigation = useNavigation();
 
     const getMyPatients = async () => {

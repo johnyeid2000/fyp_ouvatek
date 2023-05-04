@@ -5,24 +5,22 @@ import CustomPicker from '../../components/CustomPicker/CustomPicker';
 import CustomInput from '../../components/CustomInput';
 import CustomButton from "../../components/CustomButton/CustomButton";
 import styles from './styles';
-
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from "@react-native-async-storage/async-storage";
+
 const AddClinicScreen = ({ route }) => {
 
     const [countries, setCountries] = useState([]);
     const [selectedCountry, setSelectedCountry] = useState(null);
-
     const [city, setCity] = useState('');
     const [street, setStreet] = useState('');
     const [building, setBuilding] = useState('');
     const [floor, setFloor] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
     const [isPressed, setIsPressed] = useState(false);
-
-    const { doctorId, getProfileData } = route.params;
-
+    const { doctorId } = route.params;
     const [doctorClinicStatus, setDoctorClinicStatus] = useState("");
+    const navigation = useNavigation();
 
     useEffect(() => {
         axios.get('https://ouvatek.herokuapp.com/api/countries')
@@ -33,8 +31,6 @@ const AddClinicScreen = ({ route }) => {
                 console.log(error);
             });
     }, []);
-
-    const navigation = useNavigation();
 
     const insertDoctorClinic = async () => {
         setIsPressed(true);
@@ -51,8 +47,6 @@ const AddClinicScreen = ({ route }) => {
             );
             if (response.status === 200) {
                 navigation.navigate('EditLocation');
-                // getProfileData();
-                // navigation.goBack();
             }
         } catch (error) {
             setDoctorClinicStatus(error.response.data.message);

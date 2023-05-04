@@ -4,7 +4,6 @@ import CustomPicker from '../../components/CustomPicker/CustomPicker';
 import CustomInput from '../../components/CustomInput';
 import CustomButton from "../../components/CustomButton/CustomButton";
 import styles from './styles';
-
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
@@ -14,16 +13,12 @@ const EditDoctorInfoScreen = () => {
     const [speciality, setSpeciality] = useState('');
     const [gender, setGender] = useState(null);
     const [oopnum, setOopnum] = useState('');
-
     const [exp, setExp] = useState([]);
     const [experience, setExperience] = useState(null);
-
     const [biography, setBiography] = useState('');
     const [isPressed, setIsPressed] = useState(false);
-
     const [editStatus, setEditStatus] = useState(null);
     const [specificData, setSpecificData] = useState('');
-
 
     const optionsGender = [
         { label: 'Male', value: 'Male' },

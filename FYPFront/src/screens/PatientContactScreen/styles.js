@@ -39,10 +39,6 @@ const styles = StyleSheet.create({
         fontSize: 14,
         fontWeight: 'bold',
     },
-    userInfoTime: {
-        fontSize: 12,
-        color: '#666',
-    },
     msgTxt: {
         fontSize: 14,
         color: '#333333',

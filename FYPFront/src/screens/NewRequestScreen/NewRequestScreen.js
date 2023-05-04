@@ -4,7 +4,6 @@ import axios from "axios";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useNavigation } from '@react-navigation/native';
-
 import styles from './styles';
 import { Alert } from 'react-native';
 

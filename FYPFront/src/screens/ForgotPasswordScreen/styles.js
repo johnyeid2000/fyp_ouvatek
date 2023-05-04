@@ -12,10 +12,6 @@ const styles = StyleSheet.create({
         margin:10,   
         marginVertical:30,
     },
-    text:{
-        color:'gray',
-        marginVertical:10,
-    },
     error:{
         fontSize:16,
         color:'red',

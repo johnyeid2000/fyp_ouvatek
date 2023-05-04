@@ -15,7 +15,6 @@ const HeartRateScreen = () => {
   const [diastolic, setDiastolic] = useState('');
   const [isPressed, setIsPressed] = useState(false);
   const [isPressedCheckVal, setIsPressedCheckVal] = useState(false);
-
   const [error, setError] = useState(null);
 
   const addHRandBP = async (isChecked) => {

@@ -7,10 +7,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         padding: 20
     },
-    pressableText: {
-        marginLeft: '20%',
-        fontSize: 20
-    },
     icon: {
         fontSize: 20,
         marginLeft: '2%',

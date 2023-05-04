@@ -6,12 +6,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import CustomButton from '../../components/CustomButton';
 import { useNavigation } from '@react-navigation/native';
 
-
 const CheckSPO2Screen = ({ route }) => {
 
     const { pat_id } = route.params;
     const [values, setValues] = useState([]);
-
     const [date, setDate] = useState([]);
     const [time, setTime] = useState([]);
     const [valueSPO2, setValueSPO2] = useState([]);
