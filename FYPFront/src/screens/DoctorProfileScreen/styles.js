@@ -5,13 +5,16 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   userInfoSection: {
-    //marginTop:25,
     paddingHorizontal: 20,
     marginBottom: 25,
+    flexWrap: 'wrap',
   },
   title: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
+    marginTop: 15,
+    marginBottom: 5,
+    marginRight: 10,
   },
   caption: {
     fontSize: 14,
@@ -25,6 +28,7 @@ const styles = StyleSheet.create({
   txtRow: {
     color: "black",
     marginLeft: 20,
+    flexShrink: 1
   },
   editLogoutContainer: {
     flexDirection: 'row',

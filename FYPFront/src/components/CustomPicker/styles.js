@@ -32,6 +32,7 @@ const styles = StyleSheet.create({
     },
     pickerItem: {
         fontSize: 14,
+        color: 'black'
     }
 });
 

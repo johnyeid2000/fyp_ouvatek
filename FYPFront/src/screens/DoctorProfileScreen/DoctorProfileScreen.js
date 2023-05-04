@@ -70,6 +70,7 @@ const DoctorProfileScreen = () => {
           <Icon name='logout' color="#777777" size={25} style={{ marginRight: '5%' }} />
         </Pressable>
       </View>
+
       <View style={styles.userInfoSection}>
         <View style={{ flexDirection: 'row' }}>
           <Avatar.Image
@@ -78,11 +79,8 @@ const DoctorProfileScreen = () => {
             size={80}
             style={{ backgroundColor: 'white' }}
           />
-          <View style={{ marginLeft: 20 }}>
-            <Title style={[styles.title, {
-              marginTop: 15,
-              marginBottom: 5,
-            }]}>{userData.first_name} {userData.last_name}</Title>
+          <View style={{ marginHorizontal: 20 }}>
+            <Title style={styles.title}>{userData.first_name} {userData.last_name}</Title>
             <Caption style={styles.caption}>{userData.email}</Caption>
           </View>
         </View>
@@ -92,10 +90,11 @@ const DoctorProfileScreen = () => {
         {clinics.map((clinic, index) => (
           <View key={index} style={styles.row}>
             <Icon name="hospital-building" color="#651B70" size={20} />
-            <Text style={styles.txtRow}><Text style={{ fontWeight: 'bold' }}>
-              Clinic {index + 1}:</Text> {clinic.country} - {clinic.city} -
+            <Text style={styles.txtRow}>
+              <Text style={{ fontWeight: 'bold' }}>Clinic {index + 1}:</Text> {clinic.country} - {clinic.city} -
               Street {clinic.street} - Building {clinic.building} - Floor {clinic.floor} -
-              <Icon name="phone-classic" color="#d1a4eb" size={20} />{clinic.number}</Text>
+              <Icon name="phone-classic" color="#d1a4eb" size={20} />{clinic.number}
+            </Text>
           </View>
         ))}
 

@@ -136,6 +136,7 @@ const EditDoctorInfoScreen = () => {
                     setValue={setBiography}
                     customStyle={{ height: 300, textAlignVertical: "top" }}
                     customStyleIcon={{ height: 300, textAlignVertical: "top", marginTop: 15 }}
+                    multiline={true}
                 />
 
 

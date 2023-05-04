@@ -100,7 +100,8 @@ const DoctorAvailabilityScreen = () => {
                                                 <View key={index} style={{ flexDirection: 'row', alignItems: 'center' }}>
                                                     <Text style={styles.timeTxt}>{`From ${slot.start_time}- To ${slot.end_time}`}</Text>
                                                     <Pressable onPress={() => onDeleteTimePressed(slot)}>
-                                                        <Icon name='delete' style={{ marginLeft: '65%', marginTop: 15 }} size={16} />
+                                                        {/* <Text style={{ marginLeft: '66%', marginTop: 10, fontSize: 18 }} >x</Text> */}
+                                                        <Icon name='delete' style={{ marginLeft: '63%', marginTop: 20 }} size={18} />
                                                     </Pressable>
                                                 </View>
                                             ))

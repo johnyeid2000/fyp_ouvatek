@@ -52,7 +52,7 @@ const DoctorContactScreen = () => {
     const renderPatientOptions = (item) => {
         if (selectedPatient === item) {
             return (
-                <View >
+                <View style={{ position: 'absolute', marginLeft: '65%' }}>
                     <TouchableOpacity onPress={() => onDeleteConnectionPressed(item)}>
                         <Text >End Connection</Text>
                     </TouchableOpacity>
