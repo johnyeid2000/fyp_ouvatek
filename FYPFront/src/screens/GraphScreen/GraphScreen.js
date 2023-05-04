@@ -70,16 +70,15 @@ const GraphScreen = ({ route }) => {
         }}
         width={chartWidth} // from react-native
         height={chartHeight}
-        yAxisInterval={0.5}
         chartConfig={{
           decimalPlaces: 1, // optional, defaults to 2dp
-          backgroundColor: "#651B70",
-          backgroundGradientFrom: "#810CA8",
-          backgroundGradientTo: "#C147E9",
-          color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+          backgroundColor: "#FFFFFF",
+          backgroundGradientFrom: "#808080",
+          backgroundGradientTo: "#808080",
+          color: () => `rgb(101, 27, 112)`,
           labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
           propsForDots: {
-            stroke: "#E5B8F4"
+            stroke: "#E5B8F4",
           },
         }}
         bezier
