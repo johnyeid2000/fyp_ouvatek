@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         marginVertical: 8,
-        marginLeft: '-57%'
+        marginLeft: '-54%'
     },
     error: {
         fontSize: 16,

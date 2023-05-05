@@ -100,10 +100,10 @@ const Spo2Screen = () => {
             </View>
             <View style={styles.titleContainer}>
                 <Text style={styles.txtTitle}>Please Enter Your SPO2 value</Text>
-                <Icon
+                {/* <Icon
                     name='help-circle-outline'
                     style={styles.helpIcon}
-                />
+                /> */}
             </View>
             <View style={styles.inputContainer}>
                 <TextInput
@@ -124,22 +124,23 @@ const Spo2Screen = () => {
                 />
             </View>
 
-            <View style={styles.btnContainer}>
-                <CustomButton
-                    text="See Graph"
-                    onPress={onSeeGraphPressed}
-                    type='Secondary'
-                />
-            </View>
+            <CustomButton
+                text="See Graph"
+                onPress={onSeeGraphPressed}
+                type='Secondary'
+            />
             <CustomButton
                 text={isPressed ? 'Submitting...' : 'Submit'}
                 onPress={onSubmitPressed}
             />
-            <CustomButton
-                text="Go back"
-                onPress={() => navigation.goBack()}
-                type='Teritiary'
-            />
+
+            <View style={{ marginTop: 10 }}>
+                <CustomButton
+                    text="Go back"
+                    onPress={() => navigation.goBack()}
+                    type='Teritiary'
+                />
+            </View>
 
         </View>
     );

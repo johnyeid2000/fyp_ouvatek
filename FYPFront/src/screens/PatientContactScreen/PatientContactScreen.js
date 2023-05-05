@@ -66,14 +66,14 @@ const PatientContactScreen = () => {
     const renderDoctorOptions = (item) => {
         if (selectedDoctor === item) {
             return (
-                <View style={{ position: 'absolute', marginLeft: '65%' }}>
-                    <TouchableOpacity onPress={() => onDeleteConnectionPressed(item)}>
+                <View style={styles.renderOptions}>
+                    <TouchableOpacity style={{ margin: 1 }} onPress={() => onDeleteConnectionPressed(item)}>
                         <Text>End Connection</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => navigation.navigate("CheckDoctorInfo", { id: item.id })}>
+                    <TouchableOpacity style={{ margin: 1 }} onPress={() => navigation.navigate("CheckDoctorInfo", { id: item.id })}>
                         <Text >Check Profile</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => setSelectedDoctor(null)}>
+                    <TouchableOpacity style={{ margin: 1 }} onPress={() => setSelectedDoctor(null)}>
                         <Text >Close</Text>
                     </TouchableOpacity>
                 </View>
@@ -103,8 +103,9 @@ const PatientContactScreen = () => {
                             <View style={styles.txtSection}>
                                 <View style={styles.userInfoTxt}>
                                     <Text style={styles.nameTxt}>{item.first_name} {item.last_name}</Text>
+
                                     {!selectedDoctor || selectedDoctor.dr_id !== item.dr_id ? (
-                                        <TouchableOpacity style={{ marginRight: 20 }} onPress={() => setSelectedDoctor(item)}>
+                                        <TouchableOpacity style={{ marginRight: 10, paddingHorizontal: 10, paddingVertical: 2 }} onPress={() => setSelectedDoctor(item)}>
                                             <Icon size={20} name='dots-horizontal' />
                                         </TouchableOpacity>
                                     ) : null}
@@ -112,6 +113,7 @@ const PatientContactScreen = () => {
                                 </View>
                                 <View>
                                     <Text style={styles.msgTxt}>Hey there I am your doctor</Text>
+                                    <Text style={styles.msgTxt}>Last seen: 30 min ago</Text>
                                 </View>
                             </View>
                         </View>

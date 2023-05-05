@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         marginVertical: 8,
-        marginLeft: '-56%'
+        marginLeft: '-52%'
     },
     text: {
         color: 'gray',

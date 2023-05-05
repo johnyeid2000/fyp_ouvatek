@@ -15,7 +15,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         marginTop: 'auto',
-        marginBottom: -10
     },
     btn: {
         margin: '1%',

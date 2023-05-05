@@ -104,10 +104,10 @@ const BloodGlucoseScreen = () => {
                 </View>
                 <View style={styles.titleContainer}>
                     <Text style={styles.txtTitle}>Please Enter Your Blood Glucose Value And Select The Option If You Have Not Ate Since:</Text>
-                    <Icon
+                    {/* <Icon
                         name='help-circle-outline'
                         style={styles.helpIcon}
-                    />
+                    /> */}
                 </View>
                 <View style={styles.inputContainer}>
                     <TextInput
@@ -131,7 +131,7 @@ const BloodGlucoseScreen = () => {
                     </RadioButton.Group>
                 </View>
 
-                <View>
+                <View style={styles.btnContainer}>
                     <CustomButton
                         text={isPressedCheckVal ? "Checking values" : "Check Values"}
                         onPress={onCheckValuePressed}
@@ -151,11 +151,13 @@ const BloodGlucoseScreen = () => {
                     onPress={onSubmitPressed}
                 />
 
-                <CustomButton
-                    text="Go back"
-                    onPress={() => navigation.goBack()}
-                    type='Teritiary'
-                />
+                <View style={{ marginTop: 10 }}>
+                    <CustomButton
+                        text="Go back"
+                        onPress={() => navigation.goBack()}
+                        type='Teritiary'
+                    />
+                </View>
             </View>
         </ScrollView>
     );

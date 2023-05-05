@@ -52,14 +52,14 @@ const DoctorContactScreen = () => {
     const renderPatientOptions = (item) => {
         if (selectedPatient === item) {
             return (
-                <View style={{ position: 'absolute', marginLeft: '65%' }}>
-                    <TouchableOpacity onPress={() => onDeleteConnectionPressed(item)}>
+                <View style={styles.renderOptions}>
+                    <TouchableOpacity style={{ margin: 1 }} onPress={() => onDeleteConnectionPressed(item)}>
                         <Text >End Connection</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => navigation.navigate("CheckPatientInfo", { id: item.id })}>
+                    <TouchableOpacity style={{ margin: 1 }} onPress={() => navigation.navigate("CheckPatientInfo", { id: item.id })}>
                         <Text >Check Profile</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => setSelectedPatient(null)}>
+                    <TouchableOpacity style={{ margin: 1 }} onPress={() => setSelectedPatient(null)}>
                         <Text >Close</Text>
                     </TouchableOpacity>
                 </View>
@@ -98,7 +98,7 @@ const DoctorContactScreen = () => {
                                 <View style={styles.userInfoTxt}>
                                     <Text style={styles.nameTxt}>{item.first_name} {item.last_name}</Text>
                                     {!selectedPatient || selectedPatient.pat_id !== item.pat_id ? (
-                                        <TouchableOpacity style={{ marginRight: 20 }} onPress={() => setSelectedPatient(item)}>
+                                        <TouchableOpacity style={{ marginRight: 10, paddingHorizontal: 10, paddingVertical: 2 }} onPress={() => setSelectedPatient(item)}>
                                             <Icon size={20} name='dots-horizontal' />
                                         </TouchableOpacity>
                                     ) : null}
@@ -106,6 +106,7 @@ const DoctorContactScreen = () => {
                                 </View>
                                 <View>
                                     <Text style={styles.msgTxt}>Hey there I am your patient</Text>
+                                    <Text style={styles.msgTxt}>Last seen: 10 min ago</Text>
                                 </View>
                             </View>
                         </View>

@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { View, Text, BackHandler, Alert } from 'react-native';
 import MeasurementButton from '../../components/MeasurementButton/MeasurementButton';
 import { useNavigation } from '@react-navigation/native';
+import styles from './styles';
 
 const MeasurementScreen = () => {
 
@@ -60,7 +61,7 @@ const MeasurementScreen = () => {
   };
 
   return (
-    <View>
+    <View style={styles.container}>
       <MeasurementButton
         text="Heart rate & blood pressure"
         onPress={HeartRatePressed}

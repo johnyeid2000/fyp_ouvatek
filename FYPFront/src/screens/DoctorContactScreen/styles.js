@@ -5,7 +5,7 @@ const styles = StyleSheet.create({
         flex: 1,
         paddingLeft: 10,
         alignItems: 'center',
-        backgroundColor: '#ffffff',
+        backgroundColor: '#fff',
     },
     userInfo: {
         flexDirection: 'row',
@@ -45,6 +45,7 @@ const styles = StyleSheet.create({
     },
     newReq: {
         marginTop: 20,
+        marginBottom: 10,
         width: '90%',
         height: 40,
         flexDirection: 'row',
@@ -55,6 +56,19 @@ const styles = StyleSheet.create({
     },
     txtNewReq: {
         fontSize: 20,
+    },
+    renderOptions: {
+
+    },
+    renderOptions: {
+        position: 'absolute',
+        marginLeft: '56%',
+        backgroundColor: '#D0D0D0',
+        borderRadius: 10,
+        padding: 5,
+        zIndex: 1,
+        borderColor: 'black',
+        borderWidth: 1
     }
 });
 

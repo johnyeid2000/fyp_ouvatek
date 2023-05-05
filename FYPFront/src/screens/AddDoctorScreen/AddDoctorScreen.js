@@ -115,7 +115,7 @@ const AddDoctorScreen = () => {
             <Pressable style={styles.icon} onPress={() => navigation.goBack()}>
                 <Text style={{ fontSize: 16 }}>X</Text>
             </Pressable>
-            <ScrollView style={{ marginTop: 40 }}>
+            <ScrollView style={{ marginTop: 50 }}>
                 {doctors.map((doctor, index) => (
                     <View key={index} style={styles.newReq}>
                         <Pressable style={styles.doctorInfoContainer} onPress={() => onCheckDoctorPressed(doctor)}>

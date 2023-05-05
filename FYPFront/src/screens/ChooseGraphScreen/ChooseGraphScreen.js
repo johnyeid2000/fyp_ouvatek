@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Text, View, Dimensions } from 'react-native';
 import CustomButton from '../../components/CustomButton';
-import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import styles from './styles';
 import { useNavigation } from '@react-navigation/native';
 import { LineChart } from 'react-native-chart-kit';
@@ -12,7 +10,6 @@ const ChooseGraphScreen = ({ route }) => {
     const { labels, valueHR, valueDias, valueSys } = route.params;
     const [value, setValue] = useState([]);
     const [value2, setValue2] = useState([]);
-    const [error, setError] = useState([]);
     const [selectedGraph, setSelectedGraph] = useState(null);
     const navigation = useNavigation();
     const [selectedPoint, setSelectedPoint] = useState(null);
@@ -20,7 +17,7 @@ const ChooseGraphScreen = ({ route }) => {
     const screenWidth = Dimensions.get('window').width;
     const screenHeight = Dimensions.get('window').height;
     const chartWidth = screenWidth * 0.98;
-    const chartHeight = screenHeight * 0.75;
+    const chartHeight = screenHeight * 0.80;
 
 
     useEffect(() => {
