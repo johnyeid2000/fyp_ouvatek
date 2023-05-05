@@ -16,7 +16,5 @@ const CustomButton = ({ onPress, text, disabled = false, type = 'Primary' }) => 
     );
 };
 
-
-
 export default CustomButton
 

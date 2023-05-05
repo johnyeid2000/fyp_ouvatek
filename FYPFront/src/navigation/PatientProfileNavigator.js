@@ -1,11 +1,9 @@
 import React from 'react';
-
 import PatientProfileScreen from '../screens/PatientProfileScreen';
 import EditPatientScreen from '../screens/EditPatientScreen';
 import EditGeneralInfoScreen from '../screens/EditGeneralInfoScreen';
 import EditPregnancyInfoScreen from '../screens/EditPregnancyInfoScreen';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-
 const Stack = createNativeStackNavigator();
 
 const PatientProfileNavigator = () => {

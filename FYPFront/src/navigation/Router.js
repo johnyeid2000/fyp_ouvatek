@@ -1,11 +1,9 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-
 import SignNavigator from './SignNavigator';
 import PatientNavigator from './PatientNavigator';
 import DoctorNavigator from './DoctorNavigator';
-
 const Stack = createStackNavigator();
 
 const Router = (props) => {

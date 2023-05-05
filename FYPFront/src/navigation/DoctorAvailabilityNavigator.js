@@ -1,9 +1,7 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-
 import DoctorAvailabilityScreen from '../screens/DoctorAvailabilityScreen';
 import AddDoctorAvailabilityScreen from '../screens/AddDoctorAvailabilityScreen';
-
 const Stack = createStackNavigator();
 
 const DoctorAvailabilityNavigator = () => {
