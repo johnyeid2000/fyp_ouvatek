@@ -286,6 +286,40 @@ app.post("/api/sendconfirmation", (req, res) => {
 		}
 	});
 });
+app.post("/api/changemail", (req, res) => {
+	let userid = req.body.id;
+	let email = req.body.newMail;
+	let sql = "SELECT email FROM `user` WHERE email=?";
+	if(email && userid){
+		con.connection.query(sql, [email], function(error, rows){
+			if(error){
+				return res.status(404).send({
+					message: "User Not Found."
+				});
+			}
+			else{
+				if(rows.length != 0){
+					return res.status(400).send({ message: "Email is already in use."});
+				}
+				else{
+					let sql = "UPDATE `user` SET email = ? WHERE id = ?";
+					con.connection.query(sql, [email, userid], async function (error, result) {
+						if (error) {
+							return res.status(404).send({
+								message: "User Not Found."
+							});
+						} else {
+							return res.status(200).send({ result: result, message: "Email Changed Successfully." })
+						}
+					});
+				}
+			}
+		});
+	}
+	else{
+		return res.status(401).send({ message: "Your Email can not be null."})
+	}
+});
 app.post("/api/forgotpassmail", (req, res) => {
 	let email = req.body.email;
 	let sql = "SELECT id from `user` WHERE email = ?";
@@ -2565,6 +2599,86 @@ app.get("/api/showmydoctors", (req, res) => {
 					});
 				}
 			});
+		}
+		else{
+			return res.status(401).send({ message: "Unauthorized User.", reason: result.value})
+		}
+	})();
+});
+app.post("/api/takeappointment", (req,res) =>{
+	(async () => {
+		const token = req.headers.authorization.split(" ")[1];
+		let result = await helper.validateUser(token);
+		if (result.indicator) {
+			let doctor = req.body.doctorId;
+			let date = req.body.date;
+			if(doctor && date){
+				let dayOfWeek = helper.getDayOfWeek(date);
+				let sql = "SELECT * from `doctor_availability` WHERE dr_id = ?";
+				con.connection.query(sql, doctor, function(error, rows){
+					if(error){
+						return res.status(400).send({ message: "You are Not a valid Doctor." });
+					}
+					else{
+						if(rows.length < 1){
+							return res.status(200).send({ message: "Doctor has No Availability."})
+						}
+						else{
+							let matchingSchedule = [];
+							rows.forEach(element => {
+								if(element.day_of_week == dayOfWeek){
+									matchingSchedule.push(element);
+								}
+							});
+							if(matchingSchedule.length < 1){
+								return res.status(200).send({ message: "Doctor is Not Available this day.", matchingSchedule: matchingSchedule});
+							}
+							else{
+								let times = ["08:00-08:30","08:30-09:00","09:00-09:30","09:00-09:30","09:30-10:00",
+								"10:00-10:30","10:30-11:00","11:00-11:30","11:30-12:00","12:00-12:30","12:30-13:00",
+								"13:00-13:30","13:30-14:00","14:00-14:30","14:30-15:00","15:00-15:30","15:30-16:00",
+								"16:00-16:30","16:30-17:00","17:00-17:30","17:30-18:00","18:00-18:30","18:30-19:00",
+								"19:00-19:30","19:30-20:00"];
+								let possibleSchedule = [];
+								matchingSchedule.forEach(element => {
+									let firstValue = helper.getFirstTime(element.start_time);
+									let lastValue = helper.getLastTime(element.end_time);
+									let startIndex = times.indexOf(firstValue);
+									let endIndex = times.indexOf(lastValue);
+									for(let i = startIndex ; i <= endIndex; i++){
+										possibleSchedule.push(times.splice(startIndex, 1).toString());
+									}
+								});
+								let sql = "SELECT * FROM `appointments` WHERE dr_id = ?";
+								con.connection.query(sql, doctor, function(error, doctorAppointments){
+									if(error){
+										return res.status(400).send({ message: "You are Not a valid Doctor." });
+									}
+									else{
+										if(doctorAppointments.length < 1){
+											return res.status(200).send({ message: "Doctor Available at the following times.", possibleSchedule: possibleSchedule});
+										}
+										else{
+											doctorAppointments.forEach(element => {
+												let startTime = helper.fixTime(element.appointment_start_time);
+												let endTime = helper.fixTime(element.appointment_end_time);
+												let timeToDelete = `${startTime}-${endTime}`;
+												console.log(timeToDelete);
+												let indexToDelete = possibleSchedule.indexOf(timeToDelete);
+												possibleSchedule.splice(indexToDelete, 1);
+											});
+											return res.status(200).send({ message: "Doctor Available at the following times.", possibleSchedule: possibleSchedule});
+										}
+									}
+								})
+							}
+						}
+					}
+				});
+			}
+			else{
+				return res.status(400).send({ message: "You have missing fields." });
+			}
 		}
 		else{
 			return res.status(401).send({ message: "Unauthorized User.", reason: result.value})

@@ -89,6 +89,12 @@ function fixTime(oldTime){
     const timeWithoutSeconds = oldTime.substring(0, 5);
     return timeWithoutSeconds;
 }
+function getDayOfWeek(dateString) {
+    const date = new Date(dateString);
+    const weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    return weekdays[date.getDay()];
+}
+exports.getDayOfWeek = getDayOfWeek;
 exports.getFirstTime = getFirstTime;
 exports.getLastTime = getLastTime;
 exports.validateUser = validateUser;
