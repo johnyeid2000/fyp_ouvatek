@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Text, View, ScrollView, BackHandler } from "react-native";
+import { Text, View, ScrollView, BackHandler, Pressable } from "react-native";
 import { Checkbox } from 'react-native-paper';
 import axios from "axios";
 import CustomPicker from '../../components/CustomPicker/CustomPicker';
@@ -7,29 +7,24 @@ import CustomInput from '../../components/CustomInput';
 import CustomButton from "../../components/CustomButton/CustomButton";
 import CustomDatePicker from "../../components/CustomDatePicker/CustomDatePicker";
 import styles from './styles';
-
 import { useNavigation } from '@react-navigation/native';
 
 const PatientInformationScreen = ({ route }) => {
   const [birthDate, setBirthDate] = useState('');
-
   const [BloodType, setBloodType] = useState([]);
   const [selectedBloodType, setSelectedBloodType] = useState(null);
-
   const [height, setHeight] = useState('');
   const [firstPregnancyDay, setFirstPregnancyDay] = useState('');
-
   const [Medication, setMedication] = useState([]);
   const [selectedMedication, setSelectedMedication] = useState(null);
-
   const [checkDiabetes, setCheckDiabetes] = useState(false);
   const [checkHypertension, setCheckHypertension] = useState(false);
-
   const [Surgeries, setSurgeries] = useState([]);
   const [selectedSurgeries, setSelectedSurgeries] = useState(null);
   const [isPressed, setIsPressed] = useState(false);
-
   const [checkPrevPreg, setCheckPrevPreg] = useState(false);
+  const [patientInfoStatus, setPatientInfoStatus] = useState(null);
+  const navigation = useNavigation();
   const { id } = route.params;
 
   useEffect(() => {
@@ -74,10 +69,6 @@ const PatientInformationScreen = ({ route }) => {
     // Return true to prevent default back navigation
     return true;
   };
-
-  const [patientInfoStatus, setPatientInfoStatus] = useState(null);
-
-  const navigation = useNavigation();
 
   const signUpPatient = async () => {
     setIsPressed(true);
@@ -134,6 +125,7 @@ const PatientInformationScreen = ({ route }) => {
           placeholder="Enter Your height in meters"
           value={height}
           setValue={setHeight}
+          keyType="numeric"
         />
 
         <CustomDatePicker
@@ -156,32 +148,29 @@ const PatientInformationScreen = ({ route }) => {
         <Text style={styles.txt}>Check the box next to your corresponding case(s):</Text>
 
         <View style={styles.checkboxContainer}>
-          <View style={styles.checkbox}>
+          <Pressable style={styles.checkbox} onPress={() => { setCheckDiabetes(!checkDiabetes); }}>
             <Checkbox
               status={checkDiabetes ? 'checked' : 'unchecked'}
-              onPress={() => { setCheckDiabetes(!checkDiabetes); }}
               color='#651B70'
             />
             <Text>Diabetes </Text>
-          </View>
+          </Pressable>
 
-          <View style={styles.checkbox}>
+          <Pressable style={styles.checkbox} onPress={() => { setCheckHypertension(!checkHypertension); }}>
             <Checkbox
               status={checkHypertension ? 'checked' : 'unchecked'}
-              onPress={() => { setCheckHypertension(!checkHypertension); }}
               color='#651B70'
             />
             <Text>Hypertension </Text>
-          </View>
+          </Pressable>
 
-          <View style={styles.checkbox}>
+          <Pressable style={styles.checkbox} onPress={() => { setCheckPrevPreg(!checkPrevPreg); }}>
             <Checkbox
               status={checkPrevPreg ? 'checked' : 'unchecked'}
-              onPress={() => { setCheckPrevPreg(!checkPrevPreg); }}
               color='#651B70'
             />
             <Text>Previous Pregnancies </Text>
-          </View>
+          </Pressable>
 
         </View>
 

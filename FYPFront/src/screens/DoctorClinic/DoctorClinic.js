@@ -5,13 +5,12 @@ import CustomPicker from '../../components/CustomPicker/CustomPicker';
 import CustomInput from '../../components/CustomInput';
 import CustomButton from "../../components/CustomButton/CustomButton";
 import styles from './styles';
-
 import { useNavigation } from '@react-navigation/native';
+
 const DoctorClinic = ({ route }) => {
 
   const [countries, setCountries] = useState([]);
   const [selectedCountry, setSelectedCountry] = useState(null);
-
   const [city, setCity] = useState('');
   const [street, setStreet] = useState('');
   const [building, setBuilding] = useState('');
@@ -20,8 +19,8 @@ const DoctorClinic = ({ route }) => {
   const [isPressed, setIsPressed] = useState(false);
   const [isPressedClinic, setIsPressedClinic] = useState(false);
   const { id, doctorId } = route.params;
-
   const [doctorClinicStatus, setDoctorClinicStatus] = useState("");
+  const navigation = useNavigation();
 
   useEffect(() => {
     axios.get('https://ouvatek.herokuapp.com/api/countries')
@@ -32,8 +31,6 @@ const DoctorClinic = ({ route }) => {
         console.log(error);
       });
   }, []);
-
-  const navigation = useNavigation();
 
   useEffect(() => {
     const backHandler = BackHandler.addEventListener('hardwareBackPress', handleBackPress);

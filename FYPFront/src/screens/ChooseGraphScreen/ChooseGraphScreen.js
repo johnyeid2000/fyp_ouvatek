@@ -1,89 +1,160 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, Alert } from 'react-native';
+import { Text, View, Dimensions } from 'react-native';
 import CustomButton from '../../components/CustomButton';
-import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import styles from './styles';
 import { useNavigation } from '@react-navigation/native';
+import { LineChart } from 'react-native-chart-kit';
 
 
-const ChooseGraphScreen = () => {
-    const [date, setDate] = useState([]);
-    const [time, setTime] = useState([]);
-    const [valueHR, setValueHR] = useState([]);
-    const [valueSys, setValueSys] = useState([]);
-    const [valueDias, setValueDias] = useState([]);
-    const [error, setError] = useState([]);
+const ChooseGraphScreen = ({ route }) => {
+    const { labels, valueHR, valueDias, valueSys } = route.params;
+    const [value, setValue] = useState([]);
+    const [value2, setValue2] = useState([]);
+    const [selectedGraph, setSelectedGraph] = useState(null);
     const navigation = useNavigation();
+    const [selectedPoint, setSelectedPoint] = useState(null);
 
-    const getProfileData = async () => {
-        try {
-            const token = await AsyncStorage.getItem('token');
-            const response = await axios.get('https://ouvatek.herokuapp.com/api/heartratevalue', {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            });
-            const dates = [];
-            const times = [];
-            const valuesHR = [];
-            const valuesSys = [];
-            const valuesDias = [];
-            // console.log(response.data.data);
-            response.data.data.forEach((d) => {
-                dates.push(d.hr_date);
-                times.push(d.hr_time);
-                valuesHR.push(d.HR_val);
-                valuesSys.push(d.Sys_val);
-                valuesDias.push(d.Dias_val);
-            });
-            setDate(dates);
-            setTime(times);
-            setValueHR(valuesHR);
-            setValueSys(valuesSys);
-            setValueDias(valuesDias);
-        } catch (error) {
-            console.error(error);
-        }
-    };
+    const screenWidth = Dimensions.get('window').width;
+    const screenHeight = Dimensions.get('window').height;
+    const chartWidth = screenWidth * 0.98;
+    const chartHeight = screenHeight * 0.79;
+
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
-            getProfileData();
+            setSelectedGraph({
+                labels: labels,
+                datasets: [
+                    {
+                        data: valueHR,
+                    },
+                ],
+            });
+            setValue(valueHR);
+            setValue2(null);
         });
         return unsubscribe;
     }, [navigation]);
 
     const onSeeHRGraphPressed = () => {
-        if (valueHR.length > 0) {
-            navigation.navigate('Graph', { date: date, time: time, value: valueHR });
-        } else {
-            setError("There are no heart rate values to show in the graph");
-        }
+        setSelectedGraph({
+            labels: labels,
+            datasets: [
+                {
+                    data: valueHR,
+                },
+            ],
+        });
+        setValue(valueHR);
+        setValue2(null);
     };
 
     const onSeeBPGraphPressed = () => {
-        if (valueSys.length > 0) {
-            navigation.navigate('Graph', { date: date, time: time, value: valueSys, value2: valueDias });
+        setSelectedGraph({
+            labels: labels,
+            datasets: [
+                {
+                    data: valueSys,
+                },
+                {
+                    data: valueDias,
+                },
+            ],
+        });
+        setValue(valueSys);
+        setValue2(valueDias);
+    };
+
+    const handleDataPointClick = (data) => {
+        setSelectedPoint(data);
+    };
+
+    const handleChartSelect = (event) => {
+        if (!event.nativeEvent) {
+            setSelectedPoint(null);
+            return;
+        }
+
+        const { x, y } = event.nativeEvent;
+        if (x && y) {
+            setSelectedPoint({ x, y, index: Math.round((x / chartWidth) * (labels.length - 1)), value: chartData[0].data[Math.round((x / chartWidth) * (chartData[0].data.length - 1))] });
         } else {
-            setError("There are no blood pressure values to show in the graph");
+            setSelectedPoint(null);
         }
     };
+
+    let boxPosition = null;
+    if (selectedPoint) {
+        const boxWidth = 100;
+        const boxHeight = 50;
+        const boxLeft = selectedPoint.x - (boxWidth / 2);
+        const boxRight = boxLeft + boxWidth;
+        if (boxRight > screenWidth) {
+            boxPosition = { left: selectedPoint.x - boxWidth, top: selectedPoint.y - boxHeight };
+        } else {
+            boxPosition = { left: selectedPoint.x, top: selectedPoint.y - boxHeight };
+        }
+    }
 
     return (
         <View style={styles.container}>
 
-            <Text style={styles.txt}>Choose which graph you want to check</Text>
-            <Text style={styles.error}>{error}</Text>
-            <CustomButton
-                text="Check Heart Rate Graph"
-                onPress={onSeeHRGraphPressed}
-            />
 
-            <CustomButton
-                text="Check Blood Pressure Graph"
-                onPress={onSeeBPGraphPressed}
-            />
+            {selectedGraph && (
+                <LineChart
+                    data={selectedGraph}
+                    width={chartWidth} // from react-native
+                    height={chartHeight}
+                    chartConfig={{
+                        decimalPlaces: 1, // optional, defaults to 2dp
+                        backgroundColor: "#FFFFFF",
+                        backgroundGradientFrom: "#D3D3D3",
+                        backgroundGradientTo: "#D3D3D3",
+                        color: () => `rgb(101, 27, 112)`,
+                        labelColor: (opacity = 1) => `rgba(101, 27, 112, ${opacity})`,
+                        propsForDots: {
+                            r: 6,
+                            stroke: "#651B70",
+                        },
+                    }}
+                    bezier
+                    xLabelsOffset={-15} // offset x-axis labels to left
+                    yLabelsOffset={20}
+                    verticalLabelRotation={65}
+                    style={{
+                        borderRadius: 10,
+                    }}
+                    onDataPointClick={handleDataPointClick}
+                    onChartSelect={handleChartSelect}
+                />
+            )}
+
+            {selectedPoint && (
+                <View style={{ position: 'absolute', top: selectedPoint.y, left: selectedPoint.x > chartWidth / 2 ? selectedPoint.x - 100 : selectedPoint.x + 10, backgroundColor: '#fff', padding: 10, borderRadius: 10 }}>
+                    <Text style={{ fontWeight: 'bold' }}>
+                        {value[selectedPoint.index]}
+                        {value2 && ` / ${value2[selectedPoint.index]}`}
+                    </Text>
+                    <Text style={{ fontWeight: 'bold' }}>{labels[selectedPoint.index]}</Text>
+                </View>
+            )}
+
+            <View style={styles.btnContainer}>
+                <View style={styles.btn}>
+                    <CustomButton
+                        text="Check Heart Rate Graph"
+                        onPress={onSeeHRGraphPressed}
+                    />
+                </View>
+
+                <View style={styles.btn}>
+                    <CustomButton
+                        text="Check Blood Pressure Graph"
+                        onPress={onSeeBPGraphPressed}
+                    />
+                </View>
+            </View>
+
         </View>
     );
 };

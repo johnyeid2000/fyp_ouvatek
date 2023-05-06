@@ -8,6 +8,7 @@ const styles = StyleSheet.create({
     //marginTop:25,
     paddingHorizontal: 30,
     marginBottom: 25,
+    flexWrap: 'wrap',
   },
   title: {
     fontSize: 20,

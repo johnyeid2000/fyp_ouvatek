@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, ScrollView } from 'react-native';
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -13,10 +13,17 @@ const HeartRateScreen = () => {
   const [pulse, setPulse] = useState('');
   const [systolic, setSystolic] = useState('');
   const [diastolic, setDiastolic] = useState('');
+  const [date, setDate] = useState([]);
+  const [time, setTime] = useState([]);
+  const [valueHR, setValueHR] = useState([]);
+  const [valueSys, setValueSys] = useState([]);
+  const [valueDias, setValueDias] = useState([]);
   const [isPressed, setIsPressed] = useState(false);
   const [isPressedCheckVal, setIsPressedCheckVal] = useState(false);
-
   const [error, setError] = useState(null);
+
+  const labels = date.map((d, i) => `${d} ${time[i]}`);
+
 
   const addHRandBP = async (isChecked) => {
     isChecked ? setIsPressedCheckVal(true) : setIsPressed(true);
@@ -42,6 +49,44 @@ const HeartRateScreen = () => {
     }
   };
 
+  const getProfileData = async () => {
+    try {
+      const token = await AsyncStorage.getItem('token');
+      const response = await axios.get('https://ouvatek.herokuapp.com/api/heartratevalue', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      const dates = [];
+      const times = [];
+      const valuesHR = [];
+      const valuesSys = [];
+      const valuesDias = [];
+      // console.log(response.data.data);
+      response.data.data.forEach((d) => {
+        dates.push(d.hr_date);
+        times.push(d.hr_time);
+        valuesHR.push(d.HR_val);
+        valuesSys.push(d.Sys_val);
+        valuesDias.push(d.Dias_val);
+      });
+      setDate(dates);
+      setTime(times);
+      setValueHR(valuesHR);
+      setValueSys(valuesSys);
+      setValueDias(valuesDias);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      getProfileData();
+    });
+    return unsubscribe;
+  }, [navigation]);
+
   const onCheckValuePressed = () => {
     addHRandBP(true);
   };
@@ -51,7 +96,11 @@ const HeartRateScreen = () => {
   };
 
   const onSeeGraphPressed = () => {
-    navigation.navigate('ChooseGraph');
+    if (valueHR.length) {
+      navigation.navigate('ChooseGraph', { labels, valueHR, valueDias, valueSys });
+    } else {
+      setError('You have no measurements to see on the graph');
+    }
   };
 
   return (
@@ -66,10 +115,10 @@ const HeartRateScreen = () => {
         </View>
         <View style={styles.titleContainer}>
           <Text style={styles.txtTitle}>Please Enter Your Heart Rate</Text>
-          <Icon
+          {/* <Icon
             name='help-circle-outline'
             style={styles.helpIcon}
-          />
+          /> */}
         </View>
         <View style={[styles.inputContainer, { marginBottom: 20 }]}>
           <TextInput
@@ -85,10 +134,10 @@ const HeartRateScreen = () => {
 
         <View style={styles.titleContainer}>
           <Text style={styles.txtTitle}>Please Enter Your Blood Pressure</Text>
-          <Icon
+          {/* <Icon
             name='help-circle-outline'
             style={styles.helpIcon}
-          />
+          /> */}
         </View>
         <View style={styles.inputContainer}>
           <TextInput
@@ -119,23 +168,23 @@ const HeartRateScreen = () => {
           />
         </View>
 
-        <View style={styles.btnContainer}>
-          <CustomButton
-            text="See Graph"
-            onPress={onSeeGraphPressed}
-            type='Secondary'
-          />
-        </View>
+        <CustomButton
+          text="See Graph"
+          onPress={onSeeGraphPressed}
+          type='Secondary'
+        />
         <CustomButton
           text={isPressed ? 'Submitting...' : 'Submit'}
           onPress={onSubmitPressed}
         />
 
-        <CustomButton
-          text="Go back"
-          onPress={() => navigation.goBack()}
-          type='Teritiary'
-        />
+        <View style={{ marginTop: 10 }}>
+          <CustomButton
+            text="Go back"
+            onPress={() => navigation.goBack()}
+            type='Teritiary'
+          />
+        </View>
       </View>
     </ScrollView>
   );

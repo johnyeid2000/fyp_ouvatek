@@ -7,12 +7,10 @@ import CustomButton from '../../components/CustomButton';
 import { useNavigation } from '@react-navigation/native';
 import { ScrollView } from 'react-native';
 
-
 const CheckWeightScreen = ({ route }) => {
 
     const { pat_id } = route.params;
     const [values, setValues] = useState([]);
-
     const [date, setDate] = useState([]);
     const [time, setTime] = useState([]);
     const [valueWeight, setValueWeight] = useState([]);

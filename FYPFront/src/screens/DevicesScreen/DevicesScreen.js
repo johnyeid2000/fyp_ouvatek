@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, Modal, TouchableOpacity, FlatList, Button } from 'react-native';
-import CustomButton from "../../components/CustomButton/CustomButton";
+import { View, Text, Modal, TouchableOpacity, FlatList, Button, Pressable } from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import styles from './styles';
 
 const DevicesScreen = () => {
@@ -10,6 +10,7 @@ const DevicesScreen = () => {
     { id: 3, name: 'Fitbit' },
 
   ];
+
   const [selectedDevice, setSelectedDevice] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
@@ -24,13 +25,18 @@ const DevicesScreen = () => {
 
   return (
     <View>
-      <View style={styles.btnView}>
+
+      {/* <View style={styles.btnView}>
         <CustomButton
           text="Add a device"
           onPress={onSearchDevicePressed}
           type='Primary'
         />
-      </View>
+      </View> */}
+
+      <Pressable onPress={onSearchDevicePressed} >
+        <Icon name='plus' style={styles.icon} />
+      </Pressable>
 
       <View style={styles.txtView}>
         {selectedDevice ? (

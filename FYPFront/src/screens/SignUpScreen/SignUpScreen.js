@@ -1,31 +1,24 @@
 import React, { useState, useEffect } from "react";
-import { Text, View, ScrollView } from "react-native";
+import { Text, View, ScrollView, Pressable } from "react-native";
 import { Checkbox } from 'react-native-paper';
-
 import CustomPicker from '../../components/CustomPicker/CustomPicker';
 import CustomInput from '../../components/CustomInput';
 import CustomButton from "../../components/CustomButton/CustomButton";
 import styles from './styles';
-
 import axios from 'axios';
-
 import { useNavigation } from '@react-navigation/native';
 
 const SignUpScreen = () => {
     const [fname, setFname] = useState('');
     const [lname, setLname] = useState('');
     const [email, setEmail] = useState('');
-
     const [countries, setCountries] = useState([]);
     const [selectedCountry, setSelectedCountry] = useState(null);
-
     const [phoneNb, setPhoneNb] = useState('');
     const [password, setPassword] = useState('');
     const [passwordRepeat, setPasswordRepeat] = useState('');
-
     const [singnupStatus, setSignupStatus] = useState(null);
     const [isPressed, setIsPressed] = useState(false);
-
     const [checked, setChecked] = useState(false);
 
     useEffect(() => {
@@ -138,14 +131,13 @@ const SignUpScreen = () => {
                     isPassword
                 />
 
-                <View style={styles.checkbox}>
+                <Pressable onPress={() => { setChecked(!checked); }} style={styles.checkbox}>
                     <Checkbox
                         status={checked ? 'checked' : 'unchecked'}
-                        onPress={() => { setChecked(!checked); }}
                         color='#651B70'
                     />
-                    <Text> Sign up as a doctor </Text>
-                </View>
+                    <Text>Register as a doctor </Text>
+                </Pressable>
 
                 <CustomButton
                     text={isPressed ? 'Registering...' : 'Register'}

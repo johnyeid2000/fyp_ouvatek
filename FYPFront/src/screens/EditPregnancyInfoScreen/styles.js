@@ -2,7 +2,6 @@ import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
     root: {
-        alignItems: 'center',
         padding: 20
     },
     title: {
@@ -23,9 +22,7 @@ const styles = StyleSheet.create({
         marginBottom: 1,
     },
     checkboxContainer: {
-        alignContent: 'flex-start',
         marginBottom: 5,
-        marginLeft: '-45%'
     },
 });
 

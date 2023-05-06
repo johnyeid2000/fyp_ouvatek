@@ -1,5 +1,4 @@
 import React from 'react';
-
 import CheckMeasurementScreen from '../screens/CheckMeasurementScreen';
 import PatientMeasurementScreen from '../screens/PatientMeasurementScreen';
 import CheckHRandBPScreen from '../screens/CheckHRandBPScreen';
@@ -9,7 +8,6 @@ import CheckSPO2Screen from '../screens/CheckSPO2Screen';
 import CheckWeightScreen from '../screens/CheckWeightScreen';
 import GraphScreen from '../screens/GraphScreen';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-
 const Stack = createNativeStackNavigator();
 
 const CheckMeasurementNavigator = () => {

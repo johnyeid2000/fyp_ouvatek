@@ -4,9 +4,7 @@ import styles from './styles';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CustomButton from "../../components/CustomButton/CustomButton";
-
 import { useNavigation } from '@react-navigation/native';
-
 
 const EditDoctorLocationScreen = () => {
 

@@ -6,12 +6,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import CustomButton from '../../components/CustomButton';
 import { useNavigation } from '@react-navigation/native';
 
-
 const CheckTemperatureScreen = ({ route }) => {
 
     const { pat_id } = route.params;
     const [values, setValues] = useState([]);
-
     const [date, setDate] = useState([]);
     const [time, setTime] = useState([]);
     const [valueTemp, setValueTemp] = useState([]);

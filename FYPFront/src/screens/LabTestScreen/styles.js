@@ -21,39 +21,11 @@ const styles = StyleSheet.create({
     txtTitle: {
         fontSize: 16
     },
-    helpIcon: {
-        fontSize: 14,
-        marginLeft: 3,
-        marginBottom: 10
-    },
-
-    inputContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-    input: {
-        backgroundColor: 'white',
-        width: '30%',
-        height: 40,
-
-        borderColor: '#e8e8e8',
-        borderWidth: 1,
-        borderRadius: 5,
-
-        marginVertical: 5,
-        textAlign: 'center',
-    },
-    txt: {
-        marginLeft: 20,
-        fontWeight: 'bold',
-        fontSize: 16
-    },
-
-    btnContainer: {
-        marginTop: 10,
-        marginBottom: 20
-    }
-
+    // helpIcon: {
+    //     fontSize: 14,
+    //     marginLeft: 3,
+    //     marginBottom: 10
+    // },
 });
 
 

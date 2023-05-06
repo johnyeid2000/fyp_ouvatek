@@ -6,7 +6,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import styles from './styles';
 import { useNavigation } from '@react-navigation/native';
 
-
 const EditDoctorScreen = () => {
     const [userData, setUserData] = useState('');
     const navigation = useNavigation();

@@ -23,11 +23,11 @@ const styles = StyleSheet.create({
     txtTitle: {
         fontSize: 16
     },
-    helpIcon: {
-        fontSize: 14,
-        marginLeft: 3,
-        marginBottom: 10
-    },
+    // helpIcon: {
+    //     fontSize: 14,
+    //     marginLeft: 3,
+    //     marginBottom: 10
+    // },
 
     inputContainer: {
         flexDirection: 'row',
@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
     },
 
     btnContainer: {
-        marginTop: 10,
+        marginVertical: 10,
     }
 
 });

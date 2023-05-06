@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Pressable, ScrollView, Image } from 'react-native';
+import { View, Text, Pressable, ScrollView, Image, Alert } from 'react-native';
 import axios from "axios";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useNavigation } from '@react-navigation/native';
-
 import styles from './styles';
-import { Alert } from 'react-native';
 
 const NewRequestScreen = () => {
     const [patients, setPatients] = useState([]);

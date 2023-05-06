@@ -3,8 +3,8 @@ import { View, Text, SafeAreaView } from "react-native";
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-
 import styles from "./styles";
+
 const CheckPatientInformationScreen = ({ route }) => {
     const { id } = route.params;
     const [userData, setUserData] = useState('');

@@ -4,7 +4,6 @@ import CustomInput from '../../components/CustomInput';
 import CustomButton from '../../components/CustomButton/CustomButton';
 import styles from './styles';
 import axios from 'axios';
-
 import { useNavigation } from '@react-navigation/native';
 
 const NewPasswordScreen = ({ route }) => {
@@ -12,9 +11,7 @@ const NewPasswordScreen = ({ route }) => {
   const [passwordRepeat, setPasswordRepeat] = useState('');
   const [newPassStatus, setNewPassStatus] = useState('');
   const [isPressed, setIsPressed] = useState(false);
-
   const { id } = route.params;
-
   const navigation = useNavigation();
 
   const onSubmitPressed = async () => {

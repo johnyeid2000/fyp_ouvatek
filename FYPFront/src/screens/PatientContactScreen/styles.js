@@ -5,7 +5,7 @@ const styles = StyleSheet.create({
         flex: 1,
         paddingLeft: 10,
         alignItems: 'center',
-        backgroundColor: '#ffffff',
+        backgroundColor: '#fff',
     },
     userInfo: {
         flexDirection: 'row',
@@ -39,10 +39,6 @@ const styles = StyleSheet.create({
         fontSize: 14,
         fontWeight: 'bold',
     },
-    userInfoTime: {
-        fontSize: 12,
-        color: '#666',
-    },
     msgTxt: {
         fontSize: 14,
         color: '#333333',
@@ -51,7 +47,18 @@ const styles = StyleSheet.create({
         fontSize: 30,
         marginTop: 10,
         marginLeft: '80%',
+        marginBottom: 5
     },
+    renderOptions: {
+        position: 'absolute',
+        marginLeft: '56%',
+        backgroundColor: '#D0D0D0',
+        borderRadius: 10,
+        padding: 5,
+        zIndex: 1,
+        borderColor: 'black',
+        borderWidth: 1
+    }
 });
 
 export default styles;

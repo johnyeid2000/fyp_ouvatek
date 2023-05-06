@@ -6,10 +6,10 @@ const styles = StyleSheet.create({
   },
   userInfoSection: {
     marginTop: 25,
-    paddingHorizontal: 30,
+    paddingHorizontal: 20,
   },
   title: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: 'bold',
   },
   caption: {

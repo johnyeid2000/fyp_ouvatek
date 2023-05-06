@@ -1,20 +1,12 @@
 import React from 'react';
-
 import ChatNavigator from './ChatNavigator';
 import DevicesScreen from '../screens/DevicesScreen';
 import EventsScreen from '../screens/EventsScreen';
-
 import PatientProfileNavigator from './PatientProfileNavigator';
-
 import MeasurementNavigator from './MeasurementNavigator';
-
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-
-
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-
 const Tab = createBottomTabNavigator();
-
 
 const PatientNavigator = (props) => {
 

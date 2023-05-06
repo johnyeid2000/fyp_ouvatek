@@ -1,22 +1,18 @@
 import React from 'react';
-
 import SplashScreen from '../screens/SplashScreen';
 import SignInScreen from '../screens/SignInScreen';
 import SignUpScreen from '../screens/SignUpScreen';
 import ConfirmEmailScreen from '../screens/ConfirmEmailScreen';
+import ChangeEmailScreen from '../screens/ChangeEmailScreen';
 import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
 import NewPasswordScreen from '../screens/NewPasswordScreen';
 import ConfirmEmailPasswordScreen from '../screens/ConfirmEmailPasswordScreen';
-
 import PatientNavigator from './PatientNavigator';
 import PatientInformationScreen from '../screens/PatientInformationScreen';
-
 import DoctorNavigator from './DoctorNavigator';
 import DoctorInformationScreen from '../screens/DoctorInformationScreen';
 import DoctorClinic from '../screens/DoctorClinic';
-
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-
 const Stack = createNativeStackNavigator();
 
 const SignNavigator = () => {
@@ -40,6 +36,11 @@ const SignNavigator = () => {
             <Stack.Screen
                 name='ConfirmEmail'
                 component={ConfirmEmailScreen}
+            />
+
+            <Stack.Screen
+                name='ChangeEmail'
+                component={ChangeEmailScreen}
             />
 
             <Stack.Screen

@@ -7,7 +7,7 @@ const styles = StyleSheet.create({
     newReq: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginTop: 5,
+        marginTop: 20,
         marginLeft: 10,
         marginRight: 5,
     },
