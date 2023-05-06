@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Text, View, BackHandler } from "react-native";
+import { Text, View, BackHandler, Pressable } from "react-native";
 import axios from "axios";
 import CustomInput from '../../components/CustomInput';
 import CustomButton from "../../components/CustomButton/CustomButton";
@@ -78,6 +78,10 @@ const ConfirmEmailScreen = ({ route }) => {
         <View style={styles.root}>
             <Text style={styles.title}>Confirm your account</Text>
             <Text style={styles.error}>{confirmEmailStatus}</Text>
+
+            <Text style={{ marginVertical: 10 }}>A code is sent on the provided email address. If you would like to change this email,
+                <Pressable onPress={() => navigation.navigate('ChangeEmail', { id: id })}><Text style={{ fontWeight: 'bold', textDecorationLine: 'underline', marginLeft: 5, marginTop: 5 }}>click here</Text></Pressable>
+            </Text>
 
             <CustomInput
                 label="Confirmation Code"

@@ -3,6 +3,7 @@ import SplashScreen from '../screens/SplashScreen';
 import SignInScreen from '../screens/SignInScreen';
 import SignUpScreen from '../screens/SignUpScreen';
 import ConfirmEmailScreen from '../screens/ConfirmEmailScreen';
+import ChangeEmailScreen from '../screens/ChangeEmailScreen';
 import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
 import NewPasswordScreen from '../screens/NewPasswordScreen';
 import ConfirmEmailPasswordScreen from '../screens/ConfirmEmailPasswordScreen';
@@ -35,6 +36,11 @@ const SignNavigator = () => {
             <Stack.Screen
                 name='ConfirmEmail'
                 component={ConfirmEmailScreen}
+            />
+
+            <Stack.Screen
+                name='ChangeEmail'
+                component={ChangeEmailScreen}
             />
 
             <Stack.Screen

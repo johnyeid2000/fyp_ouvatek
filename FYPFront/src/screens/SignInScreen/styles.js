@@ -20,6 +20,9 @@ const styles = StyleSheet.create({
         color: 'red',
         marginBottom: 5
     },
+    btnContainer: {
+        marginVertical: 10
+    }
 });
 
 export default styles;

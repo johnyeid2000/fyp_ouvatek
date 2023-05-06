@@ -17,7 +17,7 @@ const ChooseGraphScreen = ({ route }) => {
     const screenWidth = Dimensions.get('window').width;
     const screenHeight = Dimensions.get('window').height;
     const chartWidth = screenWidth * 0.98;
-    const chartHeight = screenHeight * 0.80;
+    const chartHeight = screenHeight * 0.79;
 
 
     useEffect(() => {

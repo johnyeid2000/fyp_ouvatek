@@ -140,11 +140,13 @@ const SignInScreen = () => {
           onPress={onSignInPressed}
         />
 
-        <CustomButton
-          text="Forgot Password?"
-          onPress={onForgotPasswordPressed}
-          type='Teritiary'
-        />
+        <View style={styles.btnContainer}>
+          <CustomButton
+            text="Forgot Password?"
+            onPress={onForgotPasswordPressed}
+            type='Teritiary'
+          />
+        </View>
 
         <CustomButton
           text="Don't have an account? Create one"

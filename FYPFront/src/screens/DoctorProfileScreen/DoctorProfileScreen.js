@@ -79,7 +79,7 @@ const DoctorProfileScreen = () => {
             size={80}
             style={{ backgroundColor: 'white' }}
           />
-          <View style={{ marginHorizontal: 20 }}>
+          <View style={{ marginHorizontal: 20, flexShrink: 1 }}>
             <Title style={styles.title}>{userData.first_name} {userData.last_name}</Title>
             <Caption style={styles.caption}>{userData.email}</Caption>
           </View>

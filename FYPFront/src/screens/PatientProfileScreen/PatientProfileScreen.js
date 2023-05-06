@@ -70,7 +70,7 @@ const PatientProfileScreen = () => {
             size={80}
             style={{ backgroundColor: 'white' }}
           />
-          <View style={{ marginLeft: 20 }}>
+          <View style={{ marginLeft: 20, flexShrink: 1 }}>
             <Title style={styles.title}>{userData.first_name} {userData.last_name}</Title>
             <Caption style={styles.caption}>{userData.email}</Caption>
             <Caption style={styles.caption}>Date Of Birth: {specificData.birthDate}</Caption>

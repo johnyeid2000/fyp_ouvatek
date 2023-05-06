@@ -51,8 +51,7 @@ const styles = StyleSheet.create({
         fontSize: 16
     },
     btnContainer: {
-        marginTop: 10,
-        marginBottom: 10
+        marginVertical: 10,
     }
 
 });
