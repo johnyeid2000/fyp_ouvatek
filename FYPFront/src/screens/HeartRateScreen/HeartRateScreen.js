@@ -97,7 +97,7 @@ const HeartRateScreen = () => {
 
   const onSeeGraphPressed = () => {
     if (valueHR.length) {
-      navigation.navigate('ChooseGraph', { labels, valueHR, valueDias, valueSys });
+      navigation.navigate('ChooseGraph', { labels, valueHR, valueDias, valueSys, labelHR: "BPM", labelDias: "mmHg" });
     } else {
       setError('You have no measurements to see on the graph');
     }

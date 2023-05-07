@@ -4,7 +4,7 @@ import { LineChart } from "react-native-chart-kit";
 
 const GraphScreen = ({ route }) => {
 
-  const { date, time, value, value2 } = route.params;
+  const { date, time, value, value2, suffix } = route.params;
   const [selectedPoint, setSelectedPoint] = useState(null);
 
   const labels = date.map((d, i) => `${d} ${time[i]}`);
@@ -66,8 +66,9 @@ const GraphScreen = ({ route }) => {
         }}
         width={chartWidth} // from react-native
         height={chartHeight}
+        yAxisSuffix={suffix}
         chartConfig={{
-          decimalPlaces: 1, // optional, defaults to 2dp
+          decimalPlaces: 0, // optional, defaults to 2dp
           backgroundColor: "#FFFFFF",
           backgroundGradientFrom: "#D3D3D3",
           backgroundGradientTo: "#D3D3D3",
@@ -80,7 +81,7 @@ const GraphScreen = ({ route }) => {
         }}
         bezier
         xLabelsOffset={-15} // offset x-axis labels to left
-        yLabelsOffset={20}
+        horizontalLabelRotation={-40}
         verticalLabelRotation={65}
         style={{
           borderRadius: 10,
@@ -94,6 +95,7 @@ const GraphScreen = ({ route }) => {
           <Text style={{ fontWeight: 'bold' }}>
             {value[selectedPoint.index]}
             {value2 && ` / ${value2[selectedPoint.index]}`}
+            {suffix}
           </Text>
           <Text style={{ fontWeight: 'bold' }}>{labels[selectedPoint.index]}</Text>
         </View>

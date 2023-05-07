@@ -141,7 +141,7 @@ const EditPregnancyInfoScreen = () => {
                     opt={Medication.map(medication => ({ label: medication.medication_name, value: medication.medication_id }))}
                 />
 
-                <Text>Check the box next to your corresponding case(s):</Text>
+                <Text>Do you have any history in:</Text>
 
                 <View style={styles.checkboxContainer}>
                     <Pressable style={styles.checkbox} onPress={() => { setCheckDiabetes(!checkDiabetes); }}>

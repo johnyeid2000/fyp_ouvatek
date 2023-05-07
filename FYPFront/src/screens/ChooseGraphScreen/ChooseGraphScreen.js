@@ -60,6 +60,7 @@ const ChooseGraphScreen = ({ route }) => {
                     data: valueDias,
                 },
             ],
+            // legend: ["Systolic", "Diastolic"]
         });
         setValue(valueSys);
         setValue2(valueDias);
@@ -83,6 +84,8 @@ const ChooseGraphScreen = ({ route }) => {
         }
     };
 
+    const yAxisSuffix = value2 ? " mmHg" : " BPM";
+
     let boxPosition = null;
     if (selectedPoint) {
         const boxWidth = 100;
@@ -105,8 +108,9 @@ const ChooseGraphScreen = ({ route }) => {
                     data={selectedGraph}
                     width={chartWidth} // from react-native
                     height={chartHeight}
+                    yAxisSuffix={yAxisSuffix}
                     chartConfig={{
-                        decimalPlaces: 1, // optional, defaults to 2dp
+                        decimalPlaces: 0, // optional, defaults to 2dp
                         backgroundColor: "#FFFFFF",
                         backgroundGradientFrom: "#D3D3D3",
                         backgroundGradientTo: "#D3D3D3",
@@ -119,7 +123,8 @@ const ChooseGraphScreen = ({ route }) => {
                     }}
                     bezier
                     xLabelsOffset={-15} // offset x-axis labels to left
-                    yLabelsOffset={20}
+                    yLabelsOffset={-1}
+                    horizontalLabelRotation={-15}
                     verticalLabelRotation={65}
                     style={{
                         borderRadius: 10,
@@ -134,6 +139,7 @@ const ChooseGraphScreen = ({ route }) => {
                     <Text style={{ fontWeight: 'bold' }}>
                         {value[selectedPoint.index]}
                         {value2 && ` / ${value2[selectedPoint.index]}`}
+                        {yAxisSuffix}
                     </Text>
                     <Text style={{ fontWeight: 'bold' }}>{labels[selectedPoint.index]}</Text>
                 </View>

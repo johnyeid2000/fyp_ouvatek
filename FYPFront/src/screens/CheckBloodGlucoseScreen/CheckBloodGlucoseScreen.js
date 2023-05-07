@@ -50,7 +50,7 @@ const CheckBloodGlucoseScreen = ({ route }) => {
 
     const onSeeGraphPressed = () => {
         if (valueBG.length > 0) {
-            navigation.navigate('Graph', { date: date, time: time, value: valueBG });
+            navigation.navigate('Graph', { date: date, time: time, value: valueBG, suffix: " mg/dL" });
         } else {
             setError("There are no Blood Glucose values to show in the graph");
         }

@@ -39,7 +39,24 @@ const SignInScreen = () => {
         }
       }
     } catch (error) {
-      setLoginStatus(error.response.data.message);
+      if (error.response.status === 301) {
+        const responsedelete = await axios.post('https://ouvatek.herokuapp.com/api/deleteuser',
+          { email },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          },
+        );
+        if (responsedelete.status === 200) {
+          setLoginStatus(error.response.data.message);
+          setEmail('');
+          setPassword('');
+          setChecked(false);
+        }
+      } else {
+        setLoginStatus(error.response.data.message);
+      }
     } finally {
       setIsPressed(false);
     }
