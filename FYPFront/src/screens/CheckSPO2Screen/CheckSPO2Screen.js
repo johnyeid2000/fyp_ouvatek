@@ -49,7 +49,7 @@ const CheckSPO2Screen = ({ route }) => {
 
     const onSeeGraphPressed = () => {
         if (valueSPO2.length > 0) {
-            navigation.navigate('Graph', { date: date, time: time, value: valueSPO2 });
+            navigation.navigate('Graph', { date: date, time: time, value: valueSPO2, suffix: ' %' });
         } else {
             setError("There are no spo2 values to show in the graph");
         }

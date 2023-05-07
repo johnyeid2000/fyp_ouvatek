@@ -50,7 +50,7 @@ const CheckWeightScreen = ({ route }) => {
 
     const onSeeGraphPressed = () => {
         if (valueWeight.length > 0) {
-            navigation.navigate('Graph', { date: date, time: time, value: valueWeight });
+            navigation.navigate('Graph', { date: date, time: time, value: valueWeight, suffix: ' Kg' });
         } else {
             setError("There are no Weight values to show in the graph");
         }

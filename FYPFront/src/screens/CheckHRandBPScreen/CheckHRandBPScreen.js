@@ -58,7 +58,7 @@ const CheckHRandBPScreen = ({ route }) => {
 
     const onSeeHRGraphPressed = () => {
         if (valueHR.length > 0) {
-            navigation.navigate('Graph', { date: date, time: time, value: valueHR });
+            navigation.navigate('Graph', { date: date, time: time, value: valueHR, suffix: " BPM" });
         } else {
             setError("There are no heart rate values to show in the graph");
         }
@@ -66,7 +66,7 @@ const CheckHRandBPScreen = ({ route }) => {
 
     const onSeeBPGraphPressed = () => {
         if (valueSys.length > 0) {
-            navigation.navigate('Graph', { date: date, time: time, value: valueSys, value2: valueDias });
+            navigation.navigate('Graph', { date: date, time: time, value: valueSys, value2: valueDias, suffix: " mmHg" });
         } else {
             setError("There are no blood pressure values to show in the graph");
         }
