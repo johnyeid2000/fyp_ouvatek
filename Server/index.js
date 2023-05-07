@@ -1875,12 +1875,12 @@ app.post("/api/heartrate", (req, res) => {
 									}
 									if (rows[0].trimester == 1) {
 										if (pulse < values.heartrate.low.first) {
-											respStatus = "Respiratory status: Bradycardia.";
+											respStatus = "Heart Rate status: Bradycardia.";
 										} else {
 											if (pulse <= values.heartrate.normal.first) {
-												respStatus = "Respiratory status: Normal.";
+												respStatus = "Heart Rate status: Normal.";
 											} else {
-												respStatus = "Respiratory status: Tachycardia.";
+												respStatus = "Heart Rate status: Tachycardia.";
 											}
 										}
 										if (
@@ -1922,12 +1922,12 @@ app.post("/api/heartrate", (req, res) => {
 									} else {
 										if (rows[0].trimester == 2) {
 											if (pulse < values.heartrate.low.second) {
-												respStatus = "Respiratory status: Bradycardia.";
+												respStatus = "Heart Rate status: Bradycardia.";
 											} else {
 												if (pulse <= values.heartrate.normal.second) {
-													respStatus = "Respiratory status: Normal.";
+													respStatus = "Heart Rate status: Normal.";
 												} else {
-													respStatus = "Respiratory status: Tachycardia.";
+													respStatus = "Heart Rate status: Tachycardia.";
 												}
 											}
 											if (
@@ -1970,12 +1970,12 @@ app.post("/api/heartrate", (req, res) => {
 												});
 										} else {
 											if (pulse < values.heartrate.low.third) {
-												respStatus = "Respiratory status: Bradycardia.";
+												respStatus = "Heart Rate status: Bradycardia.";
 											} else {
 												if (pulse <= values.heartrate.normal.third) {
-													respStatus = "Respiratory status: Normal.";
+													respStatus = "Heart Rate status: Normal.";
 												} else {
-													respStatus = "Respiratory status: Tachycardia.";
+													respStatus = "Heart Rate status: Tachycardia.";
 												}
 											}
 											if (
@@ -2110,6 +2110,7 @@ app.get("/api/temperaturevalue", (req, res) => {
 							} else {
 								rows.forEach((element) => {
 									element.temp_date = helper.fixDate(element.temp_date);
+									element.temp_time = helper.fixTime(element.temp_time);
 								});
 								return res.status(200).send({
 									data: rows
@@ -2162,6 +2163,7 @@ app.get("/api/weightvalue", (req, res) => {
 							} else {
 								rows.forEach((element) => {
 									element.weight_date = helper.fixDate(element.weight_date);
+									element.weight_time = helper.fixTime(element.weight_time);
 								});
 								return res.status(200).send({
 									data: rows
@@ -2214,6 +2216,7 @@ app.get("/api/spo2value", (req, res) => {
 							} else {
 								rows.forEach((element) => {
 									element.spo2_date = helper.fixDate(element.spo2_date);
+									element.spo2_time = helper.fixTime(element.spo2_time);
 								});
 								return res.status(200).send({
 									data: rows
@@ -2266,6 +2269,7 @@ app.get("/api/glucosevalue", (req, res) => {
 							} else {
 								rows.forEach((element) => {
 									element.gluc_date = helper.fixDate(element.gluc_date);
+									element.gluc_time = helper.fixTime(element.gluc_time);
 								});
 								return res.status(200).send({
 									data: rows
@@ -2318,6 +2322,7 @@ app.get("/api/heartratevalue", (req, res) => {
 							} else {
 								rows.forEach((element) => {
 									element.hr_date = helper.fixDate(element.hr_date);
+									element.hr_time = helper.fixTime(element.hr_time);
 								});
 								return res.status(200).send({
 									data: rows
@@ -2685,7 +2690,49 @@ app.post("/api/takeappointment", (req,res) =>{
 		}
 	})();
 });
-
+app.get("/api/showappointmentspatient", (req,res) => {
+	(async () => {
+		const token = req.headers.authorization.split(" ")[1];
+		let result = await helper.validateUser(token);
+		if (result.indicator) {
+			let sql = "SELECT pat_id FROM `patient` WHERE user_id=?";
+			con.connection.query(sql, result.value.userId, function(error, rows){
+				if(error){
+					return res.status(400).send({ message: "You are not a valid patient."})
+				}	
+				else{
+					let sql = "SELECT  appointments.appointment_id, appointments.pat_id, appointments.dr_id,\
+					appointments.appointment_date, appointments.appointment_start_time,appointments.appointment_end_time,\
+					d.dr_id, d.user_id, u.id, u.first_name, u.last_name FROM `appointments`\
+					JOIN `doctor` d ON appointments.dr_id = d.dr_id\
+					JOIN `user` u ON d.user_id = u.id\
+					WHERE pat_id =?";
+					con.connection.query(sql, rows[0].pat_id, function(error, appointments){
+						if(error){
+							return res.status(400).send({ message: "You are not a valid patient2."})
+						}	
+						else{
+							if(rows.length < 1){
+								return res.status(200).send({ message: "You do not have any upcoming appointments."})
+							}
+							else{
+								appointments.forEach(element => {
+									element.appointment_date = helper.fixDate(element.appointment_date);
+									element.appointment_start_time = helper.fixTime(element.appointment_start_time);
+									element.appointment_end_time = helper.fixTime(element.appointment_end_time);
+								});
+								return res.status(200).send({ message: "Here are your upcoming appointments.", appointments: appointments})
+							}	
+						}
+					});
+				}
+			});
+		}
+		else{
+			return res.status(401).send({ message: "Unauthorized User.", reason: result.value})
+		}
+	})();
+});
 
 // -------------------------Doctor Information------------------------------- //
 app.post("/api/doctorsignup", (req, res) => {
@@ -2739,7 +2786,7 @@ app.post("/api/doctorlocation", (req, res) => {
 	let building = req.body.building;
 	let floor = req.body.floor;
 	let phone = req.body.phoneNumber;
-	if (!/^(03|70|71|76|78|79|81)\d{6}$/.test(phone)) {
+	if (!/^(01|09|04|08|05|07|06|03|70|71|76|78|79|81)\d{6}$/.test(phone)) {
 		return res.status(400).send({
 			message: "Invalid Phone Number Format."
 		});
@@ -3212,6 +3259,7 @@ app.post("/api/temperaturevalueasdoctor", (req, res) => {
 					} else {
 						rows.forEach((element) => {
 							element.temp_date = helper.fixDate(element.temp_date);
+							element.temp_time = helper.fixTime(element.temp_time);
 						});
 						return res.status(200).send({
 							data: rows
@@ -3250,6 +3298,7 @@ app.post("/api/weightvalueasdoctor", (req, res) => {
 					} else {
 						rows.forEach((element) => {
 							element.weight_date = helper.fixDate(element.weight_date);
+							element.weight_time = helper.fixTime(element.weight_time);
 						});
 						return res.status(200).send({
 							data: rows
@@ -3292,6 +3341,7 @@ app.post("/api/spo2valueasdoctor", (req, res) => {
 					} else {
 						rows.forEach((element) => {
 							element.spo2_date = helper.fixDate(element.spo2_date);
+							element.spo2_time = helper.fixTime(element.spo2_time);
 						});
 						return res.status(200).send({
 							data: rows
@@ -3334,6 +3384,7 @@ app.post("/api/glucosevalueasdoctor", (req, res) => {
 					} else {
 						rows.forEach((element) => {
 							element.gluc_date = helper.fixDate(element.gluc_date);
+							element.gluc_time = helper.fixTime(element.gluc_time);
 						});
 						return res.status(200).send({
 							data: rows
@@ -3376,6 +3427,7 @@ app.post("/api/heartratevalueasdoctor", (req, res) => {
 				} else {
 					rows.forEach((element) => {
 						element.hr_date = helper.fixDate(element.hr_date);
+						element.hr_time = helper.fixTime(element.hr_time);
 					});
 					return res.status(200).send({
 						data: rows
@@ -3705,7 +3757,114 @@ app.post("/api/deletetime", (req,res) =>{
 		}
 	})();
 });
-
+app.get("/api/showappointmentsdoctor", (req,res) => {
+	(async () => {
+		const token = req.headers.authorization.split(" ")[1];
+		let result = await helper.validateUser(token);
+		if (result.indicator) {
+			let sql = "SELECT dr_id FROM `doctor` WHERE user_id=?";
+			con.connection.query(sql, result.value.userId, function(error, rows){
+				if(error){
+					return res.status(400).send({ message: "You are not a valid doctor."})
+				}	
+				else{
+					let sql = "SELECT  appointments.appointment_id, appointments.pat_id, appointments.dr_id,\
+					appointments.appointment_date, appointments.appointment_start_time,appointments.appointment_end_time,\
+					p.pat_id, p.user_id, u.id, u.first_name, u.last_name FROM `appointments`\
+					JOIN `patient` p ON appointments.pat_id = p.pat_id\
+					JOIN `user` u ON p.user_id = u.id\
+					WHERE dr_id =?";
+					con.connection.query(sql, rows[0].dr_id, function(error, appointments){
+						if(error){
+							return res.status(400).send({ message: "You are not a valid doctor."})
+						}	
+						else{
+							if(rows.length < 1){
+								return res.status(200).send({ message: "You do not have any upcoming appointments."})
+							}
+							else{
+								appointments.forEach(element => {
+									element.appointment_date = helper.fixDate(element.appointment_date);
+									element.appointment_start_time = helper.fixTime(element.appointment_start_time);
+									element.appointment_end_time = helper.fixTime(element.appointment_end_time);
+								});
+								return res.status(200).send({ message: "Here are your upcoming appointments.", appointments: appointments})
+							}	
+						}
+					});
+				}
+			});
+		}
+		else{
+			return res.status(401).send({ message: "Unauthorized User.", reason: result.value})
+		}
+	})();
+});
+app.post("/api/showappointmentsdoctorperday", (req,res) => {
+	(async () => {
+		const token = req.headers.authorization.split(" ")[1];
+		let result = await helper.validateUser(token);
+		if (result.indicator) {
+			let date = req.body.date;
+			let sql = "SELECT dr_id FROM `doctor` WHERE user_id=?";
+			con.connection.query(sql, result.value.userId, function(error, rows){
+				if(error){
+					return res.status(400).send({ message: "You are not a valid doctor."})
+				}	
+				else{
+					let sql = "SELECT  appointments.appointment_id, appointments.pat_id, appointments.dr_id,\
+					appointments.appointment_date, appointments.appointment_start_time,appointments.appointment_end_time,\
+					p.pat_id, p.user_id, u.id, u.first_name, u.last_name FROM `appointments`\
+					JOIN `patient` p ON appointments.pat_id = p.pat_id\
+					JOIN `user` u ON p.user_id = u.id\
+					WHERE dr_id =? AND appointment_date = ?";
+					con.connection.query(sql, [rows[0].dr_id, date], function(error, appointments){
+						if(error){
+							return res.status(400).send({ message: "You are not a valid doctor."})
+						}	
+						else{
+							if(rows.length < 1){
+								return res.status(200).send({ message: "You do not have any upcoming appointments."})
+							}
+							else{
+								appointments.forEach(element => {
+									element.appointment_date = helper.fixDate(element.appointment_date);
+									element.appointment_start_time = helper.fixTime(element.appointment_start_time);
+									element.appointment_end_time = helper.fixTime(element.appointment_end_time);
+								});
+								return res.status(200).send({ message: "Here are your upcoming appointments.", appointments: appointments})
+							}	
+						}
+					});
+				}
+			});
+		}
+		else{
+			return res.status(401).send({ message: "Unauthorized User.", reason: result.value})
+		}
+	})();
+});
+app.post("/api/deleteappointmentsdoctor", (req,res) => {
+	(async () => {
+		const token = req.headers.authorization.split(" ")[1];
+		let result = await helper.validateUser(token);
+		if (result.indicator) {
+			let apptId = req.body.appointmentId; 
+			let sql = "DELETE FROM `appointments` WHERE appointment_id = ?";
+			con.connection.query(sql, apptId, function(error, result){
+				if(error){
+					return res.status(400).send({ message: "You are not a valid doctor."})
+				}	
+				else{
+					return res.status(200).send({ message: "Appointment Deleted." , result: result})	
+				}
+			});
+		}
+		else{
+			return res.status(401).send({ message: "Unauthorized User.", reason: result.value})
+		}
+	})();
+});
 
 
 //countries.getDataUsingAsyncAwaitGetCall(); //Do not remove the comment unless you want to fill the countries tables again.
