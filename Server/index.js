@@ -512,37 +512,39 @@ app.post("/api/login", (req, res) => {
 			});
 		} else {
 			if (rows.length == 1) {
-				if (rows[0].user_type == checkDoctor && rows[0].valid == 1) {
-					(async () => {
-						let result = await bcrypt.comparePassword(
-							password,
-							rows[0].password
-						);
-						if (result == true) {
-							let userId = rows[0].id;
-							const token = jwt.sign({
-								userId
-							}, process.env.SECRET, {
-								expiresIn: "7d",
-							});
-							return res
-								.status(200)
-								.send({
-									message: "Sign In Successful.",
-									token: token
+				if(rows[0].valid == 0){
+					return res.status(301).send({ message: "Your Sign up process was not successful. Sign up Again."});
+				}
+				else{
+					if (rows[0].user_type == checkDoctor) {
+						(async () => {
+							let result = await bcrypt.comparePassword(password, rows[0].password);
+							if (result == true) {
+								let userId = rows[0].id;
+								const token = jwt.sign({
+									userId
+								}, process.env.SECRET, {
+									expiresIn: "20d",
 								});
-						} else {
-							return res
-								.status(401)
-								.send({
-									message: "Incorrect Username Or Password."
-								});
-						}
-					})();
-				} else {
-					return res.status(404).send({
-						message: "User Not Found. Try Again Later."
-					});
+								return res
+									.status(200)
+									.send({
+										message: "Sign In Successful.",
+										token: token
+									});
+							} else {
+								return res
+									.status(401)
+									.send({
+										message: "Incorrect Username Or Password."
+									});
+							}
+						})();
+					} else {
+						return res.status(404).send({
+							message: "User Not Found. Try Again Later."
+						});
+					}
 				}
 			} else {
 				return res.status(403).send({
@@ -1060,8 +1062,29 @@ app.post("/api/deleteuser", (req, res) => {
 		}
 	});
 });
-
+app.post("/api/deleteappointment", (req,res) => {
+	(async () => {
+		const token = req.headers.authorization.split(" ")[1];
+		let result = await helper.validateUser(token);
+		if (result.indicator) {
+			let apptId = req.body.appointmentId; 
+			let sql = "DELETE FROM `appointments` WHERE appointment_id = ?";
+			con.connection.query(sql, apptId, function(error, result){
+				if(error){
+					return res.status(400).send({ message: "You are not a valid user."})
+				}	
+				else{
+					return res.status(200).send({ message: "Appointment Deleted." , result: result})	
+				}
+			});
+		}
+		else{
+			return res.status(401).send({ message: "Unauthorized User.", reason: result.value})
+		}
+	})();
+});
 // -------------------------Patient Information------------------------------- //
+
 app.post("/api/patientsignup", (req, res) => {
 	let userId = req.body.id;
 	let birthDate = req.body.birthDate;
@@ -2610,7 +2633,7 @@ app.get("/api/showmydoctors", (req, res) => {
 		}
 	})();
 });
-app.post("/api/takeappointment", (req,res) =>{
+app.post("/api/showavailableappointment", (req,res) =>{
 	(async () => {
 		const token = req.headers.authorization.split(" ")[1];
 		let result = await helper.validateUser(token);
@@ -2678,6 +2701,43 @@ app.post("/api/takeappointment", (req,res) =>{
 								})
 							}
 						}
+					}
+				});
+			}
+			else{
+				return res.status(400).send({ message: "You have missing fields." });
+			}
+		}
+		else{
+			return res.status(401).send({ message: "Unauthorized User.", reason: result.value})
+		}
+	})();
+});
+app.post("/api/takeappointment", (req,res) =>{
+	(async () => {
+		const token = req.headers.authorization.split(" ")[1];
+		let result = await helper.validateUser(token);
+		if (result.indicator) {
+			let doctor = req.body.doctorId;
+			let date = req.body.date;
+			let time = req.body.chosenTime;
+			if(doctor && date && time){
+				let [startTime, endTime] = time.split("-");
+				let sql = "SELECT pat_id FROM `patient` WHERE user_id = ?";
+				con.connection.query(sql, result.value.userId, function(error, rows){
+					if(error){
+						return res.status(400).send({ message: "You are not a valid Patient."});
+					}
+					else{
+						let sql = "INSERT INTO `appointments` (pat_id, dr_id, appointment_date, appointment_start_time, appointment_end_time) VALUES(?,?,?,?,?)";
+						con.connection.query(sql, [rows[0].pat_id, doctor, date, startTime, endTime], function(error, result){
+							if(error){
+								return res.status(400).send({ message: "Unable to create Appointment. Try again later."});
+							}
+							else{
+								return res.status(200).send({ message: "Appointment Successfull."});
+							}
+						});
 					}
 				});
 			}
@@ -3836,27 +3896,6 @@ app.post("/api/showappointmentsdoctorperday", (req,res) => {
 							}	
 						}
 					});
-				}
-			});
-		}
-		else{
-			return res.status(401).send({ message: "Unauthorized User.", reason: result.value})
-		}
-	})();
-});
-app.post("/api/deleteappointmentsdoctor", (req,res) => {
-	(async () => {
-		const token = req.headers.authorization.split(" ")[1];
-		let result = await helper.validateUser(token);
-		if (result.indicator) {
-			let apptId = req.body.appointmentId; 
-			let sql = "DELETE FROM `appointments` WHERE appointment_id = ?";
-			con.connection.query(sql, apptId, function(error, result){
-				if(error){
-					return res.status(400).send({ message: "You are not a valid doctor."})
-				}	
-				else{
-					return res.status(200).send({ message: "Appointment Deleted." , result: result})	
 				}
 			});
 		}
