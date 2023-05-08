@@ -1,6 +1,6 @@
 import React from 'react';
 import DoctorChatNavigator from './DoctorChatNavigator';
-import EventsScreen from '../screens/EventsScreen';
+import DoctorEventsScreen from '../screens/DoctorEventsScreen';
 import DoctorAvailabilityNavigator from './DoctorAvailabilityNavigator';
 import DoctorProfileNavigator from './DoctorProfileNavigator';
 import CheckMeasurementNavigator from './CheckMeasurementNavigator';
@@ -35,7 +35,7 @@ const DoctorNavigator = (props) => {
 
             <Tab.Screen
                 name='Events'
-                component={EventsScreen}
+                component={DoctorEventsScreen}
                 options={{
                     tabBarIcon: ({ color }) => (
                         <Icon name="calendar-blank-multiple" size={25} color={color} />

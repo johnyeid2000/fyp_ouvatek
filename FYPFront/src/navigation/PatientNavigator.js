@@ -1,7 +1,7 @@
 import React from 'react';
 import ChatNavigator from './ChatNavigator';
 import DevicesScreen from '../screens/DevicesScreen';
-import EventsScreen from '../screens/EventsScreen';
+import PatientEventsNavigator from './PatientEventsNavigator';
 import PatientProfileNavigator from './PatientProfileNavigator';
 import MeasurementNavigator from './MeasurementNavigator';
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
@@ -35,7 +35,7 @@ const PatientNavigator = (props) => {
 
             <Tab.Screen
                 name='Events'
-                component={EventsScreen}
+                component={PatientEventsNavigator}
                 options={{
                     tabBarIcon: ({ color }) => (
                         <Icon name="calendar-blank-multiple" size={25} color={color} />

@@ -6,6 +6,7 @@ import CustomPicker from '../../components/CustomPicker/CustomPicker';
 import CustomInput from '../../components/CustomInput';
 import CustomButton from "../../components/CustomButton/CustomButton";
 import CustomDatePicker from "../../components/CustomDatePicker/CustomDatePicker";
+import moment from "moment";
 import styles from './styles';
 import { useNavigation } from '@react-navigation/native';
 
@@ -26,6 +27,8 @@ const PatientInformationScreen = ({ route }) => {
   const [patientInfoStatus, setPatientInfoStatus] = useState(null);
   const navigation = useNavigation();
   const { id } = route.params;
+  const today = new Date();
+  const minDate = moment(today).subtract(8, 'months').subtract(15, 'days').toDate();
 
   useEffect(() => {
     axios.get('https://ouvatek.herokuapp.com/api/bloodtype')
@@ -135,6 +138,7 @@ const PatientInformationScreen = ({ route }) => {
           onChange={setFirstPregnancyDay}
           isMaxDateDisabled={true}
           isMinDateDisabled={true}
+          minDate={minDate}
         />
 
         <CustomPicker

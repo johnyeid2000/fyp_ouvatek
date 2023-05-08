@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, Image, TouchableOpacity, Pressable } from 'react-native';
+import { View, Text, FlatList, Image, TouchableOpacity, Pressable, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -49,15 +49,37 @@ const PatientContactScreen = () => {
 
     const onDeleteConnectionPressed = async (item) => {
         try {
-            const token = await AsyncStorage.getItem('token');
-            const response = await axios.post('https://ouvatek.herokuapp.com/api/endlinkpatient', {
-                dr_id: item.dr_id,
-            }, {
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                },
-            });
-            getMyDoctors();
+            Alert.alert(
+                'End Connection',
+                `Are you sure you want to end your connection with Doctor ${item.first_name} ${item.last_name}?`,
+                [
+                    {
+                        text: 'Cancel',
+                        style: 'cancel'
+                    },
+                    {
+                        text: 'End',
+                        style: 'destructive',
+                        onPress: async () => {
+                            try {
+                                const token = await AsyncStorage.getItem('token');
+                                const response = await axios.post('https://ouvatek.herokuapp.com/api/endlinkpatient', {
+                                    dr_id: item.dr_id,
+                                }, {
+                                    headers: {
+                                        'Authorization': `Bearer ${token}`,
+                                    },
+                                });
+                                if (response.status === 200) {
+                                    getMyDoctors();
+                                }
+                            } catch (error) {
+                                console.error(error);
+                            }
+                        }
+                    }
+                ]
+            );
         } catch (error) {
             console.error(error);
         }
@@ -102,7 +124,7 @@ const PatientContactScreen = () => {
                             </View>
                             <View style={styles.txtSection}>
                                 <View style={styles.userInfoTxt}>
-                                    <Text style={styles.nameTxt}>{item.first_name} {item.last_name}</Text>
+                                    <Text style={styles.nameTxt}>Doctor {item.first_name} {item.last_name}</Text>
 
                                     {!selectedDoctor || selectedDoctor.dr_id !== item.dr_id ? (
                                         <TouchableOpacity style={{ marginRight: 10, paddingHorizontal: 10, paddingVertical: 2 }} onPress={() => setSelectedDoctor(item)}>
