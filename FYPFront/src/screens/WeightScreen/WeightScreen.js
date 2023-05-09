@@ -83,6 +83,7 @@ const WeightScreen = () => {
 
     const onSeeGraphPressed = () => {
         if (value.length > 0) {
+            setError('');
             navigation.navigate('Graph', { date: date, time: time, value: value, suffix: " Kg" });
         } else {
             setError("There are no weight values to show in the graph");

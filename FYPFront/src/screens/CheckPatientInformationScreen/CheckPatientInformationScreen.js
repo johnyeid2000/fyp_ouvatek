@@ -40,12 +40,12 @@ const CheckPatientInformationScreen = ({ route }) => {
 
                 <View style={styles.row}>
                     <Icon name="map-marker-radius" color="#651B70" size={20} />
-                    <Text style={styles.txtRow}>{userData.country_name}</Text>
+                    <Text style={styles.txtRow}>Living in: {userData.country_name}</Text>
                 </View>
 
                 <View style={styles.row}>
                     <Icon name="calendar" color="#651B70" size={20} />
-                    <Text style={styles.txtRow}>{userData.birthDate}</Text>
+                    <Text style={styles.txtRow}>Birth Date: {userData.birthDate}</Text>
                 </View>
 
                 <View style={styles.row}>
@@ -59,23 +59,28 @@ const CheckPatientInformationScreen = ({ route }) => {
                 </View>
 
                 <View style={styles.row}>
+                    <Icon name="calendar-heart" color="#651B70" size={20} />
+                    <Text style={styles.txtRow}>Expected date of delivery: </Text>
+                </View>
+
+                <View style={styles.row}>
                     <Icon name="blood-bag" color="#651B70" size={20} />
-                    <Text style={styles.txtRow}>{userData.type_name}</Text>
+                    <Text style={styles.txtRow}>Blood type: {userData.type_name}</Text>
                 </View>
 
                 <View style={styles.row}>
                     <Icon name="human-male-height" color="#651B70" size={20} />
-                    <Text style={styles.txtRow}>{userData.height} m</Text>
+                    <Text style={styles.txtRow}>Height: {userData.height} m</Text>
                 </View>
 
                 <View style={styles.row}>
                     <Icon name="medical-bag" color="#651B70" size={20} />
-                    <Text style={styles.txtRow}>{userData.surgeries_name}</Text>
+                    <Text style={styles.txtRow}>Medication taken: {userData.medication_name}</Text>
                 </View>
 
                 <View style={styles.row}>
                     <Icon name="scissors-cutting" color="#651B70" size={20} />
-                    <Text style={styles.txtRow}>{userData.medication_name}</Text>
+                    <Text style={styles.txtRow}>Previous surgeries: {userData.surgeries_name}</Text>
                 </View>
 
                 <View style={styles.row}>

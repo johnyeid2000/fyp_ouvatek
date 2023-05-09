@@ -54,7 +54,7 @@ const CheckDoctorInformationScreen = ({ route }) => {
 
                 <View style={styles.row}>
                     <Icon name="doctor" color="#651B70" size={20} />
-                    <Text style={styles.txtRow}>{userData.oop_number}</Text>
+                    <Text style={styles.txtRow}>Order Of Physicians number: {userData.oop_number}</Text>
                 </View>
                 <View style={styles.row}>
                     <Icon name="certificate-outline" color="#651B70" size={20} />

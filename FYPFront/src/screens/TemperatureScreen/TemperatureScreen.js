@@ -84,6 +84,7 @@ const TemperatureScreen = () => {
 
     const onSeeGraphPressed = () => {
         if (value.length > 0) {
+            setError('');
             navigation.navigate('Graph', { date: date, time: time, value: value, suffix: " °C" });
         } else {
             setError("There are no temperature values to show in the graph");

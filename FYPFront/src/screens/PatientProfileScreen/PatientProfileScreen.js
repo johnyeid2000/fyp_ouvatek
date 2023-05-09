@@ -81,7 +81,7 @@ const PatientProfileScreen = () => {
       <ScrollView style={styles.userInfoSection}>
         <View style={styles.row}>
           <Icon name="map-marker-radius" color="#651B70" size={20} />
-          <Text style={styles.txtRow}>{userData.country_name}</Text>
+          <Text style={styles.txtRow}>Living in: {userData.country_name}</Text>
         </View>
 
         <View style={styles.row}>
@@ -100,23 +100,28 @@ const PatientProfileScreen = () => {
         </View>
 
         <View style={styles.row}>
+          <Icon name="calendar-heart" color="#651B70" size={20} />
+          <Text style={styles.txtRow}>Expected date of delivery: </Text>
+        </View>
+
+        <View style={styles.row}>
           <Icon name="blood-bag" color="#651B70" size={20} />
-          <Text style={styles.txtRow}>{specificData.type_name}</Text>
+          <Text style={styles.txtRow}>Blood type: {specificData.type_name}</Text>
         </View>
 
         <View style={styles.row}>
           <Icon name="human-male-height" color="#651B70" size={20} />
-          <Text style={styles.txtRow}>{specificData.height} m</Text>
+          <Text style={styles.txtRow}>Height: {specificData.height} m</Text>
         </View>
 
         <View style={styles.row}>
           <Icon name="medical-bag" color="#651B70" size={20} />
-          <Text style={styles.txtRow}>{specificData.surgeries_name}</Text>
+          <Text style={styles.txtRow}>Medication taken: {specificData.medication_name}</Text>
         </View>
 
         <View style={styles.row}>
           <Icon name="scissors-cutting" color="#651B70" size={20} />
-          <Text style={styles.txtRow}>{specificData.medication_name}</Text>
+          <Text style={styles.txtRow}>Previous surgeries: {specificData.surgeries_name}</Text>
         </View>
 
         <View style={styles.row}>
