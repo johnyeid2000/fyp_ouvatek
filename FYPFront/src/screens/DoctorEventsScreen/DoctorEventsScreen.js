@@ -33,8 +33,11 @@ const DoctorEventsScreen = () => {
   const today = new Date().toISOString().split('T')[0];
 
   appointments.forEach((appointment) => {
-    appointments.sort((a, b) => new Date(a.appointment_date) - new Date(b.appointment_date));
     appointments.sort((a, b) => {
+      const dateA = new Date(a.appointment_date);
+      const dateB = new Date(b.appointment_date);
+      if (dateA < dateB) return -1;
+      if (dateA > dateB) return 1;
       const timeA = new Date(`1970-01-01T${a.appointment_start_time}`).getTime();
       const timeB = new Date(`1970-01-01T${b.appointment_start_time}`).getTime();
       return timeA - timeB;
