@@ -30,6 +30,7 @@
     "react-native-gesture-handler": "^2.8.0",
     "react-native-input-select": "^0.18.0",
     "react-native-paper": "^4.12.5",
+    "react-native-push-notification": "^8.1.1",
     "react-native-reanimated": "^2.13.0",
     "react-native-rename": "^3.2.12",
     "react-native-responsive-screen": "^1.4.2",
