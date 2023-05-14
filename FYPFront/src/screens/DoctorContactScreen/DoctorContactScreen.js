@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, Image, TouchableOpacity, Pressable } from 'react-native';
+import { View, Text, FlatList, Image, TouchableOpacity, Pressable, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -33,17 +33,40 @@ const DoctorContactScreen = () => {
         return unsubscribe;
     }, [navigation]);
 
+
     const onDeleteConnectionPressed = async (item) => {
         try {
-            const token = await AsyncStorage.getItem('token');
-            const response = await axios.post('https://ouvatek.herokuapp.com/api/endlinkdoctor', {
-                pat_id: item.pat_id,
-            }, {
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                },
-            });
-            getMyPatients();
+            Alert.alert(
+                'End Connection',
+                `Are you sure you want to end your connection with ${item.first_name} ${item.last_name}?`,
+                [
+                    {
+                        text: 'Cancel',
+                        style: 'cancel'
+                    },
+                    {
+                        text: 'End',
+                        style: 'destructive',
+                        onPress: async () => {
+                            try {
+                                const token = await AsyncStorage.getItem('token');
+                                const response = await axios.post('https://ouvatek.herokuapp.com/api/endlinkdoctor', {
+                                    pat_id: item.pat_id,
+                                }, {
+                                    headers: {
+                                        'Authorization': `Bearer ${token}`,
+                                    },
+                                });
+                                if (response.status === 200) {
+                                    getMyPatients();
+                                }
+                            } catch (error) {
+                                console.error(error);
+                            }
+                        }
+                    }
+                ]
+            );
         } catch (error) {
             console.error(error);
         }

@@ -104,7 +104,7 @@ const DoctorProfileScreen = () => {
         </View>
         <View style={styles.row}>
           <Icon name="doctor" color="#651B70" size={20} />
-          <Text style={styles.txtRow}>{specificData.oop_number}</Text>
+          <Text style={styles.txtRow}>Order Of Physicians number: {specificData.oop_number}</Text>
         </View>
         <View style={styles.row}>
           <Icon name="certificate-outline" color="#651B70" size={20} />

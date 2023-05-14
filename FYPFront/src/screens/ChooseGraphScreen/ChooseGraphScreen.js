@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, Dimensions } from 'react-native';
+import { Text, View, Dimensions, Pressable } from 'react-native';
 import CustomButton from '../../components/CustomButton';
 import styles from './styles';
 import { useNavigation } from '@react-navigation/native';
@@ -13,11 +13,10 @@ const ChooseGraphScreen = ({ route }) => {
     const [selectedGraph, setSelectedGraph] = useState(null);
     const navigation = useNavigation();
     const [selectedPoint, setSelectedPoint] = useState(null);
-
     const screenWidth = Dimensions.get('window').width;
     const screenHeight = Dimensions.get('window').height;
     const chartWidth = screenWidth * 0.98;
-    const chartHeight = screenHeight * 0.79;
+    const [chartHeight, setChartHeight] = useState(screenHeight * 0.79);
 
 
     useEffect(() => {
@@ -47,6 +46,8 @@ const ChooseGraphScreen = ({ route }) => {
         });
         setValue(valueHR);
         setValue2(null);
+        setSelectedPoint(null);
+        setChartHeight(screenHeight * 0.79);
     };
 
     const onSeeBPGraphPressed = () => {
@@ -58,12 +59,15 @@ const ChooseGraphScreen = ({ route }) => {
                 },
                 {
                     data: valueDias,
+                    color: () => 'rgb(171,70,160)'
                 },
             ],
             // legend: ["Systolic", "Diastolic"]
         });
         setValue(valueSys);
         setValue2(valueDias);
+        setSelectedPoint(null);
+        setChartHeight(screenHeight * 0.75);
     };
 
     const handleDataPointClick = (data) => {
@@ -101,49 +105,86 @@ const ChooseGraphScreen = ({ route }) => {
 
     return (
         <View style={styles.container}>
+            <Pressable onPress={() => setSelectedPoint(null)}>
 
+                {selectedGraph && (
+                    <>
+                        <LineChart
+                            data={selectedGraph}
+                            width={chartWidth} // from react-native
+                            height={chartHeight}
+                            yAxisSuffix={yAxisSuffix}
+                            chartConfig={{
+                                decimalPlaces: 0, // optional, defaults to 2dp
+                                backgroundColor: "#FFFFFF",
+                                backgroundGradientFrom: "#D3D3D3",
+                                backgroundGradientTo: "#D3D3D3",
+                                color: () => `rgb(101, 27, 112)`,
+                                labelColor: (opacity = 1) => `rgba(101, 27, 112, ${opacity})`,
+                                propsForDots: {
+                                    r: 6,
+                                    stroke: "#651B70",
+                                },
+                                propsForVerticalLabels: {
+                                    fontWeight: 'bold',
+                                },
+                                propsForHorizontalLabels: {
+                                    fontWeight: 'bold',
+                                },
+                                strokeWidth: 2,
+                                style: {
+                                    borderRadius: 10,
+                                },
+                                legendPosition: 'Bottom'
+                            }}
+                            bezier
+                            xLabelsOffset={-15} // offset x-axis labels to left
+                            horizontalLabelRotation={-40}
+                            verticalLabelRotation={65}
+                            style={{
+                                borderRadius: 10,
+                            }}
+                            onDataPointClick={handleDataPointClick}
+                            onChartSelect={handleChartSelect}
+                        />
+                        {
+                            value && value2 && (
+                                <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
+                                    <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                                        <View style={{
+                                            width: 15,
+                                            height: 15,
+                                            borderRadius: 25, // half of width and height to make it circular
+                                            backgroundColor: '#651B70' // your desired color
+                                        }} />
+                                        <Text style={{ fontSize: 16 }}> Systolic</Text>
+                                    </View>
+                                    <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                                        <View style={{
+                                            width: 15,
+                                            height: 15,
+                                            borderRadius: 25, // half of width and height to make it circular
+                                            backgroundColor: '#AB46A0' // your desired color
+                                        }} />
+                                        <Text style={{ fontSize: 16 }}> Diastolic</Text>
+                                    </View>
+                                </View>
+                            )
+                        }
+                    </>
+                )}
 
-            {selectedGraph && (
-                <LineChart
-                    data={selectedGraph}
-                    width={chartWidth} // from react-native
-                    height={chartHeight}
-                    yAxisSuffix={yAxisSuffix}
-                    chartConfig={{
-                        decimalPlaces: 0, // optional, defaults to 2dp
-                        backgroundColor: "#FFFFFF",
-                        backgroundGradientFrom: "#D3D3D3",
-                        backgroundGradientTo: "#D3D3D3",
-                        color: () => `rgb(101, 27, 112)`,
-                        labelColor: (opacity = 1) => `rgba(101, 27, 112, ${opacity})`,
-                        propsForDots: {
-                            r: 6,
-                            stroke: "#651B70",
-                        },
-                    }}
-                    bezier
-                    xLabelsOffset={-15} // offset x-axis labels to left
-                    yLabelsOffset={-1}
-                    horizontalLabelRotation={-15}
-                    verticalLabelRotation={65}
-                    style={{
-                        borderRadius: 10,
-                    }}
-                    onDataPointClick={handleDataPointClick}
-                    onChartSelect={handleChartSelect}
-                />
-            )}
-
-            {selectedPoint && (
-                <View style={{ position: 'absolute', top: selectedPoint.y, left: selectedPoint.x > chartWidth / 2 ? selectedPoint.x - 100 : selectedPoint.x + 10, backgroundColor: '#fff', padding: 10, borderRadius: 10 }}>
-                    <Text style={{ fontWeight: 'bold' }}>
-                        {value[selectedPoint.index]}
-                        {value2 && ` / ${value2[selectedPoint.index]}`}
-                        {yAxisSuffix}
-                    </Text>
-                    <Text style={{ fontWeight: 'bold' }}>{labels[selectedPoint.index]}</Text>
-                </View>
-            )}
+                {selectedPoint && (
+                    <View style={{ position: 'absolute', top: selectedPoint.y, left: selectedPoint.x > chartWidth / 2 ? selectedPoint.x - 100 : selectedPoint.x + 10, backgroundColor: '#fff', padding: 10, borderRadius: 10 }}>
+                        <Text style={{ fontWeight: 'bold' }}>
+                            {value[selectedPoint.index]}
+                            {value2 && ` / ${value2[selectedPoint.index]}`}
+                            {yAxisSuffix}
+                        </Text>
+                        <Text style={{ fontWeight: 'bold' }}>{labels[selectedPoint.index]}</Text>
+                    </View>
+                )}
+            </Pressable>
 
             <View style={styles.btnContainer}>
                 <View style={styles.btn}>
@@ -160,7 +201,6 @@ const ChooseGraphScreen = ({ route }) => {
                     />
                 </View>
             </View>
-
         </View>
     );
 };

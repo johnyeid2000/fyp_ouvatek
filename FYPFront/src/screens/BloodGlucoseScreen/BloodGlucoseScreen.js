@@ -86,6 +86,7 @@ const BloodGlucoseScreen = () => {
 
     const onSeeGraphPressed = () => {
         if (value.length > 0) {
+            setError('');
             navigation.navigate('Graph', { date: date, time: time, value: value, suffix: " mg/dL" });
         } else {
             setError("There are no Blood glucose values to show in the graph");

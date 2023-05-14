@@ -28,7 +28,8 @@ const styles = StyleSheet.create({
     timeTxt: {
         marginLeft: '10%',
         fontSize: 14,
-        marginTop: 20
+        marginTop: 20,
+        marginRight: '45%'
     }
 
 });

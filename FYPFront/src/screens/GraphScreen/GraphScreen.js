@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, Dimensions } from 'react-native';
+import { View, Text, Dimensions, Pressable } from 'react-native';
 import { LineChart } from "react-native-chart-kit";
 
 const GraphScreen = ({ route }) => {
@@ -18,7 +18,8 @@ const GraphScreen = ({ route }) => {
       data: value
     },
     {
-      data: value2
+      data: value2,
+      color: () => 'rgb(171,70,160)'
     }
   ] : [
     {
@@ -59,47 +60,84 @@ const GraphScreen = ({ route }) => {
 
   return (
     <View style={{ alignItems: 'center', flex: 1, justifyContent: 'center' }}>
-      <LineChart
-        data={{
-          labels: labels,
-          datasets: chartData
-        }}
-        width={chartWidth} // from react-native
-        height={chartHeight}
-        yAxisSuffix={suffix}
-        chartConfig={{
-          decimalPlaces: 0, // optional, defaults to 2dp
-          backgroundColor: "#FFFFFF",
-          backgroundGradientFrom: "#D3D3D3",
-          backgroundGradientTo: "#D3D3D3",
-          color: () => `rgb(101, 27, 112)`,
-          labelColor: (opacity = 1) => `rgba(101, 27, 112, ${opacity})`,
-          propsForDots: {
-            r: 6,
-            stroke: "#651B70",
-          },
-        }}
-        bezier
-        xLabelsOffset={-15} // offset x-axis labels to left
-        horizontalLabelRotation={-40}
-        verticalLabelRotation={65}
-        style={{
-          borderRadius: 10,
-        }}
-        onDataPointClick={handleDataPointClick}
-        onChartSelect={handleChartSelect}
-      />
+      <Pressable onPress={() => setSelectedPoint(null)}>
+        <LineChart
+          data={{
+            labels: labels,
+            datasets: chartData
+          }}
+          width={chartWidth} // from react-native
+          height={chartHeight}
+          yAxisSuffix={suffix}
+          chartConfig={{
+            decimalPlaces: 0, // optional, defaults to 2dp
+            backgroundColor: "#FFFFFF",
+            backgroundGradientFrom: "#D3D3D3",
+            backgroundGradientTo: "#D3D3D3",
+            color: () => `rgb(101, 27, 112)`,
+            labelColor: (opacity = 1) => `rgba(101, 27, 112, ${opacity})`,
+            propsForDots: {
+              r: 6,
+              stroke: "#651B70",
+            },
+            propsForVerticalLabels: {
+              fontWeight: 'bold',
+            },
+            propsForHorizontalLabels: {
+              fontWeight: 'bold',
+            },
+            strokeWidth: 2,
+            style: {
+              borderRadius: 10,
+            },
+          }}
+          bezier
+          xLabelsOffset={-15} // offset x-axis labels to left
+          horizontalLabelRotation={-40}
+          verticalLabelRotation={65}
+          style={{
+            borderRadius: 10,
+          }}
+          onDataPointClick={handleDataPointClick}
+          onChartSelect={handleChartSelect}
+        />
 
-      {selectedPoint && (
-        <View style={{ position: 'absolute', top: selectedPoint.y, left: selectedPoint.x > chartWidth / 2 ? selectedPoint.x - 100 : selectedPoint.x + 10, backgroundColor: '#fff', padding: 10, borderRadius: 10 }}>
-          <Text style={{ fontWeight: 'bold' }}>
-            {value[selectedPoint.index]}
-            {value2 && ` / ${value2[selectedPoint.index]}`}
-            {suffix}
-          </Text>
-          <Text style={{ fontWeight: 'bold' }}>{labels[selectedPoint.index]}</Text>
-        </View>
-      )}
+        {selectedPoint && (
+          <View style={{ position: 'absolute', top: selectedPoint.y, left: selectedPoint.x > chartWidth / 2 ? selectedPoint.x - 100 : selectedPoint.x + 10, backgroundColor: '#fff', padding: 10, borderRadius: 10 }}>
+            <Text style={{ fontWeight: 'bold' }}>
+              {value[selectedPoint.index]}
+              {value2 && ` / ${value2[selectedPoint.index]}`}
+              {suffix}
+            </Text>
+            <Text style={{ fontWeight: 'bold' }}>{labels[selectedPoint.index]}</Text>
+          </View>
+        )}
+        {
+          value && value2 && (
+            <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
+              <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                <View style={{
+                  width: 15,
+                  height: 15,
+                  borderRadius: 25, // half of width and height to make it circular
+                  backgroundColor: '#651B70' // your desired color
+                }} />
+                <Text style={{ fontSize: 16 }}> Systolic</Text>
+              </View>
+              <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                <View style={{
+                  width: 15,
+                  height: 15,
+                  borderRadius: 25, // half of width and height to make it circular
+                  backgroundColor: '#AB46A0' // your desired color
+                }} />
+                <Text style={{ fontSize: 16 }}> Diastolic</Text>
+              </View>
+            </View>
+          )
+        }
+
+      </Pressable>
     </View>
 
   );

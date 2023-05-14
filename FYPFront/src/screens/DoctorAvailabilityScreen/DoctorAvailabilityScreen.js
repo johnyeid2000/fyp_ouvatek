@@ -101,7 +101,7 @@ const DoctorAvailabilityScreen = () => {
                                                     <Text style={styles.timeTxt}>{`From ${slot.start_time}- To ${slot.end_time}`}</Text>
                                                     <Pressable onPress={() => onDeleteTimePressed(slot)}>
                                                         {/* <Text style={{ marginLeft: '66%', marginTop: 10, fontSize: 18 }} >x</Text> */}
-                                                        <Icon name='delete' style={{ marginLeft: '63%', marginTop: 20 }} size={18} />
+                                                        <Icon name='delete' style={{ marginLeft: '5%', marginTop: 20 }} size={20} />
                                                     </Pressable>
                                                 </View>
                                             ))
