@@ -6,6 +6,7 @@ import CustomInput from '../../components/CustomInput';
 import CustomDatePicker from "../../components/CustomDatePicker/CustomDatePicker";
 import CustomButton from "../../components/CustomButton/CustomButton";
 import styles from './styles';
+import moment from "moment";
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
@@ -25,7 +26,8 @@ const EditPregnancyInfoScreen = () => {
     const [isPressed, setIsPressed] = useState(false);
     const [specificData, setSpecificData] = useState('');
     const navigation = useNavigation();
-
+    const today = new Date();
+    const minDate = moment(today).subtract(8, 'months').subtract(15, 'days').toDate();
 
     useEffect(() => {
         axios.get('https://ouvatek.herokuapp.com/api/medication')
@@ -131,6 +133,7 @@ const EditPregnancyInfoScreen = () => {
                     onChange={setFirstPregnancyDay}
                     isMaxDateDisabled={true}
                     isMinDateDisabled={true}
+                    minDate={minDate}
                 />
 
                 <CustomPicker

@@ -45,7 +45,11 @@ const BloodGlucoseScreen = () => {
     };
 
     const onCheckValuePressed = () => {
-        addBloodGlucose(true);
+        if (checkedTime === '4') {
+            setError('You need to choose a time');
+        } else {
+            addBloodGlucose(true);
+        }
     };
 
     const onSubmitPressed = () => {
@@ -104,7 +108,7 @@ const BloodGlucoseScreen = () => {
                     <Text style={styles.error}>{error}</Text>
                 </View>
                 <View style={styles.titleContainer}>
-                    <Text style={styles.txtTitle}>Please Enter Your Blood Glucose Value And Select The Option If You Have Not Ate Since:</Text>
+                    <Text style={styles.txtTitle}>Please Enter Your Blood Glucose Value</Text>
                     {/* <Icon
                         name='help-circle-outline'
                         style={styles.helpIcon}
@@ -121,14 +125,23 @@ const BloodGlucoseScreen = () => {
                     <Text style={styles.txt}>mg/dL</Text>
                 </View>
 
+                <Text style={styles.txtTitle}>To ensure accurate results, let us know about your recent food intake. Have you eaten today?</Text>
+
                 <View style={{ marginLeft: -15, width: '110%' }}>
                     <RadioButton.Group
                         onValueChange={value => setCheckedTime(value)}
                         value={checkedTime}
                     >
-                        <RadioButton.Item label="Yesterday" value="1" color='#651B70' labelStyle={{ color: 'grey' }} />
-                        <RadioButton.Item label="One Hour" value="2" color='#651B70' labelStyle={{ color: 'grey' }} />
-                        <RadioButton.Item label="Two or More Hours" value="3" color='#651B70' labelStyle={{ color: 'grey' }} />
+                        <RadioButton.Item label="No" value="1" color='#651B70' labelStyle={{ color: 'grey' }} />
+                        <RadioButton.Item label='Yes' value='4' color='#651B70' labelStyle={{ color: 'grey' }} />
+
+                        {(checkedTime === '4' || checkedTime === '2' || checkedTime === '3') && (
+                            <>
+                                <RadioButton.Item label="One Hour" value="2" color='#651B70' labelStyle={{ color: 'grey' }} />
+                                <RadioButton.Item label="Two or More Hours" value="3" color='#651B70' labelStyle={{ color: 'grey' }} />
+                            </>
+                        )}
+
                     </RadioButton.Group>
                 </View>
 

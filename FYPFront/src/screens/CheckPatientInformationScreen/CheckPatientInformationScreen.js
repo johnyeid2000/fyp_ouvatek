@@ -60,7 +60,7 @@ const CheckPatientInformationScreen = ({ route }) => {
 
                 <View style={styles.row}>
                     <Icon name="calendar-heart" color="#651B70" size={20} />
-                    <Text style={styles.txtRow}>Expected date of delivery: </Text>
+                    <Text style={styles.txtRow}>Expected date of delivery: {userData.edd}</Text>
                 </View>
 
                 <View style={styles.row}>

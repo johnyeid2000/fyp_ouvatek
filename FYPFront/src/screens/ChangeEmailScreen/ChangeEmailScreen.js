@@ -14,15 +14,15 @@ const ChangeEmailScreen = ({ route }) => {
     const navigation = useNavigation();
 
     useEffect(() => {
-        const backHandler = BackHandler.addEventListener('hardwareBackPress', handleBackPress);
+        // Add event listener for back button press
+        BackHandler.addEventListener("hardwareBackPress", handleBackPress);
 
-        return () => {
-            backHandler.remove();
-        };
+        // Remove event listener when component unmounts
+        return () => BackHandler.removeEventListener("hardwareBackPress", handleBackPress);
     }, []);
 
     const handleBackPress = () => {
-        // Return true to prevent default back navigation
+        navigation.goBack();
         return true;
     };
 

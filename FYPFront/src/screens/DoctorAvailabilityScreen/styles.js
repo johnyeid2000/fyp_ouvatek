@@ -5,12 +5,13 @@ const styles = StyleSheet.create({
     pressableContainer: {
         flexDirection: 'row',
         justifyContent: 'center',
-        padding: 20
+        padding: 20,
     },
     icon: {
         fontSize: 20,
         marginLeft: '2%',
         marginRight: '2%',
+        color: '#651B70'
     },
     title: {
         fontSize: 18,
