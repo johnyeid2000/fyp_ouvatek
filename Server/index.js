@@ -657,12 +657,14 @@ app.get("/api/profile", (req, res) => {
 									rowsSpecific[0].birthDate = helper.fixDate(
 										rowsSpecific[0].birth_date
 									);
-									rowsSpecific[0].week = helper.getWeek(
-										rowsSpecific[0].first_pregnant_day
-									);
+									
 									console.log(rowsSpecific[0].week);
 									rowsSpecific[0].first_pregnant_day = helper.fixDate(
 										rowsSpecific[0].first_pregnant_day
+									);
+									rowsSpecific[0].edd = helper.getEDD(rowsSpecific[0].first_pregnant_day,rowsSpecific[0].previous_pregnancies);
+									rowsSpecific[0].week = helper.getWeek(
+										rowsSpecific[0].edd
 									);
 									if (error) {
 										return res
@@ -672,6 +674,7 @@ app.get("/api/profile", (req, res) => {
 												reason: error.message,
 											});
 									} else {
+										console.log(rowsSpecific[0].edd);
 										return res
 											.status(200)
 											.send({
@@ -2641,6 +2644,7 @@ app.post("/api/showavailableappointment", (req,res) =>{
 			let doctor = req.body.doctorId;
 			let date = req.body.date;
 			if(doctor && date){
+				let possibleSchedule = [];
 				let dayOfWeek = helper.getDayOfWeek(date);
 				let sql = "SELECT * from `doctor_availability` WHERE dr_id = ?";
 				con.connection.query(sql, doctor, function(error, rows){
@@ -2659,7 +2663,7 @@ app.post("/api/showavailableappointment", (req,res) =>{
 								}
 							});
 							if(matchingSchedule.length < 1){
-								return res.status(200).send({ message: "Doctor is Not Available this day.", matchingSchedule: matchingSchedule});
+								return res.status(200).send({ message: "Doctor is Not Available this day.", possibleSchedule: possibleSchedule});
 							}
 							else{
 								let times = ["08:00-08:30","08:30-09:00","09:00-09:30","09:00-09:30","09:30-10:00",
@@ -2667,7 +2671,6 @@ app.post("/api/showavailableappointment", (req,res) =>{
 								"13:00-13:30","13:30-14:00","14:00-14:30","14:30-15:00","15:00-15:30","15:30-16:00",
 								"16:00-16:30","16:30-17:00","17:00-17:30","17:30-18:00","18:00-18:30","18:30-19:00",
 								"19:00-19:30","19:30-20:00"];
-								let possibleSchedule = [];
 								matchingSchedule.forEach(element => {
 									let firstValue = helper.getFirstTime(element.start_time);
 									let lastValue = helper.getLastTime(element.end_time);
@@ -2677,8 +2680,8 @@ app.post("/api/showavailableappointment", (req,res) =>{
 										possibleSchedule.push(times.splice(startIndex, 1).toString());
 									}
 								});
-								let sql = "SELECT * FROM `appointments` WHERE dr_id = ?";
-								con.connection.query(sql, doctor, function(error, doctorAppointments){
+								let sql = "SELECT * FROM `appointments` WHERE dr_id = ? AND appointment_date = ?";
+								con.connection.query(sql, [doctor,date], function(error, doctorAppointments){
 									if(error){
 										return res.status(400).send({ message: "You are Not a valid Doctor." });
 									}
@@ -2721,6 +2724,7 @@ app.post("/api/takeappointment", (req,res) =>{
 			let doctor = req.body.doctorId;
 			let date = req.body.date;
 			let time = req.body.chosenTime;
+			console.log(doctor, date, time);
 			if(doctor && date && time){
 				let [startTime, endTime] = time.split("-");
 				let sql = "SELECT pat_id FROM `patient` WHERE user_id = ?";
@@ -2761,13 +2765,22 @@ app.get("/api/showappointmentspatient", (req,res) => {
 					return res.status(400).send({ message: "You are not a valid patient."})
 				}	
 				else{
+					let date = new Date();
+					let today = helper.fixDate(date);
+					var hours = date.getHours();
+					var minutes = date.getMinutes();
+					
+					// Format hours and minutes with leading zeros if necessary
+					var formattedHours = hours < 10 ? '0' + hours : hours;
+					var formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
+					let timeNow = formattedHours + ':' + formattedMinutes;
 					let sql = "SELECT  appointments.appointment_id, appointments.pat_id, appointments.dr_id,\
 					appointments.appointment_date, appointments.appointment_start_time,appointments.appointment_end_time,\
 					d.dr_id, d.user_id, u.id, u.first_name, u.last_name FROM `appointments`\
 					JOIN `doctor` d ON appointments.dr_id = d.dr_id\
 					JOIN `user` u ON d.user_id = u.id\
 					WHERE pat_id =?";
-					con.connection.query(sql, rows[0].pat_id, function(error, appointments){
+					con.connection.query(sql, [rows[0].pat_id], function(error, appointments){
 						if(error){
 							return res.status(400).send({ message: "You are not a valid patient2."})
 						}	
@@ -2776,12 +2789,23 @@ app.get("/api/showappointmentspatient", (req,res) => {
 								return res.status(200).send({ message: "You do not have any upcoming appointments."})
 							}
 							else{
+								let appts = [];
 								appointments.forEach(element => {
 									element.appointment_date = helper.fixDate(element.appointment_date);
 									element.appointment_start_time = helper.fixTime(element.appointment_start_time);
 									element.appointment_end_time = helper.fixTime(element.appointment_end_time);
+									if(element.appointment_date == today){
+										if(element.appointment_start_time > timeNow){
+											appts.push(element);
+										}
+									}
+									else{
+										if(element.appointment_date > today){
+											appts.push(element);
+										}
+									}
 								});
-								return res.status(200).send({ message: "Here are your upcoming appointments.", appointments: appointments})
+								return res.status(200).send({ message: "Here are your upcoming appointments.", appointments: appts})
 							}	
 						}
 					});
@@ -3136,12 +3160,13 @@ app.post("/api/getpatient", (req, res) => {
 					rowsSpecific[0].birthDate = helper.fixDate(
 						rowsSpecific[0].birth_date
 					);
-					rowsSpecific[0].week = helper.getWeek(
-						rowsSpecific[0].first_pregnant_day
-					);
 					console.log(rowsSpecific[0].week);
 					rowsSpecific[0].first_pregnant_day = helper.fixDate(
 						rowsSpecific[0].first_pregnant_day
+					);
+					rowsSpecific[0].edd = helper.getEDD(rowsSpecific[0].first_pregnant_day,rowsSpecific[0].previous_pregnancies);
+					rowsSpecific[0].week = helper.getWeek(
+						rowsSpecific[0].edd
 					);
 					if (error) {
 						return res
@@ -3151,6 +3176,7 @@ app.post("/api/getpatient", (req, res) => {
 								reason: error.message,
 							});
 					} else {
+						console.log(rowsSpecific[0].edd);
 						return res
 							.status(200)
 							.send({
@@ -3828,13 +3854,24 @@ app.get("/api/showappointmentsdoctor", (req,res) => {
 					return res.status(400).send({ message: "You are not a valid doctor."})
 				}	
 				else{
+					let date = new Date();
+					let today = helper.fixDate(date);
+					var hours = date.getHours() + 3;
+					var minutes = date.getMinutes();
+					
+					// Format hours and minutes with leading zeros if necessary
+					var formattedHours = hours < 10 ? '0' + hours : hours;
+					var formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
+					let timeNow = formattedHours + ':' + formattedMinutes;
+					console.log(timeNow);
+					console.log(today);
 					let sql = "SELECT  appointments.appointment_id, appointments.pat_id, appointments.dr_id,\
 					appointments.appointment_date, appointments.appointment_start_time,appointments.appointment_end_time,\
 					p.pat_id, p.user_id, u.id, u.first_name, u.last_name FROM `appointments`\
 					JOIN `patient` p ON appointments.pat_id = p.pat_id\
 					JOIN `user` u ON p.user_id = u.id\
 					WHERE dr_id =?";
-					con.connection.query(sql, rows[0].dr_id, function(error, appointments){
+					con.connection.query(sql, [rows[0].dr_id], function(error, appointments){
 						if(error){
 							return res.status(400).send({ message: "You are not a valid doctor."})
 						}	
@@ -3843,12 +3880,23 @@ app.get("/api/showappointmentsdoctor", (req,res) => {
 								return res.status(200).send({ message: "You do not have any upcoming appointments."})
 							}
 							else{
+								let appts = [];
 								appointments.forEach(element => {
 									element.appointment_date = helper.fixDate(element.appointment_date);
 									element.appointment_start_time = helper.fixTime(element.appointment_start_time);
 									element.appointment_end_time = helper.fixTime(element.appointment_end_time);
+									if(element.appointment_date == today){
+										if(element.appointment_start_time > timeNow){
+											appts.push(element);
+										}
+									}
+									else{
+										if(element.appointment_date > today){
+											appts.push(element);
+										}
+									}
 								});
-								return res.status(200).send({ message: "Here are your upcoming appointments.", appointments: appointments})
+								return res.status(200).send({ message: "Here are your upcoming appointments.", appointments: appts})
 							}	
 						}
 					});
