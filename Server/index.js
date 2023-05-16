@@ -322,28 +322,41 @@ app.post("/api/changemail", (req, res) => {
 });
 app.post("/api/forgotpassmail", (req, res) => {
 	let email = req.body.email;
+	email = email.toLowerCase();
+	if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
+		return res.status(400).send({
+			message: "Invalid Email Format."
+		});
+	}
 	let sql = "SELECT id from `user` WHERE email = ?";
-	con.connection.query(sql, email, async function (error, rows) {
-		if (error) {
-			return res.status(404).send({
-				message: "User Never Registered."
-			});
-		} else {
-			userid = rows[0].id;
-			if (rows.length == 1) {
-				return res
-					.status(200)
-					.send({
-						message: "User Verified",
-						userId: userid
-					});
-			} else {
+	if(email){
+		con.connection.query(sql, email, async function (error, rows) {
+			if (error) {
 				return res.status(404).send({
 					message: "User Never Registered."
 				});
+			} else {
+				if (rows.length == 1) {
+					userid = rows[0].id;
+					return res
+						.status(200)
+						.send({
+							message: "User Verified",
+							userId: userid
+						});
+				} else {
+					return res.status(404).send({
+						message: "User Never Registered."
+					});
+				}
 			}
-		}
-	});
+		});
+	}
+	else{
+		return res.status(404).send({
+			message: "Email Cannot be Empty."
+		});
+	}
 });
 app.post("/api/forgetpasswordsendemail", (req, res) => {
 	let email = req.body.email;
