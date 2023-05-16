@@ -11,6 +11,8 @@ const ChooseGraphScreen = ({ route }) => {
     const [value, setValue] = useState([]);
     const [value2, setValue2] = useState([]);
     const [selectedGraph, setSelectedGraph] = useState(null);
+    const [hrButtonDisabled, setHrButtonDisabled] = useState(true);
+    const [bpButtonDisabled, setBpButtonDisabled] = useState(false);
     const navigation = useNavigation();
     const [selectedPoint, setSelectedPoint] = useState(null);
     const screenWidth = Dimensions.get('window').width;
@@ -36,6 +38,8 @@ const ChooseGraphScreen = ({ route }) => {
     }, [navigation]);
 
     const onSeeHRGraphPressed = () => {
+        setBpButtonDisabled(false);
+        setHrButtonDisabled(true);
         setSelectedGraph({
             labels: labels,
             datasets: [
@@ -51,6 +55,8 @@ const ChooseGraphScreen = ({ route }) => {
     };
 
     const onSeeBPGraphPressed = () => {
+        setBpButtonDisabled(true);
+        setHrButtonDisabled(false);
         setSelectedGraph({
             labels: labels,
             datasets: [
@@ -191,6 +197,7 @@ const ChooseGraphScreen = ({ route }) => {
                     <CustomButton
                         text="Check Heart Rate Graph"
                         onPress={onSeeHRGraphPressed}
+                        disabled={hrButtonDisabled}
                     />
                 </View>
 
@@ -198,6 +205,7 @@ const ChooseGraphScreen = ({ route }) => {
                     <CustomButton
                         text="Check Blood Pressure Graph"
                         onPress={onSeeBPGraphPressed}
+                        disabled={bpButtonDisabled}
                     />
                 </View>
             </View>

@@ -8,6 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 
 const DoctorEventsScreen = () => {
   const [appointments, setAppointments] = useState([]);
+  const [selectedMonth, setSelectedMonth] = useState(new Date().toISOString().slice(0, 7));
   const navigation = useNavigation();
 
   const getAppointments = async () => {
@@ -31,9 +32,12 @@ const DoctorEventsScreen = () => {
 
   const markedDates = {};
   const today = new Date().toISOString().split('T')[0];
+  const filteredAppointments = appointments.filter((appointment) => {
+    return appointment.appointment_date.slice(0, 7) === selectedMonth;
+  });
 
-  appointments.forEach((appointment) => {
-    appointments.sort((a, b) => {
+  filteredAppointments.forEach((appointment) => {
+    filteredAppointments.sort((a, b) => {
       const dateA = new Date(a.appointment_date);
       const dateB = new Date(b.appointment_date);
       if (dateA < dateB) return -1;
@@ -58,21 +62,24 @@ const DoctorEventsScreen = () => {
     };
   }
 
-  const groupAppointmentsByDate = (appointments) => {
-    return appointments.reduce((acc, appointment) => {
+  const groupAppointmentsByDate = (filteredAppointments) => {
+    return filteredAppointments.reduce((acc, appointment) => {
       const date = appointment.appointment_date;
-      if (!acc[date]) {
-        acc[date] = [];
+      if (date.slice(0, 7) === selectedMonth) {
+        if (!acc[date]) {
+          acc[date] = [];
+        }
+        acc[date].push(appointment);
       }
-      acc[date].push(appointment);
       return acc;
     }, {});
   };
 
-  const dateGroups = Object.entries(groupAppointmentsByDate(appointments)).map(([date, appointments]) => {
+
+  const dateGroups = Object.entries(groupAppointmentsByDate(filteredAppointments)).map(([date, filteredAppointments]) => {
     return {
       date,
-      appointments
+      filteredAppointments
     };
   });
 
@@ -125,6 +132,8 @@ const DoctorEventsScreen = () => {
           selectedDayBackgroundColor: "#651B70"
         }}
         markedDates={markedDates}
+        onMonthChange={(month) => setSelectedMonth(month.dateString.slice(0, 7))}
+
       />
       <FlatList
         data={dateGroups}
@@ -136,7 +145,7 @@ const DoctorEventsScreen = () => {
               <View style={{ marginLeft: 20, marginTop: 10 }}>
                 <Text style={{ fontSize: 16, fontWeight: 'bold' }}>{`\u2022 ${item.date}`}</Text>
               </View>
-              {item.appointments.map((appointment) => {
+              {item.filteredAppointments.map((appointment) => {
                 return (
                   <View key={appointment.appointment_id} style={{ marginLeft: 20, flexDirection: 'row', justifyContent: 'space-between' }}>
                     <Text style={{ fontSize: 16, marginBottom: 5, marginLeft: 20 }}>

@@ -81,7 +81,7 @@ const DoctorAvailabilityScreen = () => {
         <ScrollView style={{ padding: 10 }}>
             <Pressable style={styles.pressableContainer} onPress={onAddAvailabilityPressed} >
                 <Icon name='calendar-plus' style={styles.icon} />
-                <Text >Press to add to your availability schedule</Text>
+                <Text style={{ color: '#651B70' }} >Press to add to your availability schedule</Text>
                 <Icon name='clock-plus' style={styles.icon} />
             </Pressable>
 

@@ -79,8 +79,7 @@ const ConfirmEmailScreen = ({ route }) => {
             <Text style={styles.title}>Confirm your account</Text>
             <Text style={styles.error}>{confirmEmailStatus}</Text>
 
-            <Text style={{ marginVertical: 10 }}>A code is sent on the provided email address. If you would like to change this email,
-                <Pressable onPress={() => navigation.navigate('ChangeEmail', { id: id })}><Text style={{ fontWeight: 'bold', textDecorationLine: 'underline', marginLeft: 5, marginTop: 5 }}>click here</Text></Pressable>
+            <Text style={{ marginVertical: 10 }}>A code is sent on the provided email address. If you would like to change this email, <Text onPress={() => navigation.navigate('ChangeEmail', { id: id })} style={{ fontWeight: 'bold', textDecorationLine: 'underline', marginLeft: 5, marginTop: 5 }}>click here</Text>
             </Text>
 
             <CustomInput
