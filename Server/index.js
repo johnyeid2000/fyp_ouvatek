@@ -2602,7 +2602,19 @@ app.post("/api/endlinkpatient", (req,res) => {
 								return res.status(401).send({ message: "Link Error. Try again later."})
 							}
 							else{
-								return res.status(200).send({ message: "Link Ended Successfully."})
+								let sql = "DELETE FROM `appointments` WHERE pat_id = ? AND dr_id = ?";
+								con.connection.query(sql, [rows[0].pat_id, doctorId], function(error, result){
+									if(error){
+										console.log(error);
+										return res.status(401).send({ message: "Link Error. Try again later."})
+									}
+									else{
+										if(result.affectedRows == 0){
+											console.log("no appts");
+										}
+										return res.status(200).send({ message: "Link Ended Successfully."})
+									}
+								});
 							}
 						});
 					}
@@ -3290,7 +3302,18 @@ app.post("/api/endlinkdoctor", (req,res) => {
 								return res.status(401).send({ message: "Link Error. Try again later."})
 							}
 							else{
-								return res.status(200).send({ message: "Link Ended Successfully."})
+								let sql = "DELETE FROM `appointments` WHERE pat_id = ? AND dr_id = ?";
+								con.connection.query(sql, [patientId, rows[0].dr_id], function(error, result){
+									if(error){
+										return res.status(401).send({ message: "Link Error. Try again later."})
+									}
+									else{
+										if(result.affectedRows == 0){
+											console.log("no appts");
+										}
+										return res.status(200).send({ message: "Link Ended Successfully."})
+									}
+								});
 							}
 						});
 					}
