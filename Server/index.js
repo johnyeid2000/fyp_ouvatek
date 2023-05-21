@@ -3993,4 +3993,4 @@ app.post("/api/showappointmentsdoctorperday", (req,res) => {
 //countries.getDataUsingAsyncAwaitGetCall(); //Do not remove the comment unless you want to fill the countries tables again.
 timer.cleanVerification(); //cleans the database from verification codes that have been there for more than 10 minutes
 timer.updateTrimester(); //Runs at midnight to update the trimester of every patient that needs updating.
-timer.clearUsers();
+timer.clearUsers(); //Deletes users if valid = 0 in their user table 

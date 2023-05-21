@@ -1,5 +1,4 @@
 const jwt = require('jsonwebtoken');
-const con = require('./connectdb.js');
 async function validateUser(token){
     let result ={
         indicator: false,
